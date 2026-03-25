@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import random
+from datetime import datetime
 from typing import Optional
 
 from rich.console import RenderableType
@@ -11,6 +12,8 @@ from rich.panel import Panel
 from rich.text import Text
 from textual.timer import Timer
 from textual.widgets import Static
+
+from .palettes import DEFAULT_PALETTE_NAME, PALETTES, Palette
 
 try:
     import pyfiglet
@@ -20,6 +23,8 @@ except ImportError:
 # Glitch character palette
 GLITCH_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*<>{}[]|/\\~=+-"
 
+_DEFAULT = PALETTES[DEFAULT_PALETTE_NAME]
+
 
 class MatrixBanner(Static):
     """ASCII art title banner rendered with pyfiglet."""
@@ -28,7 +33,6 @@ class MatrixBanner(Static):
     MatrixBanner {
         height: auto;
         padding: 0 2;
-        color: #00ff41;
     }
     """
 
@@ -41,6 +45,12 @@ class MatrixBanner(Static):
         super().__init__(**kwargs)
         self._banner_text = text
         self._font = font
+        self._palette: Palette = _DEFAULT
+
+    def set_palette(self, palette: Palette) -> None:
+        if palette is not self._palette:
+            self._palette = palette
+            self.refresh()
 
     def render(self) -> Text:
         if pyfiglet is not None:
@@ -52,7 +62,7 @@ class MatrixBanner(Static):
                 banner = self._banner_text
         else:
             banner = f"  [ {self._banner_text} ]  "
-        return Text(banner.rstrip("\n"), style="bold bright_green")
+        return Text(banner.rstrip("\n"), style=f"bold {self._palette.primary}")
 
 
 class GlitchPrompt(Static):
@@ -80,6 +90,10 @@ class GlitchPrompt(Static):
         self._panel_subtitle: str = ""
         self._frame: int = 0
         self._timer: Optional[Timer] = None
+        self._palette: Palette = _DEFAULT
+
+    def set_palette(self, palette: Palette) -> None:
+        self._palette = palette
 
     def decode(
         self,
@@ -100,15 +114,15 @@ class GlitchPrompt(Static):
 
     def _tick(self) -> None:
         self._frame += 1
+        p = self._palette
 
         if self._frame >= self.TOTAL_FRAMES:
-            # Done — show final styled content with bright border flash
             self.update(
                 Panel(
                     self._target_renderable,
                     title=self._panel_title,
                     subtitle=self._panel_subtitle,
-                    border_style="bright_green",
+                    border_style=p.border,
                     padding=(1, 2),
                 )
             )
@@ -117,34 +131,34 @@ class GlitchPrompt(Static):
                 self._timer = None
             return
 
-        # Build partially decoded text with occasional color flashes
+        # Build partially decoded text with palette-tinted flashes
         progress = self._frame / self.TOTAL_FRAMES
         locked_count = int(len(self._target_plain) * progress)
 
         text = Text()
         for i, ch in enumerate(self._target_plain):
             if i < locked_count:
-                text.append(ch, style="bright_green")
+                text.append(ch, style=p.bright)
             elif ch in (" ", ",", ".", "\n", ";", ":"):
                 text.append(ch)
             else:
                 glyph = random.choice(GLITCH_CHARS)
                 roll = random.random()
                 if roll < 0.10:
-                    text.append(glyph, style="bright_cyan")
+                    text.append(glyph, style=p.accent)
                 elif roll < 0.14:
-                    text.append(glyph, style="bright_magenta")
+                    text.append(glyph, style="bright_white")
                 else:
-                    text.append(glyph, style="green")
+                    text.append(glyph, style=p.rain_mid)
 
         border_color = random.choice(
-            ["green", "bright_green", "#006600", "cyan"]
+            [p.rain_mid, p.border, p.border_dim, p.accent]
         )
         self.update(
             Panel(
                 text,
                 title=self._panel_title,
-                subtitle="[dim green]decoding...[/]",
+                subtitle=f"[{p.dim}]decoding...[/]",
                 border_style=border_color,
                 padding=(1, 2),
             )
@@ -155,6 +169,7 @@ class GlitchPrompt(Static):
         renderable: RenderableType,
         title: str = "",
         subtitle: str = "",
+        border_style: Optional[str] = None,
     ) -> None:
         """Set content immediately without animation."""
         if self._timer is not None:
@@ -165,7 +180,7 @@ class GlitchPrompt(Static):
                 renderable,
                 title=title,
                 subtitle=subtitle,
-                border_style="bright_green",
+                border_style=border_style or self._palette.border,
                 padding=(1, 2),
             )
         )
@@ -187,6 +202,10 @@ class HistoryLog(Static):
     def __init__(self, **kwargs: object) -> None:
         super().__init__(**kwargs)
         self._entries: list[tuple[str, str]] = []  # (hash, template_id)
+        self._palette: Palette = _DEFAULT
+
+    def set_palette(self, palette: Palette) -> None:
+        self._palette = palette
 
     def add_entry(self, hash_str: str, template_id: str) -> None:
         """Append a generation to the history log."""
@@ -196,31 +215,31 @@ class HistoryLog(Static):
         self._refresh_display()
 
     def _refresh_display(self) -> None:
+        p = self._palette
         visible = list(reversed(self._entries))[: self.VISIBLE_ENTRIES]
         text = Text()
         for i, (h, tid) in enumerate(visible):
             if i == 0:
-                # Most recent — bright highlight
-                text.append(" > ", style="bold bright_green")
-                text.append(f"0x{h}", style="bold bright_green")
-                text.append(f"\n   {tid}\n", style="green")
+                text.append(" > ", style=f"bold {p.primary}")
+                text.append(f"0x{h}", style=f"bold {p.primary}")
+                text.append(f"\n   {tid}\n", style=p.bright)
             else:
-                style = "green" if i <= 3 else "dim green"
+                style = p.bright if i <= 3 else p.dim
                 text.append(f"   0x{h}", style=style)
-                text.append(f"\n   {tid}\n", style="dim")
+                text.append(f"\n   {tid}\n", style=p.dim)
 
         self.update(
             Panel(
-                text or Text("  awaiting generation...", style="dim green"),
-                title="[dim green]// history[/]",
-                border_style="#006600",
+                text or Text("  awaiting generation...", style=p.dim),
+                title=f"[{p.dim}]// history[/]",
+                border_style=p.border_dim,
                 padding=(0, 1),
             )
         )
 
 
 class MatrixRain(Static):
-    """Cascading green characters — the iconic Matrix digital rain."""
+    """Cascading characters — digital rain effect."""
 
     DEFAULT_CSS = """
     MatrixRain {
@@ -240,6 +259,10 @@ class MatrixRain(Static):
         self._drops: list[dict[str, int]] = []
         self._density = density
         self._timer: Optional[Timer] = None
+        self._palette: Palette = _DEFAULT
+
+    def set_palette(self, palette: Palette) -> None:
+        self._palette = palette
 
     def on_mount(self) -> None:
         self._timer = self.set_interval(1 / 10, self._tick)
@@ -255,12 +278,10 @@ class MatrixRain(Static):
         if width <= 0 or height <= 0:
             return
 
-        # Cull dead drops (fully past bottom)
         self._drops = [
             d for d in self._drops if d["pos"] - d["length"] < height
         ]
 
-        # Spawn new drops — spread across columns with spacing
         for col in range(0, width, 2):
             if random.random() < self._density:
                 self._drops.append(
@@ -272,14 +293,13 @@ class MatrixRain(Static):
                     }
                 )
 
-        # Advance all drops
         for drop in self._drops:
             drop["pos"] += drop["speed"]
 
         self._render_frame(width, height)
 
     def _render_frame(self, width: int, height: int) -> None:
-        # Build a sparse map of (row, col) -> style for active drops
+        p = self._palette
         cells: dict[tuple[int, int], str] = {}
         for drop in self._drops:
             col = drop["col"]
@@ -290,13 +310,13 @@ class MatrixRain(Static):
                     continue
                 dist = head - row
                 if dist == 0:
-                    cells[(row, col)] = "bold bright_white"
+                    cells[(row, col)] = p.rain_head
                 elif dist <= 2:
-                    cells[(row, col)] = "bold bright_green"
+                    cells[(row, col)] = p.rain_bright
                 elif dist <= length // 2:
-                    cells[(row, col)] = "green"
+                    cells[(row, col)] = p.rain_mid
                 else:
-                    cells[(row, col)] = "#005500"
+                    cells[(row, col)] = p.rain_dim
 
         text = Text()
         for row in range(height):
@@ -312,6 +332,73 @@ class MatrixRain(Static):
         self.update(text)
 
 
+class HackerLog(Static):
+    """Terminal-style generation trace log, toggled with 'h' key."""
+
+    DEFAULT_CSS = """
+    HackerLog {
+        display: none;
+        height: 1fr;
+        min-height: 3;
+        overflow: hidden;
+    }
+    """
+
+    MAX_LINES: int = 80
+
+    def __init__(self, **kwargs: object) -> None:
+        super().__init__(**kwargs)
+        self._lines: list[tuple[str, str]] = []  # (timestamp, message)
+        self._palette: Palette = _DEFAULT
+
+    def set_palette(self, palette: Palette) -> None:
+        self._palette = palette
+
+    def add_trace(
+        self,
+        count: int,
+        template_id: str,
+        hash_str: str,
+        n_components: int,
+        *,
+        is_artifact: bool = False,
+    ) -> None:
+        """Log a generation event."""
+        ts = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        tag = " !! ARTIFACT" if is_artifact else ""
+        msg = (
+            f"[{ts}] GEN #{count:>6,} | {template_id:<22}"
+            f"| 0x{hash_str} | {n_components} slots{tag}"
+        )
+        self._lines.append((ts, msg))
+        if len(self._lines) > self.MAX_LINES:
+            self._lines = self._lines[-self.MAX_LINES:]
+        self._refresh_display()
+
+    def add_milestone(self, count: int) -> None:
+        """Log a milestone event."""
+        ts = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        msg = f"[{ts}] >>> MILESTONE: #{count:,} prompts generated <<<"
+        self._lines.append((ts, msg))
+        self._refresh_display()
+
+    def _refresh_display(self) -> None:
+        p = self._palette
+        text = Text()
+        for i, (_, msg) in enumerate(reversed(self._lines)):
+            style = p.bright if i == 0 else p.dim
+            text.append(f"  {msg}\n", style=style)
+
+        self.update(
+            Panel(
+                text or Text("  // awaiting trace data...", style=p.dim),
+                title=f"[{p.dim}]// system trace[/]",
+                border_style=p.border_dim,
+                padding=(0, 1),
+            )
+        )
+
+
 class EntropyMeter(Static):
     """Visual meter showing exploration of the combinatorial space."""
 
@@ -324,6 +411,13 @@ class EntropyMeter(Static):
 
     BAR_WIDTH: int = 32
 
+    def __init__(self, **kwargs: object) -> None:
+        super().__init__(**kwargs)
+        self._palette: Palette = _DEFAULT
+
+    def set_palette(self, palette: Palette) -> None:
+        self._palette = palette
+
     def set_progress(
         self,
         count: int,
@@ -331,10 +425,9 @@ class EntropyMeter(Static):
         template_filter: Optional[str] = None,
     ) -> None:
         """Update the entropy meter with current coverage stats."""
+        p = self._palette
         pct = (count / total * 100) if total > 0 else 0.0
 
-        # Log-scale bar — actual percentage is astronomically small,
-        # so linear would be invisible. Log gives visual feedback early.
         if total > 1 and count > 0:
             log_progress = math.log10(count + 1) / math.log10(total)
         else:
@@ -345,17 +438,17 @@ class EntropyMeter(Static):
 
         bar = Text()
         bar.append("  ", style="")
-        bar.append("\u2588" * filled, style="bright_green")
-        bar.append("\u2591" * empty, style="#003300")
+        bar.append("\u2588" * filled, style=p.bright)
+        bar.append("\u2591" * empty, style=p.rain_dim)
         bar.append("  ", style="")
-        bar.append(f"#{count:,}", style="bold bright_green")
+        bar.append(f"#{count:,}", style=f"bold {p.primary}")
         bar.append("  of  ", style="dim")
-        bar.append(f"~{total:,}", style="dim green")
+        bar.append(f"~{total:,}", style=p.dim)
         bar.append("  \u00b7  ", style="dim")
-        bar.append(f"{pct:.8f}%", style="dim cyan")
+        bar.append(f"{pct:.8f}%", style=p.accent)
 
         if template_filter:
-            bar.append(f"  [{template_filter}]", style="cyan")
+            bar.append(f"  [{template_filter}]", style=p.accent)
         else:
             bar.append("  [all]", style="dim")
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import random
 import subprocess
 from pathlib import Path
 from typing import Optional
@@ -16,16 +17,18 @@ from textual.widgets import Footer, Static
 
 from .engine import CombinatorialEngine
 from .models import GeneratedPrompt
+from .palettes import Palette, palette_for_template
 from .store import PromptStore
 from .widgets import (
     EntropyMeter,
     GlitchPrompt,
+    HackerLog,
     HistoryLog,
     MatrixBanner,
     MatrixRain,
 )
 
-# ── neon category highlight colors ───────────────────────────────────────
+# ── category highlight colors (fixed, independent of palette) ────────────
 CATEGORY_STYLES: dict[str, str] = {
     "subject_form": "bold bright_white",
     "material_substance": "bold bright_yellow",
@@ -56,6 +59,15 @@ LABEL_STYLES: dict[str, str] = {
     "medium_render": "dim red",
 }
 
+# ── glitch artifact ──────────────────────────────────────────────────────
+ARTIFACT_CHANCE: float = 0.002  # 1 in 500
+CORRUPTION_CHARS = "░▒▓█╗╔╚╝║═▀▄▐▌◄►"
+
+# ── milestones ───────────────────────────────────────────────────────────
+MILESTONES: frozenset[int] = frozenset(
+    {10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000}
+)
+
 
 def _highlight_prompt(prompt_text: str, components: dict[str, list[str]]) -> Text:
     """Highlight component words in a prompt string with category colors."""
@@ -71,6 +83,20 @@ def _highlight_prompt(prompt_text: str, components: dict[str, list[str]]) -> Tex
                 text.stylize(style, idx, idx + len(word))
                 start = idx + len(word)
     return text
+
+
+def _corrupt_text(text: str) -> str:
+    """Apply visual corruption to prompt text for artifact easter egg."""
+    result = list(text)
+    for i in range(len(result)):
+        roll = random.random()
+        if roll < 0.12:
+            result[i] = random.choice(CORRUPTION_CHARS)
+        elif roll < 0.16:
+            result[i] = result[i] * random.randint(2, 4)
+        elif roll < 0.20:
+            result[i] = ""
+    return "".join(result)
 
 
 class PromptWeaverApp(App[None]):
@@ -111,6 +137,11 @@ class PromptWeaverApp(App[None]):
         min-height: 3;
     }
 
+    #hacker-log {
+        height: 1fr;
+        min-height: 3;
+    }
+
     #sidebar {
         width: 1fr;
         min-width: 28;
@@ -132,6 +163,7 @@ class PromptWeaverApp(App[None]):
         Binding("space", "next_prompt", "GENERATE", priority=True),
         Binding("enter", "next_prompt", "GENERATE", show=False, priority=True),
         Binding("t", "cycle_template", "TEMPLATE"),
+        Binding("h", "toggle_hacker_log", "TRACE"),
         Binding("c", "copy_prompt", "COPY"),
         Binding("q", "quit_app", "EXIT"),
     ]
@@ -143,6 +175,9 @@ class PromptWeaverApp(App[None]):
         self.current: Optional[GeneratedPrompt] = None
         self._template_filter: Optional[str] = None
         self._template_idx: int = 0
+        self._is_artifact: bool = False
+        self._current_palette: Optional[Palette] = None
+        self._hacker_visible: bool = False
 
     def compose(self) -> ComposeResult:
         yield MatrixBanner()
@@ -154,12 +189,30 @@ class PromptWeaverApp(App[None]):
                     yield Static(id="components-display")
                     yield EntropyMeter(id="entropy-display")
                 yield MatrixRain(id="matrix-rain")
+                yield HackerLog(id="hacker-log")
             with Vertical(id="sidebar"):
                 yield HistoryLog(id="history-log")
         yield Footer()
 
     def on_mount(self) -> None:
         self._generate()
+
+    # ── palette ───────────────────────────────────────────────────────
+
+    def _apply_palette(self, palette: Palette) -> None:
+        """Push palette to all widgets + update screen chrome."""
+        if palette is self._current_palette:
+            return
+        self._current_palette = palette
+
+        self.screen.styles.color = palette.primary
+
+        self.query_one(MatrixBanner).set_palette(palette)
+        self.query_one("#prompt-display", GlitchPrompt).set_palette(palette)
+        self.query_one("#history-log", HistoryLog).set_palette(palette)
+        self.query_one("#matrix-rain", MatrixRain).set_palette(palette)
+        self.query_one("#hacker-log", HackerLog).set_palette(palette)
+        self.query_one("#entropy-display", EntropyMeter).set_palette(palette)
 
     # ── generation ────────────────────────────────────────────────────
 
@@ -169,6 +222,7 @@ class PromptWeaverApp(App[None]):
             template_id=self._template_filter,
         )
         self.store.save(self.current)
+        self._is_artifact = random.random() < ARTIFACT_CHANCE
         self._render()
 
     # ── rendering ─────────────────────────────────────────────────────
@@ -179,26 +233,41 @@ class PromptWeaverApp(App[None]):
 
         p = self.current
 
-        # Positive prompt — glitch decode animation
-        highlighted = _highlight_prompt(p.positive, p.components)
-        self.query_one("#prompt-display", GlitchPrompt).decode(
-            plain_text=p.positive,
-            final_renderable=highlighted,
-            title=f"[bold bright_green]{p.template_id}[/]",
-            subtitle=f"[dim green]0x{p.hash}[/]",
-        )
+        # Apply template-driven palette
+        palette = palette_for_template(p.template_id)
+        self._apply_palette(palette)
 
-        # Negative prompt
+        # ── positive prompt ──────────────────────────────────────────
+        glitch_widget = self.query_one("#prompt-display", GlitchPrompt)
+
+        if self._is_artifact:
+            corrupted = _corrupt_text(p.positive)
+            glitch_widget.set_static(
+                Text(corrupted, style="bold #ff0044"),
+                title=f"[bold #ff0044]{p.template_id}[/]",
+                subtitle="[bold #ff0044]// ARTIFACT DETECTED[/]",
+                border_style="#ff0044",
+            )
+        else:
+            highlighted = _highlight_prompt(p.positive, p.components)
+            glitch_widget.decode(
+                plain_text=p.positive,
+                final_renderable=highlighted,
+                title=f"[bold {palette.primary}]{p.template_id}[/]",
+                subtitle=f"[{palette.dim}]0x{p.hash}[/]",
+            )
+
+        # ── negative prompt ──────────────────────────────────────────
         self.query_one("#negative-display", Static).update(
             Panel(
-                Text(p.negative, style="dim italic #aa4444"),
-                title="[dim red]// negative[/]",
-                border_style="#664444",
+                Text(p.negative, style=f"dim italic {palette.negative}"),
+                title=f"[{palette.negative}]// negative[/]",
+                border_style=palette.negative_border,
                 padding=(0, 2),
             )
         )
 
-        # Component breakdown table
+        # ── component breakdown ──────────────────────────────────────
         tbl = Table(
             show_header=False, box=None, padding=(0, 2, 0, 0), expand=True
         )
@@ -212,24 +281,43 @@ class PromptWeaverApp(App[None]):
         self.query_one("#components-display", Static).update(
             Panel(
                 tbl,
-                title="[dim green]// components[/]",
-                border_style="#006600",
+                title=f"[{palette.dim}]// components[/]",
+                border_style=palette.border_dim,
                 padding=(0, 1),
             )
         )
 
-        # Entropy meter
+        # ── entropy meter ────────────────────────────────────────────
         self.query_one("#entropy-display", EntropyMeter).set_progress(
             count=self.store.count,
             total=self.engine.total_combinations,
             template_filter=self._template_filter,
         )
 
-        # History log
+        # ── history log ──────────────────────────────────────────────
         self.query_one("#history-log", HistoryLog).add_entry(
             hash_str=p.hash,
             template_id=p.template_id,
         )
+
+        # ── hacker trace log ─────────────────────────────────────────
+        hacker = self.query_one("#hacker-log", HackerLog)
+        hacker.add_trace(
+            count=self.store.count,
+            template_id=p.template_id,
+            hash_str=p.hash,
+            n_components=len(p.components),
+            is_artifact=self._is_artifact,
+        )
+
+        # ── milestone check ──────────────────────────────────────────
+        count = self.store.count
+        if count in MILESTONES:
+            self.notify(
+                f"// MILESTONE: #{count:,} prompts generated",
+                timeout=4,
+            )
+            hacker.add_milestone(count)
 
     # ── actions ───────────────────────────────────────────────────────
 
@@ -243,6 +331,13 @@ class PromptWeaverApp(App[None]):
         label = self._template_filter or "all"
         self.notify(f"template: {label}", timeout=2)
         self._generate()
+
+    def action_toggle_hacker_log(self) -> None:
+        rain = self.query_one("#matrix-rain", MatrixRain)
+        hacker = self.query_one("#hacker-log", HackerLog)
+        self._hacker_visible = not self._hacker_visible
+        rain.display = not self._hacker_visible
+        hacker.display = self._hacker_visible
 
     def action_copy_prompt(self) -> None:
         if not self.current:
