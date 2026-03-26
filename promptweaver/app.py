@@ -344,6 +344,7 @@ class PromptWeaverApp(App[None]):
             return
         text = self.current.positive.encode()
         for cmd in (
+            ["pbcopy"],
             ["wl-copy"],
             ["xclip", "-selection", "clipboard"],
             ["xsel", "--clipboard", "--input"],
