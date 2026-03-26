@@ -281,6 +281,17 @@ def select_category(
     filtered_count = len(kept)
     logger.info(f"  After filters: {filtered_count} candidates remain")
 
+    if filtered_count == 0:
+        logger.warning(f"  No candidates remain after filtering!")
+        return SelectionResult(
+            category=category, candidates_count=len(candidates),
+            filtered_count=0, selected_count=0, selected_words=[],
+            opposites={}, before_stats=before_stats,
+            after_stats=before_stats, elbow_k=None,
+            contaminated_dropped=contaminated_dropped,
+            redundant_dropped=redundant_dropped,
+        )
+
     # Stage 3: Elbow + selection
     emb_final = cache.get_dual(kept)
     sim_final = emb_final.joint_similarity_matrix(alpha)
@@ -468,33 +479,30 @@ def main() -> None:
 
     cache = EmbeddingCache(embedder, all_words)
 
-    # ── ITERATIVE REALLOCATION ──────────────────────────────────────────
+    # ── SINGLE-PASS REALLOCATION ───────────────────────────────────────
+    # Compute centroids from ORIGINAL pools (fixed reference — no drift).
+    # Items closer to another centroid get moved there in one pass.
     working = {cat: list(words) for cat, words in all_candidates.items()}
 
-    MAX_PASSES = 5
-    for pass_num in range(MAX_PASSES):
-        centroids = compute_centroids(working, cache)
-        moved = 0
+    fixed_centroids = compute_centroids(all_candidates, cache)
+    moved_total = 0
 
-        for cat in sorted(working.keys()):
-            contaminated = find_contaminated(
-                cat, working[cat], cache, centroids,
-                alpha=per_cat_alpha.get(cat, args.alpha),
-            )
-            for item in contaminated:
-                target = item["closest"]
-                word = item["word"]
-                if (word in working[cat]
-                        and word not in working.get(target, [])):
-                    working[cat].remove(word)
-                    working.setdefault(target, []).append(word)
-                    moved += 1
+    for cat in sorted(working.keys()):
+        cat_alpha = per_cat_alpha.get(cat, args.alpha)
+        contaminated = find_contaminated(
+            cat, working[cat], cache, fixed_centroids, cat_alpha,
+        )
+        for item in contaminated:
+            target = item["closest"]
+            word = item["word"]
+            if (word in working[cat]
+                    and word not in working.get(target, [])):
+                working[cat].remove(word)
+                working.setdefault(target, []).append(word)
+                moved_total += 1
 
-        if moved == 0:
-            if pass_num > 0:
-                logger.info(f"  Reallocation converged after {pass_num + 1} passes")
-            break
-        logger.info(f"  Reallocation pass {pass_num + 1}: moved {moved} items")
+    if moved_total > 0:
+        logger.info(f"  Reallocation: moved {moved_total} items (single pass, fixed centroids)")
 
     # ── PER-CATEGORY SELECTION ──────────────────────────────────────────
     # Recompute centroids after reallocation for clean contamination check
