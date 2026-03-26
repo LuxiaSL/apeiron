@@ -3,39 +3,29 @@
 Diversity Selection Pipeline
 ═══════════════════════════════════════════════════════════════════════════════
 
-Takes generated candidates, computes dual CLIP+T5 embeddings, and selects the
-most diverse subset using farthest-point sampling in joint embedding space.
-
-This is the core quality gate — it turns a noisy pool of LLM-generated words
-into a tight, maximally-spread set where every item earns its place.
+Takes generated candidates, computes dual CLIP+T5 embeddings ONCE into a
+global cache, then performs all filtering/reallocation/selection via pure
+array lookups — no re-embedding.
 
 Pipeline:
     1. Load generated candidates YAML
-    2. Compute dual-space embeddings (CLIP + T5)
-    3. Cross-category contamination filter (drop misclassified items)
-    4. Redundancy pre-filter (drop items > threshold similarity to existing)
+    2. Compute dual-space embeddings for every unique word (one-shot)
+    3. Iterative cross-category reallocation (contaminated items move to
+       the category they're closest to, loop until stable)
+    4. Redundancy pre-filter per category
     5. Farthest-point sampling per category in joint space
-    6. Compute diversity elbow (where adding items starts diluting)
-    7. Recompute semantic opposites for negatable categories
-    8. Output final components YAML
+    6. Recompute semantic opposites for negatable categories
+    7. Output final components YAML
 
 Usage:
-    # Full pipeline from candidates → selected components
+    # Full pipeline
     uv run python -m promptweaver.tools.select \
-        --input data/generated_candidates_20260325.yaml
+        --input data/generated_candidates_20260325.yaml --k 60
 
-    # Custom selection size and alpha
+    # With per-category alpha from analyze.py --alpha-analysis
     uv run python -m promptweaver.tools.select \
-        --input data/generated_candidates.yaml \
-        --k 80 --alpha 0.6
-
-    # CLIP-only (faster, skip T5)
-    uv run python -m promptweaver.tools.select \
-        --input data/generated_candidates.yaml --clip-only
-
-    # Dry run (analyze without writing)
-    uv run python -m promptweaver.tools.select \
-        --input data/generated_candidates.yaml --dry-run
+        --input data/generated_candidates.yaml --k 60 \
+        --alpha-per-category data/alpha_per_category.json
 """
 
 from __future__ import annotations
@@ -57,7 +47,6 @@ from .embeddings import (
     DualSpaceEmbedder,
     DiversityStats,
     analyze_diversity,
-    cross_category_contamination,
     farthest_point_sampling,
     greedy_opposite_pairs,
     load_components_yaml,
@@ -65,11 +54,48 @@ from .embeddings import (
 
 logger = logging.getLogger(__name__)
 
-# Categories that get semantic opposites for negative prompt generation
 NEGATABLE_CATEGORIES = frozenset({
     "color_logic", "light_behavior", "atmosphere_field",
     "temporal_state", "texture_density", "medium_render",
 })
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# EMBEDDING CACHE — compute once, lookup forever
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+class EmbeddingCache:
+    """
+    Pre-computes and stores embeddings for every unique word. All subsequent
+    operations (filtering, reallocation, selection) use pure array lookups.
+    """
+
+    def __init__(self, embedder: DualSpaceEmbedder, all_words: list[str]) -> None:
+        unique = list(dict.fromkeys(all_words))  # Dedupe preserving order
+        logger.info(f"Computing embeddings for {len(unique)} unique words (one-shot)...")
+
+        clip_emb = embedder.clip_embedder.encode_batch(unique)
+        t5_emb: np.ndarray | None = None
+        if embedder.t5_embedder:
+            t5_emb = embedder.t5_embedder.encode_batch(unique)
+
+        self._clip: dict[str, np.ndarray] = {
+            w: clip_emb[i] for i, w in enumerate(unique)
+        }
+        self._t5: dict[str, np.ndarray] | None = None
+        if t5_emb is not None:
+            self._t5 = {w: t5_emb[i] for i, w in enumerate(unique)}
+
+        self.has_t5 = t5_emb is not None
+        logger.info(f"Cache ready: {len(unique)} words, CLIP={clip_emb.shape[1]}d"
+                     + (f", T5={t5_emb.shape[1]}d" if t5_emb is not None else ""))
+
+    def get_dual(self, words: list[str]) -> DualEmbeddings:
+        """Look up pre-computed embeddings for a word list. O(n) array construction, no model calls."""
+        clip = np.array([self._clip[w] for w in words])
+        t5 = np.array([self._t5[w] for w in words]) if self._t5 else None
+        return DualEmbeddings(words=words, clip=clip, t5=t5)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -83,58 +109,71 @@ class SelectionResult:
 
     category: str
     candidates_count: int
-    filtered_count: int  # After contamination + redundancy filter
+    filtered_count: int
     selected_count: int
     selected_words: list[str]
-    opposites: dict[str, str]  # word → opposite (negatable categories only)
+    opposites: dict[str, str]
     before_stats: DiversityStats
     after_stats: DiversityStats
-    elbow_k: int | None  # Where diversity starts dropping sharply
+    elbow_k: int | None
     contaminated_dropped: list[str]
     redundant_dropped: list[str]
 
 
-def filter_contaminated(
+def compute_centroids(
+    categories: dict[str, list[str]],
+    cache: EmbeddingCache,
+) -> dict[str, tuple[np.ndarray, np.ndarray | None]]:
+    """Compute normalized centroids per category from cache. Returns (clip_centroid, t5_centroid)."""
+    centroids: dict[str, tuple[np.ndarray, np.ndarray | None]] = {}
+    for cat, words in categories.items():
+        if not words:
+            continue
+        emb = cache.get_dual(words)
+        clip_c = emb.clip.mean(axis=0)
+        clip_c /= np.linalg.norm(clip_c)
+        t5_c = None
+        if emb.t5 is not None:
+            t5_c = emb.t5.mean(axis=0)
+            t5_c /= np.linalg.norm(t5_c)
+        centroids[cat] = (clip_c, t5_c)
+    return centroids
+
+
+def find_contaminated(
     category: str,
     words: list[str],
-    embeddings: DualEmbeddings,
-    all_category_embeddings: dict[str, DualEmbeddings],
+    cache: EmbeddingCache,
+    centroids: dict[str, tuple[np.ndarray, np.ndarray | None]],
     alpha: float,
-) -> tuple[list[str], list[str]]:
-    """
-    Drop words that are closer to another category's centroid than their own.
+    min_delta: float = 0.01,
+) -> list[dict[str, Any]]:
+    """Find words closer to another category's centroid than their own."""
+    emb = cache.get_dual(words)
+    contaminated: list[dict[str, Any]] = []
 
-    Returns (kept_words, dropped_words).
-    """
-    contaminated = cross_category_contamination(
-        {**all_category_embeddings, category: embeddings},
-        alpha=alpha,
-    )
+    for i, word in enumerate(words):
+        sims: dict[str, float] = {}
+        for other_cat, (clip_c, t5_c) in centroids.items():
+            clip_sim = float(np.dot(emb.clip[i], clip_c))
+            if t5_c is not None and emb.t5 is not None:
+                t5_sim = float(np.dot(emb.t5[i], t5_c))
+                sims[other_cat] = alpha * clip_sim + (1 - alpha) * t5_sim
+            else:
+                sims[other_cat] = clip_sim
 
-    # Only drop items from the category we're currently filtering
-    drop_words = {
-        item["word"] for item in contaminated
-        if item["assigned"] == category and item["delta"] > 0.01  # Small margin
-    }
+        assigned_sim = sims.get(category, 0)
+        closest = max(sims, key=lambda c: sims[c])
 
-    kept = [w for w in words if w not in drop_words]
-    dropped = [w for w in words if w in drop_words]
+        if closest != category and (sims[closest] - assigned_sim) > min_delta:
+            contaminated.append({
+                "word": word,
+                "assigned": category,
+                "closest": closest,
+                "delta": sims[closest] - assigned_sim,
+            })
 
-    if dropped:
-        logger.info(f"  Contamination filter: dropped {len(dropped)} items")
-        for w in dropped[:5]:
-            match = next(
-                (c for c in contaminated if c["word"] == w), None
-            )
-            if match:
-                logger.info(
-                    f"    '{w}' → closer to {match['closest']} "
-                    f"(delta={match['delta']:+.3f})"
-                )
-        if len(dropped) > 5:
-            logger.info(f"    ... and {len(dropped) - 5} more")
-
-    return kept, dropped
+    return contaminated
 
 
 def filter_redundant(
@@ -142,32 +181,23 @@ def filter_redundant(
     sim_matrix: np.ndarray,
     threshold: float = 0.88,
 ) -> tuple[list[str], list[str]]:
-    """
-    Drop words that are too similar to another word already in the pool.
-    When a redundant pair is found, drop the one that appears later in the list
-    (preserving seed ordering).
-
-    Returns (kept_words, dropped_words).
-    """
+    """Drop words too similar to an earlier word in the list."""
     n = len(words)
-    drop_indices: set[int] = set()
+    drop: set[int] = set()
 
     for i in range(n):
-        if i in drop_indices:
+        if i in drop:
             continue
         for j in range(i + 1, n):
-            if j in drop_indices:
+            if j in drop:
                 continue
             if sim_matrix[i, j] > threshold:
-                # Drop the later one (seeds come first in the list)
-                drop_indices.add(j)
+                drop.add(j)
 
-    kept = [w for i, w in enumerate(words) if i not in drop_indices]
-    dropped = [w for i, w in enumerate(words) if i in drop_indices]
-
+    kept = [w for i, w in enumerate(words) if i not in drop]
+    dropped = [w for i, w in enumerate(words) if i in drop]
     if dropped:
         logger.info(f"  Redundancy filter (>{threshold}): dropped {len(dropped)} items")
-
     return kept, dropped
 
 
@@ -175,17 +205,10 @@ def compute_elbow(
     sim_matrix: np.ndarray,
     max_k: int | None = None,
 ) -> tuple[int, list[float]]:
-    """
-    Run farthest-point sampling incrementally and track the minimum distance
-    of each newly added point. The "elbow" is where this distance starts
-    dropping sharply — additional items are no longer adding much diversity.
-
-    Returns (elbow_k, distances_per_step).
-    """
+    """Track diversity contribution per item added. Returns (elbow_k, distances)."""
     n = sim_matrix.shape[0]
     max_k = max_k or n
 
-    # Start with two most distant points
     masked = sim_matrix.copy()
     np.fill_diagonal(masked, np.inf)
     min_idx = np.unravel_index(np.argmin(masked), masked.shape)
@@ -193,7 +216,7 @@ def compute_elbow(
     selected_set = set(selected)
 
     min_sim = np.minimum(sim_matrix[:, selected[0]], sim_matrix[:, selected[1]])
-    distances: list[float] = []  # Min distance of each added point
+    distances: list[float] = []
 
     while len(selected) < min(max_k, n):
         sim_masked = min_sim.copy()
@@ -204,9 +227,7 @@ def compute_elbow(
         if best in selected_set:
             break
 
-        # Record the "diversity contribution" of this point
-        distances.append(float(1.0 - sim_masked[best]))  # Convert similarity to distance
-
+        distances.append(float(1.0 - sim_masked[best]))
         selected.append(best)
         selected_set.add(best)
         min_sim = np.minimum(min_sim, sim_matrix[:, best])
@@ -214,60 +235,56 @@ def compute_elbow(
     if len(distances) < 3:
         return len(distances) + 2, distances
 
-    # Find elbow: largest drop in the distance curve
     diffs = [distances[i] - distances[i + 1] for i in range(len(distances) - 1)]
     elbow_idx = int(np.argmax(diffs))
-    elbow_k = elbow_idx + 3  # +2 for initial pair, +1 for 0-indexing
-
-    return elbow_k, distances
+    return elbow_idx + 3, distances
 
 
 def select_category(
     category: str,
     candidates: list[str],
-    embedder: DualSpaceEmbedder,
-    all_category_embeddings: dict[str, DualEmbeddings],
+    cache: EmbeddingCache,
+    centroids: dict[str, tuple[np.ndarray, np.ndarray | None]],
     k: int,
     alpha: float,
     redundancy_threshold: float,
     auto_k: bool = False,
 ) -> SelectionResult:
-    """Run the full selection pipeline for one category."""
+    """Run the full selection pipeline for one category using cached embeddings."""
     logger.info(f"\n{'─'*60}")
-    logger.info(f"Category: {category} ({len(candidates)} candidates)")
+    logger.info(f"Category: {category} ({len(candidates)} candidates, alpha={alpha:.3f})")
     logger.info(f"{'─'*60}")
 
-    # Embed candidates
-    emb = embedder.embed(candidates)
-
-    # Stats before any filtering
-    sim_before = emb.joint_similarity_matrix(alpha)
+    # Before stats
+    emb_before = cache.get_dual(candidates)
+    sim_before = emb_before.joint_similarity_matrix(alpha)
     before_stats = analyze_diversity(sim_before, candidates)
 
-    # Stage 1: Cross-category contamination filter
-    kept, contaminated_dropped = filter_contaminated(
-        category, candidates, emb, all_category_embeddings, alpha,
-    )
+    # Stage 1: Contamination filter
+    contaminated = find_contaminated(category, candidates, cache, centroids, alpha)
+    drop_words = {c["word"] for c in contaminated}
+    kept = [w for w in candidates if w not in drop_words]
+    contaminated_dropped = [w for w in candidates if w in drop_words]
 
-    # Re-embed if we dropped anything (indices changed)
     if contaminated_dropped:
-        emb = embedder.embed(kept)
+        logger.info(f"  Contamination filter: dropped {len(contaminated_dropped)} items")
+        for item in sorted(contaminated, key=lambda x: x["delta"], reverse=True)[:5]:
+            logger.info(f"    '{item['word']}' → closer to {item['closest']} (delta={item['delta']:+.3f})")
+        if len(contaminated_dropped) > 5:
+            logger.info(f"    ... and {len(contaminated_dropped) - 5} more")
 
-    # Stage 2: Redundancy pre-filter
-    sim_filtered = emb.joint_similarity_matrix(alpha)
-    kept, redundant_dropped = filter_redundant(
-        kept, sim_filtered, threshold=redundancy_threshold,
-    )
-
-    if redundant_dropped:
-        emb = embedder.embed(kept)
+    # Stage 2: Redundancy filter
+    emb_kept = cache.get_dual(kept)
+    sim_kept = emb_kept.joint_similarity_matrix(alpha)
+    kept, redundant_dropped = filter_redundant(kept, sim_kept, redundancy_threshold)
 
     filtered_count = len(kept)
     logger.info(f"  After filters: {filtered_count} candidates remain")
 
-    # Stage 3: Compute elbow to find natural diversity cutoff
-    sim_final = emb.joint_similarity_matrix(alpha)
-    elbow_k, distances = compute_elbow(sim_final, max_k=min(k + 20, filtered_count))
+    # Stage 3: Elbow + selection
+    emb_final = cache.get_dual(kept)
+    sim_final = emb_final.joint_similarity_matrix(alpha)
+    elbow_k, _ = compute_elbow(sim_final, max_k=min(k + 20, filtered_count))
 
     if auto_k:
         effective_k = min(elbow_k, filtered_count)
@@ -276,20 +293,12 @@ def select_category(
         effective_k = min(k, filtered_count)
         logger.info(f"  Elbow at k={elbow_k} (using requested k={effective_k})")
 
-    # Stage 4: Farthest-point sampling
-    selected_indices = farthest_point_sampling(
-        sim_matrix=sim_final,
-        k=effective_k,
-    )
+    selected_indices = farthest_point_sampling(sim_final, effective_k)
     selected_words = [kept[i] for i in selected_indices]
 
-    # Stats after selection
-    selected_emb = DualEmbeddings(
-        words=selected_words,
-        clip=emb.clip[selected_indices],
-        t5=emb.t5[selected_indices] if emb.t5 is not None else None,
-    )
-    sim_after = selected_emb.joint_similarity_matrix(alpha)
+    # After stats
+    emb_sel = cache.get_dual(selected_words)
+    sim_after = emb_sel.joint_similarity_matrix(alpha)
     after_stats = analyze_diversity(sim_after, selected_words)
 
     logger.info(
@@ -302,7 +311,7 @@ def select_category(
         f"'{after_stats.most_similar_pair[1]}' ({after_stats.most_similar_pair[2]:.3f})"
     )
 
-    # Stage 5: Compute opposites for negatable categories
+    # Stage 4: Opposites
     opposites: dict[str, str] = {}
     if category in NEGATABLE_CATEGORIES:
         opposites = greedy_opposite_pairs(sim_after, selected_words)
@@ -328,12 +337,8 @@ def select_category(
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-def build_components_yaml(
-    results: dict[str, SelectionResult],
-) -> dict[str, Any]:
-    """Build components YAML structure from selection results."""
+def build_components_yaml(results: dict[str, SelectionResult]) -> dict[str, Any]:
     components: dict[str, list[dict[str, Any]]] = {}
-
     for cat, result in sorted(results.items()):
         items: list[dict[str, Any]] = []
         for word in result.selected_words:
@@ -342,40 +347,38 @@ def build_components_yaml(
                 entry["opposite"] = result.opposites[word]
             items.append(entry)
         components[cat] = items
-
     return {"components": components}
 
 
 def build_analysis_yaml(
     results: dict[str, SelectionResult],
-    alpha: float,
+    per_cat_alpha: dict[str, float],
+    default_alpha: float,
 ) -> dict[str, Any]:
-    """Build analysis/metadata YAML for review."""
     analysis: dict[str, Any] = {
         "generated_at": datetime.now().isoformat(),
-        "alpha": alpha,
+        "alphas": per_cat_alpha or {"default": default_alpha},
         "categories": {},
     }
-
-    for cat, result in sorted(results.items()):
+    for cat, r in sorted(results.items()):
         analysis["categories"][cat] = {
-            "candidates": result.candidates_count,
-            "after_filters": result.filtered_count,
-            "selected": result.selected_count,
-            "elbow_k": result.elbow_k,
-            "contaminated_dropped": len(result.contaminated_dropped),
-            "redundant_dropped": len(result.redundant_dropped),
-            "before_mean_sim": round(result.before_stats.mean_similarity, 4),
-            "after_mean_sim": round(result.after_stats.mean_similarity, 4),
+            "candidates": r.candidates_count,
+            "after_filters": r.filtered_count,
+            "selected": r.selected_count,
+            "elbow_k": r.elbow_k,
+            "alpha_used": per_cat_alpha.get(cat, default_alpha),
+            "contaminated_dropped": len(r.contaminated_dropped),
+            "redundant_dropped": len(r.redundant_dropped),
+            "before_mean_sim": round(r.before_stats.mean_similarity, 4),
+            "after_mean_sim": round(r.after_stats.mean_similarity, 4),
             "improvement": round(
-                result.before_stats.mean_similarity - result.after_stats.mean_similarity, 4
+                r.before_stats.mean_similarity - r.after_stats.mean_similarity, 4
             ),
             "most_similar_pair": {
-                "words": list(result.after_stats.most_similar_pair[:2]),
-                "similarity": round(result.after_stats.most_similar_pair[2], 4),
+                "words": list(r.after_stats.most_similar_pair[:2]),
+                "similarity": round(r.after_stats.most_similar_pair[2], 4),
             },
         }
-
     return analysis
 
 
@@ -387,76 +390,27 @@ def build_analysis_yaml(
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Select most diverse components from generated candidates",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument(
-        "--input", "-i",
-        type=Path,
-        required=True,
-        help="Generated candidates YAML (output of generate.py)",
-    )
-    parser.add_argument(
-        "--output", "-o",
-        type=Path,
-        help="Output components YAML (default: data/selected_components_<timestamp>.yaml)",
-    )
-    parser.add_argument(
-        "--k",
-        type=int,
-        default=80,
-        help="Target components per category (default: 80)",
-    )
-    parser.add_argument(
-        "--auto-k",
-        action="store_true",
-        help="Use elbow detection to automatically determine k per category",
-    )
-    parser.add_argument(
-        "--alpha",
-        type=float,
-        default=0.5,
-        help="CLIP vs T5 weight in joint similarity (default: 0.5)",
-    )
-    parser.add_argument(
-        "--alpha-per-category",
-        type=Path,
-        help="JSON file mapping category → alpha (overrides --alpha for listed categories)",
-    )
-    parser.add_argument(
-        "--redundancy-threshold",
-        type=float,
-        default=0.88,
-        help="Drop candidates above this similarity to any kept item (default: 0.88)",
-    )
-    parser.add_argument(
-        "--clip-only",
-        action="store_true",
-        help="Skip T5, use CLIP embeddings only",
-    )
-    parser.add_argument(
-        "--clip-model",
-        default="openai/clip-vit-base-patch32",
-        help="CLIP model",
-    )
-    parser.add_argument(
-        "--t5-model",
-        default="google/flan-t5-large",
-        help="T5 model",
-    )
-    parser.add_argument(
-        "--categories",
-        nargs="+",
-        help="Process only these categories",
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Analyze without writing output files",
-    )
-    parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-    )
+    parser.add_argument("--input", "-i", type=Path, required=True,
+                        help="Generated candidates YAML")
+    parser.add_argument("--output", "-o", type=Path,
+                        help="Output components YAML")
+    parser.add_argument("--k", type=int, default=60,
+                        help="Target components per category (default: 60)")
+    parser.add_argument("--auto-k", action="store_true",
+                        help="Use elbow detection for k")
+    parser.add_argument("--alpha", type=float, default=0.5,
+                        help="Default CLIP vs T5 weight (default: 0.5)")
+    parser.add_argument("--alpha-per-category", type=Path,
+                        help="JSON file: category → alpha")
+    parser.add_argument("--redundancy-threshold", type=float, default=0.88)
+    parser.add_argument("--clip-only", action="store_true")
+    parser.add_argument("--clip-model", default="openai/clip-vit-base-patch32")
+    parser.add_argument("--t5-model", default="google/flan-t5-large")
+    parser.add_argument("--categories", nargs="+",
+                        help="Process only these categories")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("-v", "--verbose", action="store_true")
 
     args = parser.parse_args()
 
@@ -470,15 +424,12 @@ def main() -> None:
         logger.error(f"Input not found: {args.input}")
         sys.exit(1)
 
-    # Load ALL categories (needed for cross-category contamination even when
-    # selecting a subset)
+    # Load ALL categories
     all_candidates = load_components_yaml(args.input)
-
     if not all_candidates:
-        logger.error("No categories found in input")
+        logger.error("No categories found")
         sys.exit(1)
 
-    # Determine which categories to actually select from
     select_cats = set(all_candidates.keys())
     if args.categories:
         select_cats = {c for c in args.categories if c in all_candidates}
@@ -488,149 +439,122 @@ def main() -> None:
 
     t5_model = None if args.clip_only else args.t5_model
 
-    # Load per-category alphas if provided
     per_cat_alpha: dict[str, float] = {}
     if args.alpha_per_category and args.alpha_per_category.exists():
         per_cat_alpha = json.loads(args.alpha_per_category.read_text())
         logger.info(f"Loaded per-category alphas from {args.alpha_per_category}")
 
+    total_cands = sum(len(v) for c, v in all_candidates.items() if c in select_cats)
+
     print(f"{'='*60}")
     print("DIVERSITY SELECTION PIPELINE")
     print(f"{'='*60}")
-    print(f"  Input:       {args.input}")
-    print(f"  All categories:  {len(all_candidates)}")
-    print(f"  Selecting:   {len(select_cats)} — {sorted(select_cats)}")
-    print(f"  Target k:    {args.k} {'(auto-k enabled)' if args.auto_k else ''}")
-    if per_cat_alpha:
-        print(f"  Alpha:       per-category from {args.alpha_per_category.name}")
-    else:
-        print(f"  Alpha:       {args.alpha}")
-    print(f"  CLIP model:  {args.clip_model}")
-    print(f"  T5 model:    {t5_model or '(disabled)'}")
-    total_candidates = sum(len(v) for c, v in all_candidates.items() if c in select_cats)
-    print(f"  Total candidates (selected cats): {total_candidates}")
+    print(f"  Input:         {args.input}")
+    print(f"  All categories: {len(all_candidates)}")
+    print(f"  Selecting:     {len(select_cats)} — {sorted(select_cats)}")
+    print(f"  Target k:      {args.k} {'(auto-k)' if args.auto_k else ''}")
+    print(f"  Alpha:         {'per-category' if per_cat_alpha else args.alpha}")
+    print(f"  CLIP:          {args.clip_model}")
+    print(f"  T5:            {t5_model or '(disabled)'}")
+    print(f"  Candidates:    {total_cands}")
 
-    # Initialize embedder
-    embedder = DualSpaceEmbedder(
-        clip_model=args.clip_model,
-        t5_model=t5_model,
-    )
+    # ── ONE-SHOT EMBEDDING ──────────────────────────────────────────────
+    embedder = DualSpaceEmbedder(clip_model=args.clip_model, t5_model=t5_model)
 
-    # Pre-compute embeddings for ALL categories (cross-category contamination
-    # needs the full picture even when selecting a subset)
-    logger.info("\nPre-computing category embeddings for contamination check...")
-    all_cat_embeddings: dict[str, DualEmbeddings] = {}
-    for cat, words in all_candidates.items():
-        all_cat_embeddings[cat] = embedder.embed(words)
+    # Collect every unique word across all categories
+    all_words: list[str] = []
+    for words in all_candidates.values():
+        all_words.extend(words)
 
-    # Iterative contamination reallocation: items dropped from one category
-    # may be valid candidates for the category they're closest to. We loop
-    # until no more reallocations happen (typically 2-3 passes).
-    working_candidates = {
-        cat: list(words) for cat, words in all_candidates.items()
-        if cat in select_cats
-    }
+    cache = EmbeddingCache(embedder, all_words)
 
-    MAX_REALLOC_PASSES = 5
-    for realloc_pass in range(MAX_REALLOC_PASSES):
-        # Run contamination check on all categories being selected
-        reallocated = 0
-        for cat in sorted(select_cats):
-            emb = embedder.embed(working_candidates[cat])
-            contaminated = cross_category_contamination(
-                {**{k: v for k, v in all_cat_embeddings.items() if k != cat},
-                 cat: emb},
-                alpha=args.alpha,
+    # ── ITERATIVE REALLOCATION ──────────────────────────────────────────
+    working = {cat: list(words) for cat, words in all_candidates.items()}
+
+    MAX_PASSES = 5
+    for pass_num in range(MAX_PASSES):
+        centroids = compute_centroids(working, cache)
+        moved = 0
+
+        for cat in sorted(working.keys()):
+            contaminated = find_contaminated(
+                cat, working[cat], cache, centroids,
+                alpha=per_cat_alpha.get(cat, args.alpha),
             )
-
             for item in contaminated:
-                if item["assigned"] != cat or item["delta"] <= 0.01:
-                    continue
                 target = item["closest"]
                 word = item["word"]
+                if (word in working[cat]
+                        and word not in working.get(target, [])):
+                    working[cat].remove(word)
+                    working.setdefault(target, []).append(word)
+                    moved += 1
 
-                # Only reallocate to categories we're selecting AND if the
-                # word isn't already there
-                if (target in select_cats
-                        and word in working_candidates[cat]
-                        and word not in working_candidates.get(target, [])):
-                    working_candidates[cat].remove(word)
-                    working_candidates.setdefault(target, []).append(word)
-                    reallocated += 1
-
-        if reallocated == 0:
-            if realloc_pass > 0:
-                logger.info(f"  Reallocation converged after {realloc_pass + 1} passes")
+        if moved == 0:
+            if pass_num > 0:
+                logger.info(f"  Reallocation converged after {pass_num + 1} passes")
             break
-        else:
-            logger.info(f"  Reallocation pass {realloc_pass + 1}: moved {reallocated} items between categories")
+        logger.info(f"  Reallocation pass {pass_num + 1}: moved {moved} items")
 
-            # Update embeddings for affected categories
-            for cat in select_cats:
-                all_cat_embeddings[cat] = embedder.embed(working_candidates[cat])
+    # ── PER-CATEGORY SELECTION ──────────────────────────────────────────
+    # Recompute centroids after reallocation for clean contamination check
+    centroids = compute_centroids(working, cache)
 
-    # Run selection pipeline per category
     results: dict[str, SelectionResult] = {}
     for cat in sorted(select_cats):
         cat_alpha = per_cat_alpha.get(cat, args.alpha)
         results[cat] = select_category(
             category=cat,
-            candidates=working_candidates[cat],
-            embedder=embedder,
-            all_category_embeddings={
-                k: v for k, v in all_cat_embeddings.items() if k != cat
-            },
+            candidates=working[cat],
+            cache=cache,
+            centroids={k: v for k, v in centroids.items() if k != cat},
             k=args.k,
             alpha=cat_alpha,
             redundancy_threshold=args.redundancy_threshold,
             auto_k=args.auto_k,
         )
 
-    # Summary
+    # ── SUMMARY ─────────────────────────────────────────────────────────
     print(f"\n{'='*60}")
     print("SELECTION SUMMARY")
     print(f"{'='*60}")
     print(
         f"{'Category':<25} {'Cand':>5} {'Filt':>5} {'Sel':>4} "
-        f"{'Elbow':>5} {'Before':>7} {'After':>7} {'Improv':>7}"
+        f"{'Elbow':>5} {'Alpha':>5} {'Before':>7} {'After':>7} {'Improv':>7}"
     )
-    print("-" * 72)
+    print("-" * 80)
 
     for cat, r in sorted(results.items()):
-        improvement = r.before_stats.mean_similarity - r.after_stats.mean_similarity
+        imp = r.before_stats.mean_similarity - r.after_stats.mean_similarity
+        a = per_cat_alpha.get(cat, args.alpha)
         print(
             f"{cat:<25} {r.candidates_count:>5} {r.filtered_count:>5} "
-            f"{r.selected_count:>4} {r.elbow_k or '-':>5} "
+            f"{r.selected_count:>4} {r.elbow_k or '-':>5} {a:>5.3f} "
             f"{r.before_stats.mean_similarity:>7.3f} "
             f"{r.after_stats.mean_similarity:>7.3f} "
-            f"{improvement:>+7.3f}"
+            f"{imp:>+7.3f}"
         )
 
-    total_selected = sum(r.selected_count for r in results.values())
-    print(f"\nTotal selected: {total_selected} from {total_candidates} candidates")
+    total_sel = sum(r.selected_count for r in results.values())
+    print(f"\nTotal selected: {total_sel} from {total_cands} candidates")
 
-    # Output
     if args.dry_run:
-        print(f"\n[DRY RUN] Would write components and analysis files")
+        print("\n[DRY RUN] Would write components and analysis files")
         return
 
     data_dir = Path(__file__).parent.parent / "data"
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    # Write components YAML
-    components_path = args.output or data_dir / f"selected_components_{ts}.yaml"
-    components_data = build_components_yaml(results)
-    with open(components_path, "w") as f:
-        yaml.dump(components_data, f, default_flow_style=False, allow_unicode=True, width=120)
-    print(f"\nComponents saved: {components_path}")
+    comp_path = args.output or data_dir / f"selected_components_{ts}.yaml"
+    with open(comp_path, "w") as f:
+        yaml.dump(build_components_yaml(results), f,
+                  default_flow_style=False, allow_unicode=True, width=120)
+    print(f"\nComponents saved: {comp_path}")
 
-    # Write analysis YAML
-    analysis_path = components_path.with_name(
-        components_path.stem + "_analysis" + components_path.suffix
-    )
-    analysis_data = build_analysis_yaml(results, args.alpha)
+    analysis_path = comp_path.with_name(comp_path.stem + "_analysis" + comp_path.suffix)
     with open(analysis_path, "w") as f:
-        yaml.dump(analysis_data, f, default_flow_style=False, allow_unicode=True, width=120)
+        yaml.dump(build_analysis_yaml(results, per_cat_alpha, args.alpha), f,
+                  default_flow_style=False, allow_unicode=True, width=120)
     print(f"Analysis saved:   {analysis_path}")
 
     print("\nDone!")
