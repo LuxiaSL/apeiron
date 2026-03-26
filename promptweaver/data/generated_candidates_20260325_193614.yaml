@@ -1,0 +1,3760 @@
+components:
+  atmosphere_field:
+  - aerosolized brine
+  - air bubble stream
+  - algae bloom haze
+  - algae filament drift
+  - amber resin vapor
+  - amine vapor
+  - ammonia vapor wisps
+  - anaesthetic vapor
+  - antifreeze vapor wisps
+  - aphid silk veil
+  - aphid swarm column
+  - arc discharge glow
+  - arc flash bloom
+  - arctic sea smoke
+  - ash drift
+  - ash suspension
+  - aurora borealis curtain
+  - aurora curtains
+  - aurora shimmer
+  - baking soda dust
+  - bat echolocation mist
+  - bio-luminescent fog
+  - bioluminescent algae veil
+  - bioluminescent spores
+  - bioluminescent spray
+  - birch pollen haze
+  - borealis curtains
+  - brackish mist veil
+  - breath condensation
+  - breath frost cloud
+  - breath mist
+  - breath vapor
+  - brine foam drift
+  - brine mist
+  - bubble column rise
+  - bubble curtain
+  - bubble stream rise
+  - butterfly scale dust
+  - calcium carbite fog
+  - campfire embers
+  - candle smoke plume
+  - carbonation fizz
+  - cavitation bubbles
+  - cedar incense
+  - cedar pollen
+  - chalk dust cloud
+  - chalk dust plume
+  - charcoal soot drift
+  - charcoal specks
+  - cherenkov glow
+  - chlorine gas leak
+  - cinder particle rain
+  - cinnamon dust cloud
+  - coal dust suspension
+  - cobalt chloride steam
+  - cobalt smoke plume
+  - cold plasma ribbons
+  - condensation nuclei
+  - confetti fallout
+  - copal incense threads
+  - copepod bloom
+  - copper sulfate bloom
+  - coral mucus threads
+  - coral spawn slick
+  - corona discharge glow
+  - cottonwood fluff blizzard
+  - cryogenic fog jet
+  - cryogenic vapor
+  - cryogenic vapor plume
+  - crystal frost suspension
+  - crystal haze
+  - crystal lattice mist
+  - crystalline frost
+  - dandelion seeds
+  - dense fog
+  - desert sand devil
+  - diamond dust float
+  - diamond dust storm
+  - diamond dust veil
+  - diesel fumes
+  - drizzle mist sheets
+  - drizzle spray
+  - dry ice fog
+  - dry ice sublimation
+  - dust motes
+  - dust storm haze
+  - electroplasma field
+  - electrostatic sparks
+  - ember glow
+  - ember sparks
+  - eucalyptus oil vapor
+  - evaporation sheen
+  - falling snow veil
+  - fern spore cloud
+  - ferrofluid suspension
+  - fine soot scatter
+  - firefly glow
+  - firefly swarm
+  - firework smoke residue
+  - flour aerosol
+  - freezing drizzle
+  - freon leak crystals
+  - frost crystal suspension
+  - frost flower mist
+  - frost flower suspension
+  - frost flowers
+  - frost needles
+  - frostbite mist
+  - frozen breath cloud
+  - frozen spray mist
+  - geothermal steam
+  - geyser mineral haze
+  - geyser steam plume
+  - glacial brine fog
+  - glacial flour suspension
+  - glacial silt cloud
+  - glitter bomb burst
+  - glitter vortex
+  - glow worm silk strands
+  - glowing plankton
+  - glowworm larva threads
+  - gnat swarm
+  - gravity lensing
+  - hail curtain
+  - heat distortion
+  - hoarfrost suspension
+  - honeybee pheromone trail
+  - ice crystal drift
+  - ice crystal fog
+  - ice crystal haze
+  - ice fog
+  - ion trail
+  - ionization haze
+  - ionized air shimmer
+  - iron filing suspension
+  - iron filings suspension
+  - iron filings swirl
+  - jasmine petal drift
+  - jellyfish bloom
+  - jellyfish egg clouds
+  - jellyfish tentacle drift
+  - kelp fronds
+  - kelp strand float
+  - krill swarm cloud
+  - laser haze field
+  - lava steam wisps
+  - lichen dust cloud
+  - lichen dust drift
+  - lichen dust fall
+  - lichen dust suspension
+  - lichen fragment cloud
+  - lichen fragment drift
+  - lichen fragment fall
+  - lichen fragment float
+  - lichen fragment suspension
+  - lichen network fog
+  - lichen particle cloud
+  - lichen particle drift
+  - lichen particle fall
+  - lichen spore fall
+  - lichen spore fog
+  - lichen spore veil
+  - lichen strand fall
+  - lichen strand suspension
+  - lightning ozone haze
+  - liquid nitrogen fog
+  - locust swarm
+  - luminous spore drift
+  - magnesium spark fog
+  - magnetic field lines
+  - magnetite particle field
+  - magnetosphere static
+  - magnetosphere streamers
+  - marijuana smoke tendrils
+  - meteor shower trail
+  - methane bubbles
+  - methane shimmer
+  - mica dust shimmer
+  - mica flake suspension
+  - mica flake swirl
+  - midge swarm
+  - mist curtain
+  - misty exhalation
+  - mold spore cloud
+  - moonlit spray veil
+  - mosquito cloud
+  - moss fragment cloud
+  - moss sporangium burst
+  - moth wing scales
+  - mushroom spore burst
+  - mycelial dust
+  - mycelial spore mist
+  - mycelium network haze
+  - mycelium spore burst
+  - neon rain
+  - neon tube glow cloud
+  - nitrogen fog burst
+  - obsidian shard haze
+  - ocean plankton bloom
+  - oil droplet mist
+  - ozone crackle haze
+  - ozone layer distortion
+  - paper confetti flutter
+  - particle suspension
+  - pearl dust puff
+  - peat smoke layer
+  - perlite particle rain
+  - petrichor mist
+  - phosphorescent bacteria bloom
+  - phosphorescent plankton drift
+  - photon bloom flicker
+  - plasma arc haze
+  - plasma ribbon field
+  - plasma tendrils
+  - pollen blizzard
+  - pollen burst haze
+  - pollen drift
+  - printer toner cloud
+  - pyrite glitter mist
+  - pyroclastic haze
+  - radiation fog bank
+  - radioactive particle haze
+  - radiolarian ooze cloud
+  - rain curtain
+  - red tide aerosol
+  - rime crystal fog
+  - rime fog
+  - rime mist veil
+  - saffron thread drift
+  - sahara dust veil
+  - salt spray
+  - salt spray fog
+  - salt spray plume
+  - saltwater aerosol
+  - saltwater microspray
+  - sawdust drift
+  - sawdust motes
+  - sea foam spray
+  - sea foam spume
+  - sea spray
+  - sea spray mist
+  - seafoam flecks
+  - seed floss drift
+  - seed fluff
+  - seed fluff suspension
+  - seed pod burst
+  - silica sand swirl
+  - silk thread float
+  - silt plume
+  - silver iodide haze
+  - smoke haze
+  - smoke wisps
+  - snow flurries
+  - snow flurry
+  - snow grain scatter
+  - snow pellet drift
+  - snow squall particles
+  - snowflake suspension
+  - soap bubbles
+  - soap film interference
+  - sodium flare haze
+  - solar flare shimmer
+  - space debris field
+  - spider silk float
+  - spiderweb thread float
+  - spore clouds
+  - st elmo glow
+  - st. elmo glow
+  - static interference
+  - static spark field
+  - steam breath plumes
+  - steam jet wisps
+  - steam tendrils
+  - steam vent plume
+  - sublimation vapors
+  - sugar crystal cloud
+  - sugar crystal fog
+  - sulfur dioxide haze
+  - sulfur smoke
+  - sulfur vapor cloud
+  - sulfurous fumes
+  - sun dog ice crystals
+  - sunflower pollen storm
+  - supercooled droplet mist
+  - supercooled droplet suspension
+  - swamp gas shimmer
+  - swirling nebula dust
+  - talcum mist
+  - thermal column waver
+  - thermal shimmer
+  - thermal shimmer wave
+  - thermal vent plume
+  - thunderstorm anvil haze
+  - ultraviolet plasma field
+  - underwater caustics
+  - void darkness
+  - volcanic ash cloud
+  - volcanic ash fall
+  - volcanic ash veil
+  - volcanic ashfall
+  - willow seed float
+  - zinc oxide powder
+  color_logic:
+  - absinthe green and bruised purple
+  - accent viridian on concrete field
+  - aged bronze and verdigris palette
+  - aged newspaper chromatics
+  - aged parchment and iron gall
+  - aged terracotta and faded azure
+  - analogous amber to rust
+  - analogous blush to rose madder
+  - analogous blush to terracotta
+  - analogous celadon to jade
+  - analogous cerulean to azure
+  - analogous cinnamon to rust
+  - analogous coral to amber
+  - analogous coral to salmon
+  - analogous dusty plum to mauve
+  - analogous earth tones
+  - analogous indigo to violet
+  - analogous juniper to teal
+  - analogous kelp to moss
+  - analogous lavender to periwinkle
+  - analogous moss and sage
+  - analogous moss to chartreuse
+  - analogous moss to olive
+  - analogous mustard to goldenrod
+  - analogous ochre and umber
+  - analogous ochre to amber
+  - analogous peach to apricot
+  - analogous peach to salmon
+  - analogous plum to violet
+  - analogous plum to wine
+  - analogous rust to brick
+  - analogous sage and moss
+  - analogous sage to chartreuse
+  - analogous sage to olive
+  - analogous sage to olive drab
+  - analogous sandstone to ochre
+  - analogous seafoam to turquoise
+  - analogous sunflower to ochre
+  - analogous teal to jade
+  - ancient terracotta patina
+  - antique gold on deep charcoal
+  - antique sepia wash
+  - aquamarine rust oxidation
+  - arctic blue warming to ember
+  - ash white with jade accent
+  - ashen field with cerulean accent
+  - ashen lavender monochromatic
+  - bichromatic cyan and magenta
+  - bichromatic indigo and sodium
+  - bichromatic sepia and electric blue
+  - bioluminescent teal puncturing midnight
+  - bistre field with amaranth punctuation
+  - bleached linen with ink accent
+  - bone white and oxblood
+  - bone white with lapis accent
+  - bone with terracotta punctuation
+  - bone with wine red accent
+  - brass verdigris patina spectrum
+  - burnt sienna and teal opposition
+  - burnt sienna and turquoise complementary
+  - cadmium yellow and violet tension
+  - cadmium yellow monochromatic
+  - celadon and terracotta harmony
+  - charcoal bruise with electric coral
+  - charcoal field with cadmium punctuation
+  - charcoal field with tangerine spark
+  - charcoal warming to copper
+  - charcoal with citron burst
+  - charcoal with gold leaf accent
+  - charcoal with goldenrod punctuation
+  - chartreuse monochromatic
+  - chocolate dipped strawberry duotone
+  - cinnabar and jade contrast
+  - cinnabar on charcoal accent
+  - citron and aubergine tension
+  - coal and copper bichromatic
+  - coal tar and acid yellow
+  - cobalt and amber opposition
+  - cobalt and rust complementary
+  - cobalt and tangerine split
+  - cobalt with rust pinpoint accent
+  - cold steel to ember heat
+  - cold steel warming to rust
+  - complementary burnt sienna and cerulean
+  - complementary chartreuse and magenta
+  - complementary coral and teal clash
+  - complementary crimson and emerald
+  - complementary crimson and seafoam
+  - complementary forest green and magenta
+  - complementary fuchsia and moss
+  - complementary gold and deep purple
+  - complementary gold and ultramarine
+  - complementary lilac and citron
+  - complementary lime and magenta
+  - complementary magenta and acid green
+  - complementary marigold and cobalt
+  - complementary mustard and lavender
+  - complementary ochre and violet
+  - complementary orange and blue
+  - complementary periwinkle and marigold
+  - complementary pine and coral
+  - complementary scarlet and viridian
+  - complementary ultramarine and amber
+  - complementary violet and chartreuse
+  - cool alabaster against sunbaked terracotta
+  - cool arctic blue warm amber
+  - cool arctic versus fiery sunset
+  - cool celadon hot cadmium clash
+  - cool cerulean heating to ember
+  - cool concrete warming to copper
+  - cool moonlight against candlewarmth
+  - cool moonstone warming to amber
+  - cool platinum hot copper clash
+  - cool sage warming to rust
+  - cool shadow warming to tangerine
+  - cool slate punctured by saffron
+  - cool steel heating to copper
+  - cool steel warming to brass
+  - cool steel warming to bronze
+  - cool viridian hot vermillion clash
+  - coral and turquoise complementary
+  - coral dust and seafoam harmony
+  - cream field with burgundy punctuation
+  - cultural indigo dye bleed
+  - cyanotype monochrome
+  - deep teal warming to copper
+  - desaturated with crimson accent
+  - desert heat mirage spectrum
+  - duotone copper patina on zinc
+  - duotone crimson on parchment
+  - dusty apricot gradient
+  - dusty olive with vermilion pinprick
+  - dusty rose monochromatic
+  - eggshell with cobalt punctuation
+  - eggshell with ultramarine bolt
+  - electric violet punctuating grey
+  - ember glow against midnight
+  - faded carnival chromatics
+  - fogbound lavender monochromatic
+  - forest green monochromatic
+  - frosted cyan to thermal red
+  - fuchsia and lime electric contrast
+  - glacial cyan against kiln orange
+  - glacial white warming to sand
+  - glacier blue cooling to frost
+  - graphite field with emerald spark
+  - graphite with cadmium red accent
+  - graphite with safety orange accent
+  - greige with scarlet accent
+  - greige with vermilion accent
+  - gunmetal punctured by safety yellow
+  - gunmetal with phosphor green accent
+  - heat bloom gradient
+  - high contrast black and gold
+  - honey amber cool steel contrast
+  - ice blue against burnt orange
+  - icy lilac against hearth ember
+  - indigo dip-dyed gradient
+  - iridescent
+  - jade and burgundy complementary
+  - lapis and ivory cultural duotone
+  - lavender and honey adjacent
+  - lavender field with ochre punctuation
+  - lavender haze with turmeric splash
+  - linen with cobalt accent
+  - linen with forest green accent
+  - marigold on deep indigo
+  - mercury silver warming to gold
+  - midnight indigo warming to sunrise
+  - milky jade monochromatic
+  - molten gold on obsidian
+  - monochromatic ash gradient
+  - monochromatic ash grey
+  - monochromatic asphalt grey
+  - monochromatic aubergine
+  - monochromatic bruise violet
+  - monochromatic burnt umber depth
+  - monochromatic celadon
+  - monochromatic celadon glaze
+  - monochromatic dust khaki
+  - monochromatic gunmetal variations
+  - monochromatic ink wash gradient
+  - monochromatic mahogany variations
+  - monochromatic malachite green
+  - monochromatic moss
+  - monochromatic mulberry
+  - monochromatic mustard
+  - monochromatic ochre
+  - monochromatic olive drab
+  - monochromatic oxidized bronze
+  - monochromatic petrol gradient
+  - monochromatic pewter tonalities
+  - monochromatic pewter tones
+  - monochromatic raw umber
+  - monochromatic sage variations
+  - monochromatic slate blue
+  - monochromatic slate blue variations
+  - monochromatic slate depth
+  - monochromatic teal
+  - monochromatic terracotta depth
+  - monochromatic ultramarine
+  - monochromatic umber depth
+  - monochromatic wine tonalities
+  - monochrome gunmetal gradient
+  - moth-wing grey with vermilion accent
+  - muted pastels
+  - navy punctured by laser yellow
+  - neutral sand with cobalt punctuation
+  - nicotine yellow and teal contrast
+  - nicotine-stained ivory
+  - nightshade puncturing warm ivory
+  - ochre and slate temperature duel
+  - oil-slick patina spectrum
+  - oxblood on bone parchment
+  - oxidized brass monochromatic
+  - oxidized copper and malachite
+  - oxidized copper monochromatic
+  - oxidized copper patina palette
+  - oxidized verdigris palette
+  - oyster white and cardinal red
+  - patina bronze analogous
+  - patinated bronze warming to verdigris
+  - patinated copper and azurite
+  - peach and mint analogous haze
+  - peat brown with chartreuse spark
+  - petrol blue with sodium flare
+  - pewter field with vermillion punctuation
+  - phosphor amber on black
+  - pitch black neon green accent
+  - polarized lemon yellow deep violet
+  - polarized warm cocoa cool mint
+  - prussian blue and burnt orange
+  - raw sienna and ultramarine
+  - raw umber and viridian tension
+  - rose ash monochromatic
+  - rust and prussian blue pairing
+  - rust and sky blue tension
+  - rusted iron monochromatic
+  - saffron and indigo complementary
+  - saffron and ultramarine complementary
+  - saffron and violet complementary
+  - saffron on slate grey accent
+  - scarlet and peacock complementary
+  - scarlet on chalk accent
+  - sea glass harmony
+  - sepia and ivory duotone
+  - sepia toned nostalgia
+  - sepia wash with cerulean accent
+  - sepia with cerulean accent
+  - slate grey monochromatic
+  - slate with electric cyan accent
+  - smoke grey with electric pink
+  - smoked copper patina
+  - smoked parchment palette
+  - smoked pearl with gold accent
+  - split complementary
+  - split complementary emerald crimson gold
+  - split complementary rust orange teal
+  - spruce and ochre woodland harmony
+  - steel blue monochromatic
+  - stone beige with poppy accent
+  - stormcloud with lightning yellow
+  - sun-bleached linen monochromatic
+  - sun-warmed sandstone analogous
+  - sunbleached construction markers
+  - sunfaded traffic vest
+  - tangerine against deep space navy
+  - tar black with turquoise accent
+  - tarnished silver and amber harmony
+  - tarnished silver chromatics
+  - tarnished silver palette
+  - taupe with cobalt accent
+  - tea-dyed linen palette
+  - temperature gradient ice to fire
+  - temperature shift molten to obsidian
+  - terracotta and turquoise southwest
+  - terracotta monochromatic field
+  - tetradic plum gold teal rust
+  - tobacco and turquoise pairing
+  - tobacco stained parchment
+  - tobacco stained umber
+  - tobacco stained yellowing
+  - triadic cobalt marigold vermilion
+  - triadic jade rust ivory balance
+  - triadic rust teal mustard
+  - triadic violet orange green
+  - tropical coral and cerulean complementary
+  - umber and celadon harmony
+  - verdigris and raw umber harmony
+  - verdigris and rust patina
+  - verdigris clouded with ammonite gold
+  - vermilion and teal high tension
+  - vintage sepia warming
+  - violet and chartreuse contrast
+  - volcanic black warming to magma
+  - warm amber cool azure contrast
+  - warm amber cool slate clash
+  - warm amber cool violet contrast
+  - warm dune versus cold surf
+  - warm heliodor cooling to aquamarine
+  - warm ivory cool periwinkle clash
+  - warm parchment cooling to indigo
+  - warm sandstone cooling to permafrost
+  - warm shellac cooling to pewter
+  - warm sienna cooling to pewter
+  - warm terracotta cooling to glacier
+  - warm tobacco cooling to slate
+  - weathered barnwood palette
+  - weathered barnwood reds
+  - weathered cedar and iron oxide
+  - weathered limestone and marine rust
+  - weathered marine brass palette
+  - woad and madder cultural dyes
+  - woad and madder dye palette
+  light_behavior:
+  - airglow night sky
+  - alpenglow wash
+  - alpine glow
+  - anamorphic flares
+  - anamorphic lens flare
+  - anticrepuscular convergence
+  - arc welding flash
+  - artificial skylight dome
+  - aurora curtain ripples
+  - auroral curtain fold
+  - backlit silhouette
+  - bare bulb omni spread
+  - barn door cutoff
+  - beauty dish catchlight
+  - beauty dish punch
+  - bioluminescent
+  - bioluminescent pulse
+  - blacklight fluorescence
+  - blacklight ultraviolet bloom
+  - blacklight uv reveal
+  - blackout velvet absorption
+  - blocking matte line
+  - bokeh balls
+  - book light bounce
+  - bounce card reflection
+  - bounce fill wrap
+  - broken rhythm scan
+  - butterfly lighting
+  - butterfly nose shadow
+  - camera flash freeze
+  - candle flame waver
+  - candle flicker illumination
+  - candle flicker shadows
+  - carousel light trails
+  - catoptric cistercian light
+  - caustics
+  - chiaroscuro carve
+  - chiaroscuro contrast
+  - chiaroscuro modeling
+  - chromatic aberration fringe
+  - chromatic lens aberration
+  - chromatic lens flare
+  - cinema light starburst
+  - cinemascope lens flare
+  - cinemascope streak
+  - cinematic edge light
+  - circumhorizontal arc
+  - clamshell lighting
+  - cloud chamber streak rays
+  - cloud tank shadow play
+  - cloudy bright sky
+  - cold shoe splash bounce
+  - cologht film wash
+  - color separation filter
+  - contre-jour
+  - contre-jour bloom
+  - cookie gobo projection
+  - copper bounce warmth
+  - corona halo ring
+  - crepuscular fan rays
+  - crepuscular rays
+  - cross light dagger
+  - cross-polarized glare
+  - crystal prism dispersion fan
+  - crystal prism fan
+  - crystalline caustic mesh
+  - ctb gel shift
+  - cucoloris cookie break
+  - cucoloris leaf cut
+  - cucoloris shadow pattern
+  - cyc wash
+  - dappled light
+  - daylight fluorescence
+  - dichroic fringe
+  - diffraction grating rainbow
+  - diffraction spectral shift
+  - diffraction spike star
+  - diffusion gradient feather
+  - dust mote shafts
+  - eclipse corona
+  - eclipse shadow bands
+  - edge-lit acrylic glowline
+  - electroluminescent trace
+  - ellipsoidal edge
+  - ellipsoidal hard edge
+  - ember flicker dance
+  - fiber bundle scatter
+  - fiber optic scatter
+  - fiber optic sparkle
+  - fiber-optic starfield
+  - fill-side shadow wrap
+  - firefly swarm glow
+  - fluorescence quenching
+  - fluorescent tube spill
+  - fogbow veil
+  - foggy light cones
+  - foxfire glow
+  - frenel louver slash
+  - fresnel diffraction
+  - fresnel edge reflection
+  - fresnel lens beam
+  - fresnel lens focus
+  - fresnel lens hotspot
+  - fresnel lens projection
+  - gas discharge strobe
+  - gegenschein backscatter
+  - glimmer ripple pulse
+  - glory ring diffraction
+  - glory ring halo
+  - glowstick fog bleed
+  - gobo breakup pattern
+  - gobo leafy projection
+  - gobos break pattern
+  - gobos texture projection
+  - golden hour cyan spill
+  - golden hour rake
+  - grazing angle reveal
+  - grazing light texture
+  - gridded snoot spot
+  - grisaille lighting
+  - hair light separation
+  - halation bloom veil
+  - halogen pool accent
+  - hard shadow terminator
+  - harsh directional
+  - haze bloom veil
+  - heiligenschein aureole
+  - heiligenschein halo
+  - holographic interference
+  - holographic projection fringe
+  - honeycomb grid spill
+  - honeycomb grid spot
+  - hypercardioid spot
+  - iceland spar doubling
+  - infrared wash flood
+  - interference fringe band
+  - iridescent oil slick
+  - iridescent thin film
+  - kelvin color temperature shift
+  - key grip kicker light
+  - kicker light
+  - kinetic light painting
+  - kino flo wrap
+  - kino flo wraparound
+  - laser haze sheet
+  - laser scan lines
+  - laser speckle granular swirl
+  - laser speckle texture
+  - led strip underglow
+  - lenticular cloud glow
+  - lenticular cloud ray burst
+  - lenticular halo
+  - lenticular lens flare
+  - light painting trails
+  - light pillars
+  - light shaft haze
+  - lighthouse beacon sweep
+  - lightning sheet illumination
+  - luminism haze
+  - luneberg lens reflection
+  - magnetic field aurora curl
+  - marsh gas will-o'-wisp
+  - mercury vapor tint
+  - microfacet glint sparkles
+  - mie scattering
+  - mirage heat shimmer
+  - mirage shimmer
+  - mirrorball scatter
+  - mist beam cones
+  - mist beam shafts
+  - moiré interference
+  - moody tungsten spill
+  - moonbow arc
+  - moonbow edge splash
+  - moonbow mist
+  - mooncast silver path
+  - moonlight corona
+  - moonlight shimmer
+  - moonlight silvering
+  - moonlit silver bounce
+  - motheye anti-reflection
+  - motivated window throw
+  - negative fill carve
+  - neon glow bleed
+  - neon tube bleed
+  - noctilucent cloud glow
+  - nocturne lamplight
+  - northern lights iridescence
+  - oil slick iridescence
+  - opal diffusion glow
+  - opal diffusion screen
+  - opal fire flash
+  - opal glass diffusion
+  - opal glass glow
+  - opalescent glass glow
+  - opalizer glow ring
+  - opposition surge brightening
+  - optical diffraction grating
+  - optical fiber glow
+  - optical fiber strand light
+  - overcast softbox sky
+  - painterly light wash
+  - parabolic reflector fill
+  - parabolic spot pool
+  - parabolic umbrella
+  - parhelion sundog
+  - pearlescent rim halo
+  - peeled split color
+  - penumbra gradient edge
+  - penumbra soft falloff
+  - penumbral softness
+  - phantom anamorphic flare
+  - phase interference pattern
+  - phosphor afterglow
+  - phosphorescent afterglow
+  - phosphorescent wake
+  - polarized cross fade
+  - polarizing sheen flip
+  - powder diffused bloom
+  - practical lamp halo
+  - practical lamp spill
+  - prismatic rainbowing
+  - prismatic refraction
+  - projector beam cone
+  - projector light spill
+  - puddle reflection distortion
+  - quantum dot emission
+  - radiant heat shimmer
+  - rayleigh scattering
+  - reflected highlight trails
+  - refraction rainbow spectrum
+  - rembrandt triangle
+  - retroreflection
+  - rim fire edge
+  - rim-lit
+  - ring flash shadowless
+  - ring light catchlights
+  - ringflash shadowless
+  - ringlight reflection loop
+  - schlieren density wave
+  - schlieren flow lines
+  - scintillation twinkle
+  - sfumato edge bleed
+  - sfumato edge fade
+  - sfumato veil
+  - shadow puppetry lighting
+  - shoji screen diffusion
+  - sidelight raking
+  - silhouette edge bloom
+  - silhouette shadow play
+  - silver lining edge
+  - silvered bounce dagger
+  - single-source raking light
+  - sky pool caustic ripple
+  - skyfill negative bounce
+  - snoot spotlight
+  - snooted grid
+  - soap bubble iridescence
+  - sodium vapor beacon cone
+  - sodium vapor cast
+  - soft diffused
+  - soft focus bloom halo
+  - soft pool diffusion
+  - soft sun bounce
+  - softbox egg crate
+  - solar corona halo
+  - solar pillar column
+  - sparkle twinkle
+  - specular glint point
+  - specular highlights
+  - specular water dance
+  - specular water glint
+  - spherical anamorphic swirl
+  - split grade dodge
+  - split lighting
+  - split-tone gel wash
+  - spotlight beam cone
+  - stage followspot
+  - stage footlight glow
+  - stained glass color cast
+  - star filter spike
+  - stripbox slash
+  - strobe banding tear
+  - strobe freeze frame
+  - strobe freeze motion
+  - subsurface scattering
+  - sun dog double
+  - sun dog flare
+  - sun pillar vertical
+  - sunburst lens flare
+  - tenebrism contrast
+  - tenebrism drama
+  - tenebrism shadow pool
+  - theater fresnel wash
+  - thermal heat shimmer
+  - thin-film iridescence
+  - three-point key wrap
+  - titania lightpipe glow
+  - total internal reflection
+  - transient lunar phenomenon
+  - transluminal waveguide streak
+  - tungsten color cast
+  - tungsten filament filament bloom
+  - tungsten filament glow
+  - twilight belt shadow
+  - tyndall beam
+  - tyndall beam scatter
+  - umbrella bounce
+  - veiling glare bloom
+  - velazquez window shaft
+  - velvet flocking absorption
+  - venetian blind slice
+  - volcanic lava glow
+  - volumetric god rays
+  - water caustic ripple
+  - water reflection shimmer
+  - water-surface caustics
+  - window gobo slash
+  - window grid shadow cast
+  - zenithal skylight
+  - zodiacal light cone
+  - zoetrope slit strobe
+  - 总 total internal reflection
+  material_substance:
+  - abalone shell
+  - acrylic sheet
+  - aerogel
+  - aerogel block
+  - aerogel tile
+  - agate slice
+  - alabaster
+  - aluminum honeycomb
+  - amber
+  - amber resin
+  - ambergris
+  - animal horn
+  - anodized titanium
+  - anthracite coal
+  - antler core
+  - asbestos cloth
+  - asbestos flake
+  - bacterial cellulose
+  - bakelite
+  - ballistic nylon
+  - bamboo pulp
+  - barkcloth
+  - basalt
+  - basalt fiber
+  - birch bark
+  - bismuth crystal
+  - bituminous coal
+  - bone
+  - borosilicate
+  - borosilicate glass
+  - braided sinew
+  - brass wire
+  - bronze powder
+  - brushed brass
+  - buckypaper
+  - calcined bone
+  - calcite dust
+  - calcite geode
+  - camel bone
+  - carbon fiber
+  - carbonite foam
+  - carbonized bamboo
+  - carbonized wood
+  - carnauba coating
+  - casein plastic
+  - cashmere
+  - cast iron
+  - cast pewter
+  - cast silicone
+  - celluloid
+  - cement slurry
+  - chalcedony layers
+  - chitin
+  - chrome plating
+  - cicada wing
+  - cinnabar ore
+  - cobalt bloom
+  - cobalt chrome
+  - coconut husk
+  - cocoon silk
+  - coir
+  - compressed charcoal
+  - compressed cork
+  - copal
+  - copper mesh
+  - coral skeleton
+  - cork bark
+  - cork composite
+  - cork oak bark
+  - crushed malachite
+  - crushed velvet
+  - crystalized honey
+  - crystalline sulfur
+  - cured latex
+  - cuttlebone
+  - cuttlefish bone
+  - cuttlefish gladius
+  - cuttlefish ink
+  - damascus steel
+  - diatomaceous earth
+  - dolomite marble
+  - donkey glue
+  - dried kelp
+  - dried lotus pod
+  - dried sinew
+  - driftwood
+  - driftwood pulp
+  - epoxy putty
+  - epoxy resin
+  - feldspar
+  - felted wool
+  - ferrofluid
+  - fired flint
+  - fired terracotta
+  - fool's gold
+  - fossilized coral
+  - fossilized mammoth tusk
+  - fossilized resin
+  - fulgurite
+  - galalith plastic
+  - galinstan
+  - gallium
+  - galvanized nails
+  - galvanized steel
+  - glass
+  - glass fiber cloth
+  - glassine paper
+  - gneiss
+  - gold leaf
+  - granite slab
+  - graphite felt
+  - gutta-percha
+  - gypsum crystal
+  - halite crystal
+  - hammered pewter
+  - hematite
+  - hemp cloth
+  - hemp fiber
+  - hemp rope
+  - hempcrete
+  - honeycomb wax
+  - horn core
+  - horn keratin
+  - hornblende
+  - hydrophobic sand
+  - iridium spark
+  - iron filings
+  - isinglass
+  - jade
+  - jute burlap
+  - jute fiber
+  - kaolin clay
+  - kelp fiber
+  - keratin sheath
+  - kevlar fiber
+  - kevlar weave
+  - laminated bamboo
+  - lapis lazuli
+  - larimar
+  - lava stone
+  - lead glass
+  - lichen crust
+  - lichen mat
+  - lichen-encrusted stone
+  - lignite coal
+  - liquid crystal
+  - liquid crystal film
+  - liquid glass
+  - liquid latex
+  - liquid nitrogen
+  - lithium grease
+  - magnesium ribbon
+  - magnetorheological fluid
+  - malachite
+  - mercury
+  - mica schist
+  - mica sheet
+  - milk glass
+  - molded agar
+  - molybdenite
+  - molybdenum foil
+  - moss agate
+  - mother of pearl
+  - mudstone
+  - mulberry paper
+  - mycelium
+  - mycelium leather
+  - myrrh resin
+  - nacre shell
+  - natural latex
+  - neoprene
+  - nichrome
+  - nickel foam
+  - nickel silver
+  - niobium wire
+  - nitinol wire
+  - obsidian
+  - oobleck
+  - osmium tetroxide
+  - oxblood leather
+  - oxidized copper
+  - palladium chloride
+  - palladium leaf
+  - palm fiber
+  - papyrus
+  - parchment vellum
+  - patinated bronze
+  - pearl essence
+  - perlite
+  - petrified coral
+  - petrified driftwood
+  - petrified wood
+  - pewter
+  - pewter ingot
+  - phosphor bronze
+  - phosphorescent algae
+  - platinum sponge
+  - polycarbonate
+  - polymer clay
+  - porcelain shard
+  - porcupine quill
+  - pressed felt
+  - pressed tin
+  - psyllium husk
+  - ptfe
+  - pumice
+  - pumice tuff
+  - pyrite aggregate
+  - pyrite nodules
+  - quicksand
+  - raffia
+  - ramie fiber
+  - raw angora
+  - raw beeswax
+  - raw cashmere
+  - raw cork
+  - raw fleece
+  - raw graphite
+  - raw hemp
+  - raw indigo cake
+  - raw latex
+  - raw mohair
+  - raw obsidian
+  - raw qiviut
+  - raw sisal
+  - raw vicuña
+  - raw wool
+  - rawhide
+  - rendered bone glue
+  - rendered lard
+  - rendered tallow
+  - resin composite
+  - rhodium mirror
+  - rose gold
+  - rubidium ingot
+  - ruthenium black
+  - saffian leather
+  - saffron threads
+  - sandstone
+  - scrimshaw
+  - sea glass
+  - sea sponge
+  - serpentine stone
+  - shagreen leather
+  - shed snakeskin
+  - shredded tire rubber
+  - shungite
+  - silicone rubber
+  - silk
+  - silver nitrate crystals
+  - sintered powder
+  - slate tile
+  - slime mold
+  - smelted tin
+  - snakeskin shed
+  - soapstone
+  - soda-lime glass
+  - sodalite
+  - sodium metal
+  - sphagnum
+  - spun basalt
+  - spun copper
+  - spun fiberglass
+  - spun flax
+  - spun glass wool
+  - stainless mesh
+  - stainless steel mesh
+  - steel wool
+  - sterling silver
+  - suede
+  - synthetic spider silk
+  - synthetic suede
+  - tanned hide
+  - tanned rawhide
+  - tantalum sheet
+  - termite mounds
+  - tin foil
+  - titanium dioxide
+  - titanium foam
+  - titanium sponge
+  - travertine
+  - tree resin
+  - trinitite
+  - tung oil
+  - tungsten carbide
+  - tungsten grit
+  - urethane foam
+  - vapor
+  - verdigris patina
+  - vermiculite
+  - vitreous enamel
+  - volcanic ash
+  - volcanic pumice
+  - volcanic pumice glass
+  - volcanic rock
+  - vulcanized rubber
+  - wax
+  - weathered brass
+  - weathered iron
+  - whale ivory
+  - wollastonite
+  - woven flax
+  - woven raffia
+  - wrought iron
+  - wrought iron bloom
+  - wrought zinc
+  - xenon gas
+  - yttrium crystal
+  - zinc bloom
+  - zinc oxide
+  - zirconium sponge
+  medium_render:
+  - acoustic microscopy
+  - airbrush gradient fade
+  - albumen silver print
+  - alla prima oil
+  - aluminum plate lithograph
+  - ambrotype glass plate
+  - ambrotype portrait
+  - anaglyph red cyan
+  - anaglyph stereoscope
+  - anamorphic render
+  - aquagraph watercolor
+  - aquatint etching
+  - astronomical spectroscopy
+  - autochrome lumière
+  - ballpoint pen sketch
+  - batik fabric dye
+  - batik wax resist
+  - bistre ink wash
+  - botanical illustration
+  - bromoil transfer
+  - bubble chamber photograph
+  - calotype negative
+  - camera lucida drawing
+  - camera obscura projection
+  - carbon dust drawing
+  - carbon dust rendering
+  - carbon print process
+  - carbon transfer print
+  - carbonyl iron print
+  - carbro color process
+  - carte de visite albumen
+  - casein milk paint
+  - casein painting
+  - casein tempera
+  - casein tempera paint
+  - cave wall fresco
+  - ceramic glaze painting
+  - chalk underdrawing
+  - champlevé enamel
+  - charcoal sketch
+  - chemigram exposure
+  - chemigram resist
+  - chiaroscuro charcoal
+  - chiaroscuro drawing
+  - chiaroscuro underpainting
+  - chiaroscuro woodcut
+  - chromogenic print
+  - cibachrome reversal
+  - cloisonné enamel
+  - collodion ambrotype
+  - collodion chloride print
+  - collograph plate
+  - collotype halftone
+  - collotype planographic
+  - collotype print
+  - collotype reproduction
+  - confocal micrograph
+  - conte crayon drawing
+  - conte crayon sketch
+  - conté crayon rubbing
+  - conté crayon sketch
+  - cross-processed film
+  - cross-stitch embroidery
+  - cyanotype
+  - cyanotype blueprint
+  - cyanotype photogram
+  - daguerreian heliograph
+  - daguerreotype ambrotype
+  - daguerreotype mercury vapor
+  - daguerreotype plate
+  - daguerreotype portrait
+  - daguerreotype process
+  - daguerreotype stereoview
+  - dendrochronology core sample
+  - diascope backlight
+  - diatom arrangement
+  - differential interference contrast
+  - digital matte painting
+  - diorama miniature
+  - distemper painting
+  - doppler radar scan
+  - drypoint burr
+  - drypoint engraving
+  - drypoint etching
+  - dye destruction print
+  - echoplanar imaging
+  - electron backscatter diffraction
+  - electron micrograph
+  - encaustic batik
+  - encaustic monotype
+  - encaustic on panel
+  - encaustic wax painting
+  - encaustic wax portrait
+  - engraved illustration
+  - engraved intaglio
+  - etching aquatint
+  - etching on zinc
+  - ferrofluid photography
+  - ferrotype tintype
+  - fiber optic endoscopy
+  - fresco buon
+  - fresco buon technique
+  - fresco secco
+  - giclée inkjet print
+  - glass mosaic tessellation
+  - glass plate negative
+  - gouache flat wash
+  - gouache on board
+  - graphite smear wash
+  - grisaille monochrome
+  - grisaille underpainting
+  - gum arabic pigment
+  - gum arabic screenprint
+  - gum bichromate over
+  - gum bichromate print
+  - gumoil printmaking
+  - gyotaku fish print
+  - halftone duotone
+  - halftone offset print
+  - hand tinted photograph
+  - hand-blown glass
+  - hand-tinted photograph
+  - holographic interferometry
+  - infrared false color
+  - infrared photography
+  - infrared thermograph
+  - inktense block
+  - intaglio engraving
+  - interferogram pattern
+  - kallitype sepia
+  - kinetic light painting
+  - kinetic sand sculpture
+  - kirigami cut paper
+  - kirlian discharge photo
+  - kodachrome slide film
+  - lapis lazuli pigment
+  - laser ablation micro
+  - laser dye sublimation
+  - laser holography
+  - laser scanning confocal
+  - lathe-turned wood photograph
+  - lenticular flip image
+  - lenticular print
+  - letterpress ink trap
+  - lino cut print
+  - linocut monoprint
+  - linocut print
+  - linocut reduction
+  - linotype press print
+  - liquid gate scan
+  - lithographic stone transfer
+  - lithophane carving
+  - lumen print
+  - macro lens photograph
+  - macrophotography focus stacking
+  - marbled paper print
+  - marquetry inlay
+  - matte painting
+  - metalpoint drawing
+  - mezzo lithograph
+  - mezzotint engraving
+  - mezzotint print
+  - mezzotint rocker grain
+  - mezzotint rocker print
+  - microfilm grain scan
+  - microtonal sonogram
+  - mokuhanga print
+  - mokulito lithograph
+  - monoprint transfer
+  - monotype print
+  - monotype printmaking
+  - mordancage bleach etch
+  - mosaic tessera
+  - mri cross-section
+  - mri false color
+  - mri scan
+  - multispectral composite
+  - needle felting
+  - neon tube photograph
+  - niello metalwork
+  - nishiki-e brocade
+  - oil impasto
+  - oil pastel drawing
+  - oil pastel resist
+  - orotone glass plate
+  - orotone photograph
+  - palladium ferric oxalate
+  - paper marbling
+  - paper quilling
+  - papercut silhouette
+  - papercutting silhouette
+  - papier-mâché bas-relief
+  - papier-mâché relief
+  - pastel drawing
+  - pastel dusting
+  - pen-and-ink stippling
+  - pet scan fusion
+  - petri dish culture
+  - petrographic thin section
+  - photogram shadow print
+  - photogrammetry render
+  - photogravure etching
+  - photogravure intaglio
+  - photogravure print
+  - piezography carbon print
+  - pinhole camera capture
+  - platinum palladium print
+  - plein air alla prima
+  - pochoir stencil
+  - polarized light micrograph
+  - polarizing microscopy
+  - polaroid emulsion lift
+  - polaroid transfer
+  - polymer clay sculpture
+  - positron emission scan
+  - pulled sugar sculpture
+  - pyrography wood burn
+  - quad tone digital
+  - quill pen stipple
+  - radiolarian microscopy
+  - raku fired glaze
+  - reduction woodcut
+  - repoussé metalwork
+  - reverse glass painting
+  - risograph duotone
+  - risograph print
+  - rotoscope animation
+  - salt print calotype
+  - salt print photograph
+  - scanning electron microscope
+  - scanning tunneling micro
+  - scanning tunneling microscope
+  - scanography flatbed
+  - schlieren photography
+  - scratchboard engraving
+  - scratchboard illustration
+  - scratchboard ink
+  - screen aquatint
+  - screen print flat color
+  - scrimshaw etching
+  - seismograph trace
+  - sepia ink wash
+  - serigraph screenprint
+  - sfumato glaze
+  - sgraffito ceramic
+  - sgraffito plaster
+  - shadowgraph imaging
+  - silk aquatint
+  - silk screen halftone
+  - silk screen print
+  - silkscreen on fabric
+  - silver gelatin print
+  - silverpoint drawing
+  - silverpoint sgraffito
+  - slipcast ceramic
+  - slit-scan photograph
+  - solarization print
+  - solarplate etching
+  - sonar bathymetric map
+  - sonogram imaging
+  - spectrograph image
+  - spectrograph visualization
+  - spirit duplicator
+  - stained glass leading
+  - stained glass mosaic
+  - stained glass render
+  - stencil spray paint
+  - stipple engraving
+  - stone lithography
+  - stoneware salt glaze
+  - sumi-e ink wash
+  - suminagashi marbling
+  - tapestry point de france
+  - tempera egg yolk
+  - terracotta engobe
+  - thermal fax paper
+  - thermal imager capture
+  - thermal paper receipt
+  - thermoluminescence imaging
+  - tintype pounce
+  - tintype rust tone
+  - tissue paper collage
+  - trompe l'oeil fresco
+  - trompe-l'oeil mural
+  - ultrasound echogram
+  - ultrasound sonogram
+  - vector illustration
+  - verdaccio underdraw
+  - verre églomisé
+  - viscosity monotype
+  - vitreous enamel cloisonné
+  - wax pencil sketch
+  - wax resist batik
+  - wet on wet watercolor
+  - wet plate collodion
+  - wire sculpture photograph
+  - wood engraving
+  - woodblock reduction print
+  - woodblock relief print
+  - woven tapestry
+  - x-ray diffraction
+  - x-ray film radiograph
+  - x-ray radiograph
+  - xeroradiography imaging
+  - zooplankton micronekton
+  phenomenon_pattern:
+  - acid etch pitting
+  - acoustic levitation node
+  - aeolian ripple marks
+  - algae bloom swirl
+  - algal bloom branching
+  - amoeba pseudopod reach
+  - apollonian gasket nesting
+  - apollonian gasket packing
+  - aragonite fanning
+  - astigmatic coma streak
+  - astigmatic smear
+  - aurora borealis wave
+  - bacterial colony expansion
+  - bacterial lawn spread
+  - barite rosette bloom
+  - barnacle settlement cluster
+  - barnsley fern unfurl
+  - basalt column joints
+  - biofilm edge creep
+  - birefringent crystal fan
+  - birefringent stress fringes
+  - bismuth crystal
+  - bismuth hopper crystal
+  - bit rot fragmentation
+  - bitcrush posterization
+  - bitcrusher staircase
+  - blown glass vestal tear
+  - bokeh polygon disk
+  - bone trabecular lattice
+  - bone trabecular mesh
+  - budding hydra cluster
+  - buffer overflow cascade
+  - calcite rhombohedron twin
+  - cantor dust recursion
+  - capillary sprout invasion
+  - capillary wave lattice
+  - caustic light web
+  - caustic network shimmer
+  - caustic water net
+  - cellular division
+  - chemical lace dendrite
+  - chroma subsampling bleed
+  - chromatic aberration
+  - circuit board trace
+  - circuit trace etching
+  - coccolithophore plate bloom
+  - compression ring artifact
+  - concoidal fracture ripples
+  - concrete carbonation front
+  - concrete spall fracture
+  - concrete spalling flakes
+  - coral bleaching bands
+  - coral polyp budding
+  - coral reef growth
+  - crepuscular ray shafts
+  - crop circle pattern
+  - crt phosphor bleed
+  - crystal habit twinning
+  - crystal nucleation radiate
+  - dandelion seed dispersal
+  - data moshing smear
+  - datamosh ghosting
+  - datamosh smear
+  - deliquescent sugar melt
+  - dendrite side-branch growth
+  - dendritic frost
+  - differential growth ruffle
+  - diffraction grating fan
+  - diffusion limited aggregation
+  - dissolution sinkhole collapse
+  - dither diffusion
+  - dithering dot matrix
+  - dragon curve iteration
+  - dragon curve spiral
+  - dragon curve unfold
+  - dripping stalagmite candle
+  - dune avalanche ripple
+  - efflorescence bloom
+  - embryo cleavage furrow
+  - erosion rill channels
+  - fault gouge drag fold
+  - feldspar exsolution lamellae
+  - fern fiddlehead spiral
+  - fern fiddlehead uncoil
+  - fibonacci seed packing
+  - fibonacci shell uncoil
+  - fibonacci tiling expansion
+  - flame fractal flicker
+  - fractal branching
+  - fractal canyon erosion
+  - frame tearing offset
+  - frost flower crystals
+  - frost heave polygon
+  - fungal hyphae weave
+  - fungal sporangium burst
+  - fungal spore dispersal
+  - galaxy filament web
+  - galvanic corrosion bloom
+  - geode crystal radiate
+  - ghost image burn
+  - glacial striation grooves
+  - glitch databending warp
+  - glitch displacement
+  - glitch echo streak
+  - golden angle spiral
+  - gosper curve growth
+  - gosper curve meander
+  - halftone gradient
+  - heat haze shimmer
+  - hilbert curve recursion
+  - hologram fringe shift
+  - holographic foil
+  - holographic wavefront
+  - hopper crystal terracing
+  - hyphae mat spread
+  - hyphal tip branching
+  - ice feather crystal
+  - ice feather dendrite
+  - ice wedge cracking
+  - ink bleed diffusion
+  - ink drop diffusion
+  - interference fringe bands
+  - interlace artifact comb
+  - interlace combing
+  - iron oxidation creep
+  - iron sulfide staining
+  - jellyfish bloom
+  - jpeg block artifact
+  - jpeg blocking artifacts
+  - jpeg ringing halos
+  - julia set filament curl
+  - julia set progression
+  - julia set spiral
+  - julia set swirl
+  - kaleidoscope symmetry
+  - karst cave formation
+  - karst dissolution pitting
+  - koch snowflake edge
+  - lamellar pearlite bands
+  - laser speckle pattern
+  - lava flow cooling
+  - lava flow crust
+  - leaf vein anastomosis
+  - lens flare streak
+  - lichen apothecia ring
+  - lichen concentric rings
+  - lichen crust colonization
+  - lichen crust spread
+  - lichen radial growth
+  - lichen spore dusting
+  - lightning dendrite forks
+  - lightning lichtenberg figures
+  - lightning rod fractal
+  - limestone karst dissolve
+  - lissajous knot trace
+  - logistic map bifurcation
+  - macroblock breakup
+  - macroblock drift
+  - magnetic fluid spike
+  - mandelbrot bulb tendril
+  - mandelbrot filament coast
+  - mandelbrot zoom seahorse
+  - marble sugar erosion
+  - menger sponge void
+  - metal pitting halo
+  - moire wave interference
+  - moiré interference
+  - mold colony wavefront
+  - mold sporulation burst
+  - moss spore spiral
+  - motion blur trails
+  - mud crack polygon
+  - mudcrack desiccation spread
+  - mushroom fairy ring
+  - mushroom gill radiate
+  - mycelial fan spread
+  - mycelial hyphae expansion
+  - mycelium branching tendrils
+  - mycorrhizal network spread
+  - nebula cloud formation
+  - newton ring bands
+  - newton ring collapse
+  - newton's rings ripple
+  - oak leaf venation
+  - oil slick iridescence swirl
+  - oil slick shear bands
+  - oil slick swirl
+  - optical vortex twist
+  - opus tessellated erosion
+  - oxide bloom spread
+  - packet loss squares
+  - paint crazing spread
+  - paint skin wrinkling
+  - paper foxing bloom
+  - paper foxing spots
+  - parabolic reflector caustic
+  - pascal triangle fractal
+  - patina creep front
+  - patina undercut bloom
+  - patina verdigris bloom
+  - peacock eye trains
+  - penrose inflation tiling
+  - perlin noise turbulence
+  - petri dish culture
+  - phyllotaxis spiral
+  - phyllotaxis spiral burst
+  - phyllotaxis whorl expand
+  - pixel avalanche cascade
+  - pixel bloom outlier
+  - pixel sort
+  - plasma filament
+  - polarization color shift
+  - pollen grain dispersal
+  - prismatic light leak
+  - prismatic sulfur spray
+  - pyrite cube striation march
+  - pyrite sun radiate
+  - pyrite sun rays
+  - quartz crystal druse
+  - radiolarian lattice foam
+  - rainbow diffraction halo
+  - rainbow hologram fringes
+  - raster scan artifact
+  - reaction diffusion bands
+  - reaction diffusion spots
+  - retinal vein bifurcation
+  - rgb channel split
+  - rippling heat haze
+  - river delta branching
+  - rogue wave peak
+  - rolling shutter skew
+  - root growth pattern
+  - rot spirals
+  - rust bloom halos
+  - rust tide creep
+  - rust tide surge
+  - salt creep ridge
+  - salt creep whiskers
+  - salt crystal hopper
+  - salt efflorescence bloom
+  - salt efflorescence crust
+  - salt hydration cracking
+  - sand dune migration
+  - sand dune slipface
+  - sand ripple migration
+  - scan line dropout
+  - scanline jitter wave
+  - scanline tearing
+  - scarab swarm swarm
+  - schlieren airflow ripple
+  - schlieren plume rise
+  - sediment ripple migration
+  - sierpinski carpet recursion
+  - silica glaze crackle
+  - slime mold network
+  - slime mold pathfinding
+  - slime mold pulsating
+  - smoke plume billow
+  - soap bubble spiral
+  - soap bubble tessellation
+  - soap film iridescence
+  - soap lattice collapse
+  - spherulite crystal burst
+  - spiral phyllotaxis
+  - spirograph flower
+  - spore ejection burst
+  - spore germination spray
+  - stalactite drip cone
+  - stalactite formation
+  - steganography noise weave
+  - stomatal pore network
+  - streambank undercut collapse
+  - stromatolite layering
+  - stutter trails
+  - sunflower seed spiral
+  - sunspot cluster
+  - tardigrade cyst cluster
+  - tendril circumnutation
+  - thin film diffraction
+  - thin film fringes
+  - thin film rainbow oil
+  - tide pool ecosystem
+  - tissue scarification
+  - tornado vortex
+  - tourmaline sector zoning
+  - tree ring growth
+  - trilobite molting split
+  - tsunami ripple train
+  - tumor cell infiltration
+  - turbulence vortex shedding
+  - turing stripe cascade
+  - turing stripe pattern
+  - vein spread
+  - vhs chroma crawl
+  - vhs tracking flutter
+  - voronoi cells
+  - vortex street shedding
+  - wave interference pattern
+  - wave interference rings
+  - wax bloom exudation
+  - wax bloom migration
+  - wireframe growth
+  - wood grain distortion
+  - wood grain striations
+  - wood rot pocket spread
+  - yeast budding chains
+  - zebra stripe migration
+  scale_perspective:
+  - aerial
+  - aerial drone shot
+  - aerial drone top-down
+  - aerial tram cabin
+  - air traffic control radar
+  - air vent grille view
+  - airplane cockpit windshield
+  - ant colony tunnel
+  - ant farm cross-section
+  - ant farm glass side
+  - antarctic research station
+  - aquarium glass pressed close
+  - aquarium tunnel walk-through
+  - aquifer rock fissure
+  - architectural interior
+  - arthroscope interior
+  - astronaut footpad view
+  - astronaut helmet reflection
+  - atomic force microscope
+  - atrium skylight view
+  - attic crawl space
+  - balloon-borne telescope deck
+  - bathysphere viewport
+  - beehive frame pull
+  - beehive honeycomb cell
+  - behind a waterfall curtain
+  - bell jar interior
+  - below dock pilings
+  - beneath a lily pad
+  - beneath a magnifying glass
+  - beneath glass floor
+  - bird's-eye oblique
+  - birdhouse entrance hole
+  - borescope inspection view
+  - bronchoscope lung passage
+  - bunker observation slit
+  - bunker periscope view
+  - butterfly wing scale
+  - canyon floor looking up
+  - canyon floor upward
+  - car windshield wiper view
+  - carriage window frame
+  - catacomb ossuary aisle
+  - cathedral ceiling looking up
+  - cathedral ceiling upward
+  - cathedral nave view
+  - catwalk over factory floor
+  - cave mouth entrance
+  - ceiling fresco perspective
+  - cell membrane scale
+  - cellar vault low angle
+  - chimney flue upward
+  - chimney stack downward
+  - chimney sweep upward
+  - christmas ornament interior
+  - cinema balcony rail
+  - cliff face rappel perspective
+  - clock mechanism interior
+  - clock tower belfry
+  - cloud forest canopy
+  - cloud-forest zipline
+  - coin-operated binocular viewer
+  - coral polyp magnification
+  - courtroom sketch distance
+  - crawling baby’s eye level
+  - crevasse ice wall
+  - crevasse interior view
+  - cross-section
+  - crow's nest lookout
+  - crow’s nest viewpoint
+  - cryo-electron grid
+  - ct scan slice
+  - cuckoo clock interior
+  - culvert tunnel exit
+  - d hypercube projection
+  - deep space telescope
+  - diorama glass case front
+  - diving bell viewport
+  - dollhouse cutaway
+  - drill-core magnification
+  - drone hover low
+  - drone top-down hover
+  - electron microscope
+  - elevator shaft bottom
+  - elevator shaft bottom-up
+  - endoscope passage
+  - endoscopic capsule journey
+  - endoscopic sinus passage
+  - falcon dive perspective
+  - fish-eye peephole
+  - forest canopy walkway
+  - frog pond surface below
+  - from a blimp gondola
+  - from a crow's nest
+  - from a diving board above
+  - from a gargoyle ledge
+  - from a gondola
+  - from a grain of sand
+  - from a rollercoaster
+  - from a watchtower
+  - from a zipline harness
+  - from behind a waterfall
+  - from beneath a glass table
+  - from inside a diving helmet
+  - from inside a hollow tree
+  - from inside a horn
+  - from inside a lantern
+  - from inside a matchbox
+  - from inside a paper lantern
+  - from inside a seed pod
+  - from inside a snowglobe
+  - from inside a terrarium
+  - from inside a thimble
+  - from inside a tulip
+  - from inside a wine glass
+  - from within a crystal lattice
+  - galaxy cluster scale
+  - gannet dive plunge
+  - geological core sample
+  - geological core sample view
+  - geostationary orbit
+  - glacier ice cave lens
+  - glacier moulin descent
+  - grain elevator ceiling
+  - grain elevator silo interior
+  - grand staircase landing
+  - greenhouse ceiling
+  - harbor buoy waterline
+  - hologram projection plane
+  - hot air balloon basket
+  - hot air balloon basket edge
+  - hubble deep field scale
+  - hull breach view
+  - hyperlapse corridor
+  - ice fishing hole
+  - igloo entrance tunnel
+  - igloo interior upward
+  - impossible scale
+  - industrial pipe crawlspace
+  - infrared aerial sweep
+  - infrared drone thermograph
+  - inside a beehive frame
+  - inside a bottle
+  - inside a camera obscura
+  - inside a cathedral pipe organ
+  - inside a cistern
+  - inside a geodesic tent
+  - inside a helmet
+  - inside a kaleidoscope tube
+  - inside a kiln
+  - inside a mason jar
+  - inside a nautilus shell
+  - inside a paperweight
+  - inside a pianola
+  - inside a pocket watch
+  - inside a snowflake
+  - inside a test chamber
+  - inside a vacuum tube
+  - inside a violin f-hole
+  - inside a wristwatch
+  - inside terrarium dome
+  - interior of a geodesic dome
+  - intimate portrait
+  - jeweler's loupe
+  - jeweler's loupe extreme
+  - jewelry loupe detail
+  - kaleidoscope interior
+  - kaleidoscope mirror tunnel
+  - keyhole spyglass
+  - keyhole view
+  - lava tube cave entrance
+  - lava tube skylight
+  - lidar point cloud
+  - lighthouse spiral stairwell
+  - looking through binocular rings
+  - macro
+  - macro dew lens
+  - mantis shrimp vision
+  - microbial petri dish
+  - microchip fabrication cleanroom
+  - microchip surface
+  - microfluidic channel
+  - microfluidic chip channel
+  - microscope oil immersion
+  - microscope slide detail
+  - microscope stage
+  - mine shaft headframe
+  - mineshaft entrance looking out
+  - mountaintop panorama
+  - mri bore interior
+  - mri tube interior
+  - nanoscale surface
+  - nuclear reactor core view
+  - observatory dome slit
+  - oil rig platform edge
+  - oscilloscope screen close
+  - ossuary vault ceiling
+  - otoscope canal view
+  - panoramic gondola
+  - particle accelerator tunnel
+  - peephole distortion
+  - peephole lens view
+  - periscope surface break
+  - periscope surface view
+  - periscope up-scope
+  - periscope view
+  - petri dish closeup
+  - petri-dish close-up
+  - planet rover wheel cam
+  - planetarium dome ceiling
+  - planetarium projection dome
+  - planetary rover camera
+  - pollen grain closeup
+  - pollen grain macro
+  - radio telescope dish
+  - rearview mirror framing
+  - reef shark cage
+  - rifle scope tunnel
+  - roofline parapet view
+  - rooftop edge looking down
+  - rooftop parapet edge
+  - rooftop parapet lean
+  - rover wheel tread
+  - safari vehicle roof
+  - satellite orbital night
+  - satellite view
+  - scanning electron detail
+  - scanning electron microscope
+  - scanning tunneling microscope
+  - scanning-tunnel atom
+  - security camera fisheye
+  - seismic tomogram slice
+  - sewer grate upward
+  - shadow puppet scale
+  - ship-hull sonar scan
+  - snow globe interior
+  - solar observatory filter view
+  - sonar scan depth
+  - specimen slide backlit
+  - specimen slide magnified
+  - spectrograph exposure
+  - spectrograph slit view
+  - spelunker headlamp
+  - spiral stair void
+  - spiral staircase nadir
+  - stalactite ceiling view
+  - storm drain grate
+  - storm drain outflow view
+  - stratospheric balloon view
+  - straw interior view
+  - street-map altitude
+  - sub-basement chasm
+  - submarine conning tower
+  - submarine periscope night
+  - submarine porthole
+  - subway car end
+  - subway tunnel bore
+  - surgical laparoscope
+  - surgical retractor field
+  - surgical robot camera
+  - telescope eyepiece
+  - telescope finder scope
+  - telescope finderscope
+  - terrace rice paddy step
+  - terrarium front glass
+  - terrarium glass wall
+  - thermal imaging drone
+  - through a chain-link fence
+  - through a cracked eggshell
+  - through a cracked visor
+  - through a kaleidoscope
+  - through a magnifier
+  - through a mail slot
+  - through a marble
+  - through a mesh sieve
+  - through a microscope eyepiece
+  - through a periscope
+  - through a pinhole camera
+  - through a rain-streaked window
+  - through a rifle scope
+  - through a rifle's iron sights
+  - through aquarium glass
+  - through bent microscope prism
+  - through binoculars
+  - through frosted glass
+  - through frosted glass pane
+  - through opera glasses
+  - through theater curtains
+  - tide pool close-up
+  - tide pool surface skim
+  - tilt-shift miniature
+  - tissue sample slide
+  - transit satellite oblique
+  - treehouse platform
+  - ultrasound probe view
+  - under a glass dome
+  - under a microscope stage
+  - under-bridge underside
+  - underwater cave opening
+  - utility tunnel maintenance cart
+  - vast landscape scale
+  - volcano caldera rim
+  - volcano crater rimwalk
+  - volcano drone flythrough
+  - warehouse mezzanine
+  - weather balloon altitude
+  - weather balloon vista
+  - well shaft upward
+  - wide-field telescope array
+  - worm's-eye view
+  - x-ray crystallography view
+  - x-ray fluoroscopy
+  setting_location:
+  - abandoned airport control tower
+  - abandoned art school atrium
+  - abandoned cable car station
+  - abandoned coal mine shaft
+  - abandoned drive-in theater
+  - abandoned factory foundry
+  - abandoned film set backlot
+  - abandoned grain silo complex
+  - abandoned greenhouse jungle
+  - abandoned hospital morgue
+  - abandoned immigration checkpoint
+  - abandoned library stacks
+  - abandoned quarry lake
+  - abandoned shipyard drydock
+  - abandoned shopping mall courtyard
+  - abandoned subway control room
+  - abandoned subway platform
+  - abandoned train roundhouse
+  - abyssal trench
+  - acid fog marsh
+  - airport jet bridge
+  - airport terminal after hours
+  - alpine cirque lake
+  - alpine scree cirque
+  - ancient redwood canopy walkway
+  - antarctic research outpost
+  - arctic fuel depot
+  - arctic research outpost
+  - arctic sea ice pressure ridge
+  - art deco movie theater lobby
+  - art deco swimming pool
+  - art deco train station concourse
+  - art nouveau metro entrance
+  - ashfall exclusion zone
+  - 'atmospheric/extreme:'
+  - aurora borealis icefield
+  - aurora observatory dome
+  - bamboo forest clearing
+  - bamboo forest meditation hut
+  - bamboo scaffolding maze
+  - banyan tree engulfed temple
+  - banyan tree strangler courtyard
+  - basalt column amphitheater
+  - basalt column coastline
+  - basalt column gorge
+  - beech forest leaf litter floor
+  - bioluminescent mangrove swamp
+  - bioluminescent mushroom forest
+  - bioluminescent tide pool lagoon
+  - birch bark canoe loft
+  - black sand volcanic beach
+  - border checkpoint lane
+  - border checkpoint lanes
+  - bramble-wrapped rail yard
+  - brutalist concrete overpass
+  - brutalist government archive
+  - brutalist grain elevator
+  - brutalist university library
+  - brutalist water treatment facility
+  - brutalist water treatment plant
+  - 'built/architectural:'
+  - cable-stayed bridge maintenance walkway
+  - canyon slot confluence
+  - canyon spring oasis
+  - cargo elevator shaft
+  - cargo ship engine room
+  - cast iron market hall
+  - cathedral interior
+  - chalk cliff coastal path
+  - cinder block warehouse district
+  - cloud forest moss platform
+  - cloud forest suspension bridge
+  - collapsed freeway overpass garden
+  - collapsed hotel atrium
+  - collapsed mine shaft
+  - concrete storm drain cascade
+  - condemned subway ventilation tunnel
+  - cooling tower interior
+  - copper mine open pit
+  - coral atoll lagoon
+  - coral atoll research station
+  - coral reef lagoon floor
+  - creeper-swallowed colonial mansion
+  - crumbling art school hallway
+  - crumbling baroque opera house
+  - crumbling harbor fortification
+  - crystal cave subway station
+  - crystal geode cavern
+  - cypress swamp graveyard
+  - dead coral reef
+  - decommissioned lighthouse interior
+  - decommissioned power plant cooling tower
+  - decommissioned radar dome
+  - deep fjord waterfall base
+  - derelict drive-in theater
+  - derelict factory chimney base
+  - derelict grain elevator
+  - derelict greenhouse complex
+  - derelict shopping cart return
+  - derelict victorian greenhouse
+  - desert pavement plains
+  - desert varnish canyon wall
+  - deserted immigration terminal
+  - dolomite cliffside monastery
+  - dust devil playa
+  - dust storm wall approach
+  - emergency stairwell shaft
+  - estuary mudflat expanse
+  - fern-choked rail viaduct
+  - fern-covered railway viaduct
+  - fern-swallowed observatory
+  - ferry terminal ramp
+  - ferry terminal waiting hall
+  - fig-choked cloister
+  - floating market canal
+  - flooded basement
+  - flooded cathedral crypt
+  - flooded marble quarry
+  - flooded rice paddy terrace
+  - flooded rice terrace
+  - flooded rice terrace valley
+  - flooded shopping mall atrium
+  - flooded underground cistern
+  - fog shrouded moorland
+  - fog-filled valley bowl
+  - fog-soaked lighthouse interior
+  - forgotten casino ballroom
+  - forgotten luggage carousel
+  - frozen waterfall cliff face
+  - fumarole field plateau
+  - funhouse mirror maze
+  - funicular engine room
+  - geode-lined cavern
+  - geothermal hot spring plateau
+  - geothermal mud pool field
+  - geothermal oasis pool
+  - geyser field boardwalk
+  - glacial erratic field
+  - glacial meltwater cave
+  - glacial moulin chamber
+  - glacial moulin shaft
+  - glacier cave portal
+  - glass greenhouse botanical dome
+  - gothic bell tower
+  - gothic clocktower interior
+  - grain elevator interior
+  - granite inselberg summit
+  - gypsum cave passage
+  - high altitude weather station
+  - hoodoo badlands amphitheater
+  - hospital service corridor
+  - hotel service corridor
+  - hydroelectric dam spillway
+  - hydrothermal vent field
+  - ice cave greenhouse
+  - ice sheet crevasse network
+  - ice shelf meltwater ravine
+  - iceberg cavern interior
+  - iceberg cavern lagoon
+  - infinite hallway
+  - ivy-covered crematorium
+  - jungle rope bridge crossing
+  - kelp forest canopy clearing
+  - kelp forest cathedral
+  - kelp forest seafloor
+  - kelp hatchery tanks
+  - kudzu-buried transmission tower
+  - kudzu-draped highway overpass
+  - lenticular cloud mountain summit
+  - lichen-covered lava field
+  - lightning-scarred ridge
+  - limestone pavement plateau
+  - limestone sinkhole garden
+  - limestone sinkhole jungle
+  - 'liminal/transitional:'
+  - lunar crater regolith plain
+  - lunar lava tube skylight
+  - maintenance tunnel junction
+  - mangrove root labyrinth
+  - mangrove swamp boardwalk
+  - mangrove tunnel channel
+  - mangrove tunnel waterway
+  - marble quarry amphitheater
+  - marble sculpting studio
+  - meteor impact crater lake
+  - monolithic dam spillway
+  - monsoon drainage channel
+  - moon pool submarine pen
+  - moss-covered stone aqueduct
+  - moss-draped canal lock
+  - moss-draped lava tube
+  - moss-draped sugar mill
+  - moss-padded stone quarry
+  - mountain pass switchback road
+  - mountainside monastery terrace
+  - 'natural/geological:'
+  - neon-lit alley
+  - neon-lit pachinko parlor
+  - neon-reflecting rain puddle
+  - obsidian lava tube
+  - obsidian mirror desert
+  - oil refinery flare stack
+  - oil rig helipad deck
+  - old growth cedar grove
+  - orbital station
+  - overgrown parking structure
+  - overgrown rollercoaster track
+  - overgrown ruins
+  - overgrown swimming pool
+  - overgrown tennis court
+  - 'overgrown/reclaimed:'
+  - overturned shipwreck hull
+  - pahoehoe lava delta
+  - pedestrian underpass
+  - petrified forest
+  - petrified waterfall cave
+  - phosphorescent tide pool
+  - planetarium projector hall
+  - pneumatic tube hub station
+  - polar stratospheric cloud observatory
+  - pumice field plateau
+  - quarry sedimentation basin
+  - redwood stump cathedral
+  - redwood treehouse village
+  - reed marsh hide
+  - rime ice forest
+  - river delta distributary fork
+  - river oxbow sandbar
+  - rococo winter garden
+  - rooftop greenhouse garden
+  - rooftop water tower platform
+  - root-split bathhouse
+  - root-split courtyard
+  - salt crystal cavern
+  - salt flat
+  - salt marsh estuary
+  - salt marsh tidal channel
+  - salt pan evaporation grid
+  - sand dune slipface desert
+  - sandstone arch canyon
+  - savannah termite mound cluster
+  - sea cave cathedral
+  - sea stack arch base
+  - sea stack archway
+  - server farm
+  - sewage tunnel junction
+  - shipwreck mangrove tangle
+  - singing sand dunes
+  - sinkhole cenote rim
+  - sinkholes karst plateau
+  - sinter rim basin
+  - slot canyon narrows
+  - solar eclipse shadow path
+  - soviet-era housing courtyard
+  - spring-fed limestone blue hole
+  - steam plume valley
+  - storm drain confluence
+  - storm drain outfall pipe
+  - strangler fig temple ruin
+  - strata canyon slot
+  - subglacial ice cave
+  - subglacial meltwater cave
+  - submerged marble quarry
+  - submerged marble staircase
+  - submerged subway platform
+  - subterranean mushroom grotto
+  - subterranean river canyon
+  - subway maintenance tunnel
+  - subway station mezzanine
+  - sunken bell tower reservoir
+  - sunken cargo ship hold
+  - sunken hedge maze
+  - sunken redwood logjam
+  - sunken statue garden
+  - sunken stonehenge circle
+  - supercell thunderstorm shelf cloud
+  - terracotta army tomb
+  - thunderstorm anvil cloud base
+  - tidal basin mudflat
+  - tidal glass sculpture beach
+  - tidal mudflat village
+  - tidal sea cave interior
+  - tide-carved sandstone cove
+  - travertine bridge overhang
+  - travertine hot spring terrace
+  - travertine terrace basin
+  - travertine terrace pools
+  - tree root engulfed staircase
+  - treehouse suspension bridge
+  - tufa tower shoreline
+  - tundra polygonal patterned ground
+  - underground cistern cathedral
+  - underwater forest canopy
+  - underwater observatory tunnel
+  - urban rooftop pigeon coop
+  - vine-choked radio tower
+  - vine-strangled clock tower
+  - volcanic ash fallout zone
+  - volcanic black sand beach
+  - volcanic crater
+  - volcanic obsidian field
+  - volcanic steam vent amphitheater
+  - 'water/aquatic:'
+  - whiteout research camp
+  - wind turbine maintenance platform
+  - wind-carved sandstone arch
+  spatial_logic:
+  - alternating polarity
+  - angular fragmentation
+  - angular momentum
+  - angular rebound
+  - approximate symmetry
+  - arc-to-arc bridging
+  - ascending helix
+  - aserial zigzag lattice
+  - asymmetric balance
+  - asymmetric compression
+  - asymmetric echo
+  - asymmetric equilibrium
+  - asymmetric fulcrum
+  - asymmetric void framing
+  - axial drift
+  - axial mirror
+  - axial reflection
+  - axial symmetry
+  - axial tilt
+  - bent orthogonal splice
+  - bi-axial torque grid
+  - bilateral drift
+  - bilateral symmetry
+  - braided flow
+  - branching dendritic structure
+  - branching node split
+  - branching tributaries
+  - canted asymmetry
+  - cantilevered overhang
+  - cantilevered projection
+  - cascade plane shift
+  - cascading offset
+  - cascading terraces
+  - cellular repeat
+  - central emergence
+  - checkerboard pattern
+  - chevron cascade
+  - circular embrace
+  - circular ripple progression
+  - clustered isolation
+  - clustered node arrangement
+  - columnar procession
+  - compressed foreground depth
+  - compressed stacking
+  - concentric asymmetry
+  - concentric divergence
+  - concentric rings
+  - concentric spiral compression
+  - convergent perspective axes
+  - converging diagonals
+  - converging parallels
+  - counterbalanced cantilever
+  - counterpoised tilt
+  - cruciform division
+  - cruciform layout
+  - cubic lattice
+  - cuboid grid offset
+  - curvilinear grid
+  - curvilinear weave
+  - decentralized radial pull
+  - dendritic spread
+  - diagonal displacement
+  - diagonal overhang
+  - diagonal tension
+  - diagonal thrust composition
+  - diagonal void lattice
+  - diamond offset
+  - dispersed constellation
+  - dispersed triad
+  - domino cascade
+  - domino progression
+  - eccentric orbit
+  - eccentric orbit ring
+  - edge tension
+  - elliptical echoes
+  - elliptical orbit
+  - elliptical orbit array
+  - escalating horizon
+  - expanding grid
+  - faceted division
+  - fan-shaped dispersion
+  - fanned aperture
+  - fanned divergence
+  - fanning divergence
+  - field perspective
+  - floating isolated
+  - floating offset alignment
+  - floating planar overlap
+  - folded continuity
+  - folded plane overlap
+  - fourfold repetition
+  - fractal branching
+  - fractal branching delta
+  - fractal recursion
+  - fractured grid
+  - fractured grid repeat
+  - fragmented symmetry
+  - golden spiral convergence
+  - gradient dissolution
+  - graduated cascade
+  - graduated recession
+  - graduated scale cascade
+  - grid disruption
+  - grid distortion
+  - grid warp
+  - halo isolation
+  - harmonic spirals
+  - helical stacking
+  - hexagonal close packing
+  - hexagonal swirl array
+  - hexagonal tessellation
+  - hollow center frame
+  - hollow center ring
+  - hollow perimeter
+  - honeycomb tiling
+  - horizon anchoring
+  - implied axis
+  - incremental offset
+  - infinite regression
+  - interlocked ring chain
+  - interlocking arcs
+  - interlocking gears
+  - interlocking pentagonal array
+  - interlocking rectangular modules
+  - interstitial void
+  - interstitial voids
+  - interwoven lattice
+  - inverted pyramid
+  - inverted symmetry
+  - involuted curve
+  - isolated figure void
+  - isolated nucleus
+  - kaleidoscopic fragmentation
+  - kaleidoscopic mesh
+  - kaleidoscopic mirroring
+  - labyrinthine meander
+  - lattice recursion
+  - lattice subdivision
+  - layered strata
+  - layered transparency
+  - leaning convergence
+  - linear procession
+  - logarithmic spacing
+  - looping circulation
+  - looping meander
+  - looping return
+  - meandering flow lines
+  - meandering path
+  - meandering serpentine line
+  - mirror fold symmetry
+  - mirrored bifurcation
+  - mirrored cascade
+  - mirrored helix inversion
+  - mirrored left-right balance
+  - modular array
+  - modular brick repeat
+  - modular repeat
+  - moire oscillation
+  - negative space dominant
+  - negative space frame
+  - nested concentric
+  - nested containment
+  - nested frames
+  - nested helical descent
+  - oblique shear
+  - oblique shearing
+  - oblique tension lines
+  - oblique thrust
+  - offset duplication
+  - offset mirror pair
+  - offset radial dilation
+  - optical flow lines
+  - orbital rings
+  - orbital traces
+  - orbiting periphery
+  - orthogonal layering
+  - oscillating rib rhythm
+  - overlapping strata
+  - paired opposition
+  - palindrome arrangement
+  - parabolic array
+  - parallel convergence
+  - parallel offset
+  - parallel plane stacking
+  - parametric undulation
+  - pendulum symmetry
+  - pentagonal spiral twist
+  - peripheral clustering
+  - peripheral void
+  - perpendicular cross
+  - pinned rotation
+  - pinwheel quadrant
+  - pinwheel rotation
+  - punctuated emptiness
+  - pyramidal cascade
+  - quad symmetry
+  - quad-axis symmetry
+  - radial burst
+  - radial expansion from edge
+  - radial symmetry
+  - radiating spokes
+  - receding arch sequence
+  - recursive knot loop
+  - recursive nesting
+  - reflected quadrant
+  - repeating arc band
+  - rhomboid tiling
+  - rhythmic progression
+  - rhythmic tiling
+  - ripple propagation
+  - rotating pentagonal symmetry
+  - rotational echo
+  - rotational near-symmetry
+  - rotational quadrants
+  - rotational slide grid
+  - rotational symmetry bloom
+  - rotational triad
+  - scattered fragments
+  - scattered void field
+  - sequential diminishment
+  - serial recession
+  - serpentine curve
+  - serpentine flow
+  - serrated stepping
+  - shattered mirror symmetry
+  - shattered symmetry
+  - sinuous bifurcation
+  - sinusoidal array
+  - sinusoidal weave lattice
+  - skewed collision
+  - skewed parallax overlap
+  - sparse field composition
+  - spherical tiling
+  - spine alignment
+  - spine and rib
+  - spiral arrangement
+  - spiral compression
+  - spiral radial flow
+  - spiral staircase composition
+  - spiral tangent cluster
+  - spiral void inversion
+  - splayed divergence
+  - split bilateral
+  - stacked cantilever
+  - stacked misalignment
+  - stacked offset
+  - staggered columns
+  - staggered descent
+  - staggered overlap
+  - staggered recession
+  - stair-step diagonal
+  - stepped overlapping layers
+  - stepped recession
+  - stepped terracing
+  - suspended cantilever
+  - suspended equilibrium
+  - suspended imbalance
+  - suspended tension
+  - swept diagonal
+  - symmetric radial spokes
+  - tangential intersection
+  - tapered wedge
+  - tendril bifurcation mesh
+  - tendril sweep
+  - terrace gradient ascent
+  - terraced descent
+  - tessellated repeat
+  - tessellated triangular mesh
+  - threshold framing
+  - threshold recession
+  - tidal sweep
+  - tiered progression
+  - tiled distortion
+  - torqued axis
+  - torsional sweep
+  - tri-step convergence
+  - triangular apex
+  - triangular subdivision
+  - triangular void spiral
+  - trifold mirroring
+  - tripartite division
+  - triptych symmetry
+  - twin axis rotation
+  - vanishing point focus
+  - vanishing spiral
+  - vertical bifurcation
+  - void corridor
+  - void halo
+  - void punctuation
+  - void-centered composition
+  - void-framed centrality
+  - void-threaded weave
+  - vortex convergence
+  - vortex curl
+  - warped grid shear
+  - wave interference pattern
+  - wedge compression
+  - whorled expansion
+  - woven crosshatch
+  - woven interlace
+  - woven mesh
+  - woven perpendiculars
+  - zigzag ascent
+  - zigzag procession
+  subject_form:
+  - abacus
+  - abutment
+  - accretion disc
+  - aedicule
+  - aiguille
+  - alveolus
+  - annulus
+  - anthelion
+  - anticline
+  - antiprism
+  - aperture
+  - apophysis
+  - apse
+  - arcade
+  - arch
+  - archway
+  - arcuation
+  - astragal
+  - atlatl
+  - aureole
+  - basalt column
+  - bastion
+  - bedrock
+  - bifurcation
+  - blastula
+  - bleb
+  - bossage
+  - boulder
+  - bryozoan
+  - bulge
+  - bulla
+  - bulwark
+  - buttress
+  - cairn
+  - caldera
+  - caltrop
+  - calyx
+  - canopy
+  - cantharus
+  - cantilever
+  - carapace
+  - caruncle
+  - catacaustic
+  - catena
+  - catenary
+  - catenoid
+  - caustic
+  - cavity
+  - cella
+  - chaeta
+  - chimera
+  - cincture
+  - clast
+  - cleft
+  - clepsydra
+  - clerestory
+  - cloisonné
+  - colonnade
+  - columella
+  - columnar joint
+  - concha
+  - conchoid
+  - corbel
+  - corona
+  - coronet
+  - cortex
+  - craton
+  - crenellate
+  - crenellated
+  - crenellation
+  - crevasse
+  - crystalloid
+  - cuboctahedron
+  - cuboid
+  - cupola
+  - cupule
+  - cusp
+  - cyst
+  - dendrite
+  - dike
+  - dodecahedron
+  - drumlin
+  - druse
+  - echinoid
+  - echinus
+  - enation
+  - entablature
+  - epiphyte
+  - escarpment
+  - esker
+  - extrusion
+  - facet
+  - fenestra
+  - figure
+  - filament
+  - finial
+  - fissure
+  - flange
+  - fluting
+  - folded plane
+  - foliation
+  - folium
+  - fornix
+  - fossa
+  - fossae
+  - fragmentum
+  - fresnel
+  - frond
+  - frustum
+  - fulgurite
+  - fumarole
+  - funicular
+  - funiculus
+  - gambrel
+  - ganglion
+  - gastropod
+  - gastrotheca
+  - geode
+  - gibbosity
+  - gibbous
+  - gibbousity
+  - gibbousness
+  - gibbus
+  - gimbal
+  - glochidium
+  - gnomon
+  - gonangium
+  - gonfalon
+  - groin vault
+  - grotto
+  - growth
+  - groyne
+  - gynoecium
+  - gyrus
+  - halo
+  - heliochrysum
+  - helix
+  - hexahedron
+  - hexastyle
+  - honeycomb
+  - hypocycloid
+  - hypostyle
+  - icosahedron
+  - imbrication
+  - incunabula
+  - interstice
+  - involute
+  - isthmus
+  - keystone
+  - knot
+  - knurl
+  - labyrinth
+  - lacuna
+  - lacunarity
+  - lamination
+  - lappet
+  - lattice
+  - latticework
+  - limen
+  - lithoid
+  - lobe
+  - loculus
+  - lunette
+  - lunule
+  - mantle
+  - mantlepiece
+  - membrane
+  - meniscus
+  - mesa
+  - monolith
+  - moraine
+  - morphogenesis
+  - mycelium
+  - myrmekite
+  - nacelle
+  - narthex
+  - nautilus
+  - nexus
+  - nodule
+  - nodus
+  - notochord
+  - obelisk
+  - oblate spheroid
+  - obsidian
+  - octahedron
+  - oculus
+  - ogee
+  - ogive
+  - oolite
+  - ossicle
+  - oubliette
+  - outcrop
+  - ovoid
+  - palimpsest
+  - pappus
+  - paraboloid
+  - pavilion
+  - pediment
+  - pelta
+  - pendentive
+  - penrose tile
+  - phyllotaxis
+  - pilaster
+  - pillar
+  - pinnacle
+  - pinnule
+  - pleat
+  - plinth
+  - plume
+  - pod
+  - polyp
+  - pommel
+  - prismatoid
+  - prong
+  - pterion
+  - pylome
+  - pylon
+  - pylorus
+  - pyramid
+  - quadriga
+  - quaquaversal
+  - quatrefoil
+  - quoin
+  - radiale
+  - relic
+  - reliquary
+  - rhizome
+  - rhizomorph
+  - rhomboid
+  - rhombus
+  - rib vault
+  - rostrum
+  - rotunda
+  - sac
+  - sacculus
+  - sarcode
+  - sarcophagus
+  - scallop
+  - scutellum
+  - scutum
+  - septum
+  - shard
+  - sheath
+  - shroud
+  - siphon
+  - siphonophore
+  - soros
+  - spandrel
+  - spheroid
+  - sphincter
+  - spicule
+  - spindle
+  - spire
+  - sporangium
+  - sporocarp
+  - stalactite
+  - stalagmite
+  - stele
+  - stellated dodecahedron
+  - stereobate
+  - stipule
+  - stratum
+  - stria
+  - striation
+  - stromatolite
+  - strombus
+  - strut
+  - stylobate
+  - stylolite
+  - suture
+  - syncline
+  - syncytium
+  - talus
+  - tendril
+  - tentacle
+  - tessellate
+  - tessera
+  - tesseract
+  - testudinal
+  - tetrahedron
+  - threshold
+  - torana
+  - toroid
+  - torus
+  - torus knot
+  - trabecula
+  - tracery
+  - transept
+  - trapezohedron
+  - triforium
+  - trochanter
+  - trochoid
+  - truncated cone
+  - tufa
+  - turricle
+  - umbel
+  - umbo
+  - umbra
+  - valance
+  - valleculla
+  - vault
+  - veil
+  - ventricle
+  - vermiculation
+  - vessel
+  - vitta
+  - void
+  - volute
+  - volvelle
+  - vortex
+  - wattle
+  - whorl
+  - xenolith
+  - ziggurat
+  - zygoma
+  temporal_state:
+  - acid-etched
+  - alloy-cooling seam
+  - amber-locked
+  - amber-occluded
+  - amber-preserved
+  - amber-softening edge
+  - ancient weathered
+  - annealing glow
+  - antler-casting
+  - ash-crumbling ember
+  - ash-friable
+  - bark-reclaiming
+  - bark-shedding
+  - bark-sloughing
+  - bark-stripped raw
+  - barnacle-encrusting
+  - bite-notched
+  - bleach-leached pale
+  - blood-oxidizing brown
+  - bloom-spent
+  - bloom-wilting curl
+  - blooming
+  - blooming again
+  - bone-desiccation cracking
+  - bone-yellowing
+  - brine-cured
+  - brine-leaching
+  - brine-pickled solid
+  - bronze-patina forming
+  - bud-break stage
+  - bud-swelling
+  - budding
+  - butterfly-emerging
+  - calcified
+  - calcifying overgrowth
+  - calcite-crusting
+  - callus-forming
+  - candle-guttering wick
+  - carbon-dated
+  - char-crumbling
+  - char-crusting
+  - char-edged
+  - char-marked aftermath
+  - char-transforming rind
+  - charcoal-reduction glowing
+  - chrysalis-splitting
+  - chrysalis-stage
+  - cinder-cooling surface
+  - cloud-condensation coalescing
+  - cloud-condensing
+  - coagulating
+  - cocoon-spinning activity
+  - cocoon-tightening
+  - color-fading
+  - compost-heating pile
+  - compost-steaming
+  - composting
+  - 'consumption:'
+  - corroding rapidly
+  - cotyledon-emerging
+  - crystallizing
+  - curdling
+  - 'decay/entropy:'
+  - decaying
+  - decomposing
+  - deliquescing edge
+  - desiccated
+  - desiccating membrane
+  - desiccating taut
+  - desiccation-shrunken
+  - dew-evaporation rings
+  - dormant
+  - drip-eroded hollow
+  - drought-cracked basin
+  - dust-dissolving
+  - eggshell-calcification hardening
+  - ember-glowing remnants
+  - embryo-curling
+  - embryo-hatching
+  - encrusting overgrowth
+  - erosion-carved
+  - fabric-rotting weave
+  - ferment-foaming
+  - fermentation-bubbling
+  - fermenting
+  - fermenting foam
+  - filament-stretching
+  - filament-thin crumbling
+  - final petal drop
+  - first-cracked shell
+  - flaking apart
+  - flaking-apart
+  - flesh-liquefaction dripping
+  - flood-silted
+  - foam-collapsing
+  - formalin-fixed
+  - fossilized
+  - freeze-dried
+  - freeze-fractured
+  - freeze-thaw pitted
+  - freshly formed
+  - frost-bitten
+  - frost-heave fracturing
+  - frost-heaved ground
+  - frozen mid-transformation
+  - fruit-bruising
+  - fruiting
+  - fur-molting patch
+  - gelatin-setting
+  - germinating
+  - gill-unfurling
+  - gilt-flaking
+  - glacier-calving rupture
+  - glacier-compressed
+  - glass-fogging breath
+  - glass-transitioning
+  - glassifying melt
+  - glaze-vitrifying
+  - gnaw-hollowed
+  - gnaw-marked
+  - gourd-hollowing interior
+  - grain-swelling
+  - grain-weathered
+  - granite-weathering
+  - grazed-down stub
+  - green-shoot piercing
+  - grout-dissolving
+  - 'growth/emergence:'
+  - gut-hollowed
+  - half-consumed
+  - half-digested
+  - heat-warping
+  - hermetically sealed
+  - honey-capped fermentation
+  - honey-thickening crystallization
+  - honeycombing erosion
+  - husk-splitting
+  - ice-entombed
+  - ice-melting edge
+  - ice-suspended
+  - ice-thawing fracture
+  - ink-spreading stain
+  - insect-bored
+  - iron-flaking
+  - iron-rusted
+  - lacquer-crackling
+  - lava-cooling crust
+  - leaching pale
+  - leaf-drop moment
+  - leaf-litter fermentation
+  - leaf-yellowing vein
+  - lichen-consuming surface
+  - lichen-crusted fossil
+  - lichen-encrusted surface
+  - lichen-fusion crust
+  - lichen-mottled
+  - lichen-spreading
+  - marble-veining
+  - marbled-rot
+  - marrow-drying
+  - melt-pooling
+  - membrane-perforating tear
+  - metal-annealing glow
+  - metal-creep deformation
+  - metal-fatigue crack
+  - metal-fatigue cracking
+  - mid-collapse arch
+  - mid-germination
+  - mid-shatter
+  - mildew-creeping
+  - mildew-feathering
+  - mold-blooming
+  - molting
+  - moon-dust settling
+  - mortar-crumbling joint
+  - moss-encroaching stone
+  - moss-reclaimed
+  - moss-velvet creeping
+  - mummification-tight
+  - mummified intact
+  - mushroom-cap unfolding
+  - mycelium-branching
+  - mycelium-knitting
+  - mycelium-threaded substrate
+  - mycelium-threading
+  - nascent
+  - nectar-dripping
+  - nibbled to core
+  - oxidized bloom
+  - oxidizing
+  - oxidizing edges
+  - paint-craquelure widening
+  - paint-peeling curl
+  - parchment-brittle
+  - patina-deepening
+  - patina-oxidation blooming
+  - patina-stabilized
+  - peat-accumulating layer
+  - petal-wilting
+  - petrified mid-flow
+  - petrifying
+  - phase-shifting
+  - picked-clean frame
+  - pitch-hardening
+  - pitch-sealed
+  - pith-hollowing
+  - pitted corrosion
+  - pollen-dusting
+  - pollen-release rupture
+  - polymerizing
+  - post-harvest drying
+  - powdering away
+  - 'preservation/stasis:'
+  - puparia-hardening
+  - pupating
+  - quill-pinfeathering
+  - rain-swollen grain
+  - releafing flush
+  - resin-entombed
+  - resin-oozing
+  - resin-oozing drip
+  - rewilding
+  - rhizome-pushing
+  - rime-encased
+  - root-breaking soil
+  - root-bursting
+  - root-girdling emergence
+  - rot-bubbling
+  - rust-bloom spreading
+  - rust-perforated sheet
+  - rust-weeping
+  - sagging collapse
+  - salt-bleached
+  - salt-crystal efflorescing
+  - salt-cured
+  - salt-efflorescing
+  - salt-rimed leather
+  - sand-blasted
+  - sap-rising
+  - sap-rising surge
+  - sap-weeping
+  - sapling-thickening
+  - scale-sloughing
+  - scar-tissue knitting
+  - seasonal dieback
+  - sediment-compaction layering
+  - sediment-compressing
+  - sediment-layered
+  - seed-pod splitting
+  - seed-swelling
+  - shedding skin
+  - shell-bleached white
+  - shell-splitting
+  - shroud-wrapped tight
+  - silk-cocooning
+  - silk-unraveling
+  - silt-buried
+  - sintering shut
+  - skin-transparency thinning
+  - slag-pooling
+  - sloughing surface
+  - smelting
+  - smoke-blackened remnants
+  - smoke-curing
+  - smoldering through
+  - spider-webbing crack
+  - spore-cloud releasing
+  - spore-dispersing
+  - spore-release ready
+  - spore-swollen
+  - sprout-cracking
+  - sprouting
+  - sputtering to life
+  - stone-smoothing
+  - structure-morphing
+  - sublimating edge
+  - sugar-candied
+  - sugar-crystallizing
+  - sugar-crystallizing rim
+  - sun-bleached
+  - sun-checked splitting
+  - suture-closing
+  - tadpole-morphing
+  - tar-immersed
+  - tar-sealed
+  - tarnish-creeping
+  - tendril-coiling
+  - tendril-reaching
+  - thorn-hardening
+  - thread-bare fraying
+  - tide-polished
+  - tide-pool evaporation ring
+  - tide-smoothed pebble
+  - tidepool refilling
+  - timecapsule pristine
+  - timecapsule-pristine
+  - tissue-dissolving
+  - 'transformation:'
+  - unfurling
+  - vacuum-packed
+  - varnish-curing
+  - vein-pulsing emergence
+  - veneer-peeling
+  - verdigris-covered
+  - vestige-clinging
+  - vine-strangled
+  - wave-undercut base
+  - wax-cooling drip
+  - wax-dipped preserved
+  - wax-encased
+  - wax-melting
+  - wax-softening slump
+  - web-anchoring
+  - web-tangled remains
+  - wind-scoured
+  - wood-pulp fermentation
+  - wood-splintering
+  texture_density:
+  - abalone nacre ripples
+  - abrasion scars
+  - alligator ridges
+  - bamboo segment rings
+  - bark fissures
+  - barnacle cluster pits
+  - barnacle crust
+  - barnacle crust bumps
+  - baroque scrollwork
+  - basket braid
+  - basket weave
+  - basket weave interlacing
+  - basketweave interlacing
+  - beehive lattice
+  - beveled hex tiles
+  - birch bark peeling
+  - blister pack bubbles
+  - blistering paint
+  - boiled wool nub
+  - braided rope coil
+  - braided rope strands
+  - braided sinew twist
+  - brocade woven sheen
+  - brushed suede
+  - brushed suede nap
+  - bubbled latex skin
+  - burlap crosshatch
+  - burlap sack roughness
+  - buttery leather
+  - cactus ribbing
+  - calcified bark
+  - calcite cave flowstone
+  - cascade water rivulets
+  - cashmere nap
+  - cast iron pockmarks
+  - cellular lace
+  - chainmail link rings
+  - chainmail links
+  - chaotic noise
+  - checkerboard mosaic
+  - checkerboard relief
+  - checkerboard tiling
+  - chevron grooves
+  - chevron weave
+  - chiseled fluting
+  - chiseled granite
+  - cinderblock gouging
+  - coarse gravel
+  - cobbled bumps
+  - cobblestone mosaic
+  - cobweb filament strands
+  - concentric rings
+  - coral branching
+  - coral reef pitting
+  - corduroy ridge lines
+  - corduroy ridges
+  - corkboard pinholes
+  - corrugated fluting
+  - corrugated ribbing
+  - corrugated tin ridges
+  - corrugated waves
+  - cracked mud flats
+  - crackled glaze
+  - crackled glaze fissures
+  - crackled glaze veins
+  - craquelure web
+  - crazed porcelain web
+  - crimped foil creases
+  - crinkle-cut ridges
+  - crinkled tissue folds
+  - crinkled tissue paper
+  - crochet loops
+  - crocheted loops
+  - crocheted tablecloth loops
+  - crocodile scale relief
+  - crumpled silk crepe
+  - crushed velvet pile
+  - crystalline facets
+  - damask ribbon ridges
+  - dendrite frost patterns
+  - dense moss tuft
+  - densely stippled
+  - diamond plate tread
+  - diamond quilted
+  - diamond quilting
+  - dissolved salt crust
+  - dotted grid
+  - eggshell finish
+  - embossed damask
+  - embossed damask relief
+  - embroidered french knots
+  - eroded sandstone
+  - eroded sandstone channels
+  - eroded sandstone pockets
+  - etched crosshatch lines
+  - etched glass frost
+  - feather barbule fringe
+  - feather barbules
+  - feather quill barbs
+  - felted wool nubs
+  - fine fretwork
+  - fine pinstripe
+  - fish scale overlap
+  - fishnet mesh
+  - fishscale overlap
+  - flocked wallpaper
+  - fractal fern branching
+  - frayed canvas
+  - frayed canvas selvage
+  - frayed rope fibers
+  - frosted dew beads
+  - frosted etching
+  - frosted rime
+  - fuzzy felt
+  - gauze bandage mesh
+  - geode cavity crystals
+  - geodesic dome faceting
+  - gilded filigree
+  - gossamer threads
+  - granite speckle matrix
+  - granular scatter
+  - grit blasted
+  - guilloche engraving
+  - hammered copper dimples
+  - hammered pewter dents
+  - hammered pewter texture
+  - herringbone brick offset
+  - herringbone parquet
+  - herringbone weave
+  - hexagon tessellation
+  - hexagonal parquet
+  - honeycomb cell pattern
+  - honeycomb cell walls
+  - honeycomb cells
+  - ice-slick finish
+  - interlocked links
+  - intricate filigree
+  - jagged flint shards
+  - jagged splintering
+  - karst limestone
+  - kelp forest tangles
+  - knitted cable stitch
+  - knotted driftwood grain
+  - knotted hemp
+  - lace doily
+  - lacey veinwork
+  - lacquered papier layers
+  - lacquered shell smoothness
+  - lacquered veneer
+  - lattice crosshatch
+  - latticed filigree
+  - lava flow crust
+  - leather tooling
+  - lichen crust
+  - lichen speckling
+  - linen canvas grain
+  - linen canvas tooth
+  - linoleum swirls
+  - loofah channel grooves
+  - looped chenille
+  - macrame knots
+  - macramé knots
+  - macramé knotwork
+  - marquetry inlaid strips
+  - mason jar frost
+  - matte ceramic slip
+  - matte rice paper
+  - matted felt compression
+  - micro chain lattice
+  - micro labyrinth
+  - micro-dot perforation
+  - mirror polish
+  - mirror polish sheen
+  - moss carpet pile
+  - mossy cobblestone
+  - mossy nap
+  - mossy velvet nap
+  - moth-eaten lacework
+  - nautilus spiral ridges
+  - needlepoint tufting
+  - obsidian glass etching
+  - orange peel dimples
+  - ornate traceries
+  - ornate tracery
+  - oyster shell lamination
+  - palm frond weave
+  - papyrus fiber weave
+  - patina blistering
+  - peacock feather eye
+  - pebble aggregate
+  - pebbled dash
+  - pilled fleece surface
+  - pilled sweater
+  - pimpled rubber
+  - pinecone overlapping scales
+  - pinecone scale plating
+  - pinstripe ribbing
+  - pleated accordion
+  - plush shag nap
+  - pocked concrete
+  - polished agate sheen
+  - polished river stone
+  - porous foam
+  - powder soft
+  - powder-soft haze
+  - puckered silk
+  - puckered smocking rows
+  - pumice pitting
+  - pumice stone abrasion
+  - quilted diamond puffs
+  - quilted diamond tufting
+  - quilted padding
+  - radial scallops
+  - raked gravel furrows
+  - raked zen gravel
+  - raw denim twill
+  - razor clam striations
+  - reef wrinkles
+  - reptile scale overlap
+  - reticulated grid
+  - ribbed mussel shell
+  - rippled sand dune
+  - ripstop squares
+  - riverstone smooth
+  - riveted chainmail links
+  - riveted plate seams
+  - ropy lava cords
+  - rough hewn
+  - russet lichen
+  - sailcloth ribbing
+  - salt cracked
+  - salt flat craquelure
+  - sandblasted matte
+  - satin blur
+  - satin gloss
+  - satin lacquer finish
+  - satin ribbon weave
+  - scabrous chalk
+  - scalloped roof tiles
+  - scalloped shell edges
+  - scoriaceous pits
+  - scoured pumice sweeps
+  - scratched brushed steel
+  - seamless blend
+  - seamless sheen
+  - seashell riblets
+  - seedpod dimples
+  - seersucker puckers
+  - selenite crystal striations
+  - shag pile
+  - shagreen leather grain
+  - shattered glaze
+  - shattered mosaic
+  - shed snakeskin scales
+  - shredded bark strips
+  - silk charmeuse
+  - silk ribbon sheen
+  - slick obsidian
+  - smocked fabric gather
+  - smooth gradient
+  - snakeskin pattern
+  - spiky burrs
+  - spiral ammonite grooves
+  - splintered cedar
+  - splintered wood grain
+  - split-grain leather
+  - spongy loofah
+  - still water sheen
+  - stippled dots
+  - stippled pointillism dots
+  - stippled sand scatter
+  - striated layers
+  - stucco spatter
+  - stucco stipple
+  - stucco wall pitting
+  - suede nap
+  - sugar crystal clusters
+  - sugar crystal crust
+  - sycamore bark flakes
+  - tangled briar mesh
+  - tangled wire nest
+  - tartan grid
+  - terry cloth loops
+  - tessellated hex tiles
+  - thatched reed bundles
+  - thatched straw
+  - thorny briar
+  - tide pool pitting
+  - tight braids
+  - tree bark furrows
+  - tree ring grooves
+  - triangular quilting studs
+  - triangular tessellation
+  - tufted cushion
+  - tufted wool
+  - tumbled sea glass
+  - tungsten wire coil
+  - tweed basket bumps
+  - twill rib
+  - veined marble
+  - veinous marbling
+  - velvet matte
+  - velvet pile crush
+  - velvet pile nap
+  - volcanic slag
+  - volcanic slag pores
+  - waffle grid squares
+  - waffle iron grid
+  - waffled grid
+  - waffled waffle iron
+  - warped wood grain
+  - waterworn river pebbles
+  - weathered bark furrows
+  - weathered flaking
+  - whorled fingerprints
+  - wicker weave
+  - wire mesh grid
+  - woven mesh
+  - wrinkled elephant
+  - zigzag herringbone
+generated_at: '2026-03-25T19:36:14.981810'
+stats:
+  costs_by_model:
+    claude: $0.22
+    deepseek: $0.01
+    gpt: $0.10
+    kimi: $0.02
+  errors: 0
+  total_cost: $0.35
+  total_requests: 151
+  total_tokens: 148352
