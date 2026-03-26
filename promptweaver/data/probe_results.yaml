@@ -1,0 +1,811 @@
+interpolations:
+- cat_a: setting_location
+  cat_b: subject_form
+  similarity: 0.0488
+  steps:
+  - decoded:
+    - 'subway '
+    - subway station
+    - subway  subway
+    t: 0.0
+  - decoded:
+    - subway station
+    - subway  subway
+    - subway
+    t: 0.17
+  - decoded:
+    - subway station
+    - ''
+    - 'subway '
+    t: 0.33
+  - decoded:
+    - '  '
+    - ' '
+    - ''
+    t: 0.5
+  - decoded:
+    - ' '
+    - .
+    - en e
+    t: 0.67
+  - decoded:
+    - '   '
+    - '  '
+    - '  .'
+    t: 0.83
+  - decoded:
+    - '   '
+    - '  '
+    - ' '
+    t: 1.0
+  word_a: crystal cave subway station
+  word_b: enation
+- cat_a: atmosphere_field
+  cat_b: material_substance
+  similarity: 0.0839
+  steps:
+  - decoded:
+    - dune dune
+    - dune dune polar ice
+    - dune dune ice ice
+    t: 0.0
+  - decoded:
+    - polar ice ice polar ice
+    - polar ice polar ice polar
+    - polar ice polar ice.
+    t: 0.17
+  - decoded:
+    - polar ice polar ice polar
+    - polar ice - polar ice
+    - polar ice polar polar ice
+    t: 0.33
+  - decoded:
+    - polar ice polar ice
+    - polar ice
+    - polar polar polar polar
+    t: 0.5
+  - decoded:
+    - '...'
+    - spherical
+    - sp sp
+    t: 0.67
+  - decoded:
+    - pvc pvc
+    - '...'
+    - sp
+    t: 0.83
+  - decoded:
+    - pvc pvc
+    - pvc pvc pipe
+    - pvc pvc plastic
+    t: 1.0
+  word_a: warm dune versus cold surf
+  word_b: mica sheet
+- cat_a: material_substance
+  cat_b: temporal_state
+  similarity: 0.0847
+  steps:
+  - decoded:
+    - .
+    - ''
+    - .
+    t: 0.0
+  - decoded:
+    - .
+    - s
+    - st
+    t: 0.17
+  - decoded:
+    - .
+    - '-'
+    - st
+    t: 0.33
+  - decoded:
+    - ripe
+    - sludge
+    - sand
+    t: 0.5
+  - decoded:
+    - screamed.
+    - screamed screamed
+    - screamed
+    t: 0.67
+  - decoded:
+    - smudge
+    - 'a sneered a '
+    - a smudge
+    t: 0.83
+  - decoded:
+    - sneered sneered
+    - sneered a sn
+    - sneered a sl
+    t: 1.0
+  word_a: epoxy resin
+  word_b: grazed-down stub
+- cat_a: atmosphere_field
+  cat_b: spatial_logic
+  similarity: 0.085
+  steps:
+  - decoded:
+    - dust
+    - dust powder dust powder dust powder
+    - dust powder dust dust powder dust
+    t: 0.0
+  - decoded:
+    - acetate acetate acetate
+    - dust
+    - 'acetate acetate acetate '
+    t: 0.17
+  - decoded:
+    - ':'
+    - acetate acetate
+    - '- - -'
+    t: 0.33
+  - decoded:
+    - symphysis
+    - symmetry
+    - asymmetry
+    t: 0.5
+  - decoded:
+    - axial symmetry
+    - axial symmetry axial symmetry
+    - axial axial symmetry
+    t: 0.67
+  - decoded:
+    - axial symmetry
+    - axial symmetry axial symmetry
+    - symmetry axial symmetry
+    t: 0.83
+  - decoded:
+    - axial symmetry axial symmetry axial
+    - axial symmetry axial symmetry
+    - axial symmetry
+    t: 1.0
+  word_a: mica dust shimmer
+  word_b: axial symmetry
+- cat_a: subject_form
+  cat_b: texture_density
+  similarity: 0.0867
+  steps:
+  - decoded:
+    - '  '
+    - ' '
+    - .
+    t: 0.0
+  - decoded:
+    - ' '
+    - .
+    - ''
+    t: 0.17
+  - decoded:
+    - '- a - a -'
+    - '- a - a '
+    - '- a - a –'
+    t: 0.33
+  - decoded:
+    - ice - ice - ice
+    - ice cream recipe ice cream recipe
+    - ice cream recipe ice cream
+    t: 0.5
+  - decoded:
+    - 'jar : jar : jar'
+    - 'jar : jar : m'
+    - 'jar : jar : recipe for'
+    t: 0.67
+  - decoded:
+    - 'jar : jar : jar'
+    - 'jar : jar : s'
+    - jar ice cream jars -
+    t: 0.83
+  - decoded:
+    - 'jar : jar : jar'
+    - jars - jars -
+    - 'jar : jar : make '
+    t: 1.0
+  word_a: growth
+  word_b: mason jar frost
+- cat_a: subject_form
+  cat_b: texture_density
+  similarity: 0.0916
+  steps:
+  - decoded:
+    - '  '
+    - ''
+    - ' '
+    t: 0.0
+  - decoded:
+    - '- - - - -'
+    - polyhedral tetrahed
+    - '- - - -'
+    t: 0.17
+  - decoded:
+    - 'hexaphthyl '
+    - hexagon
+    - hexaphtha
+    t: 0.33
+  - decoded:
+    - ect ect e
+    - ecta ecta
+    - ect ect
+    t: 0.5
+  - decoded:
+    - shedding
+    - shedding .
+    - '- - -'
+    t: 0.67
+  - decoded:
+    - shedding
+    - skin
+    - skin sheds
+    t: 0.83
+  - decoded:
+    - shedding
+    - skin
+    - shed skin
+    t: 1.0
+  word_a: cuboctahedron
+  word_b: shedding skin
+- cat_a: medium_render
+  cat_b: spatial_logic
+  similarity: 0.0931
+  steps:
+  - decoded:
+    - 'crochet - - - - '
+    - crochet - - crochet - -
+    - knitting needles
+    t: 0.0
+  - decoded:
+    - 'knitting - - - - '
+    - 'crochet - tatting - '
+    - 'stitching - sewing - stitching '
+    t: 0.17
+  - decoded:
+    - '- - - - -'
+    - '- - - -'
+    - '- - - sewing - '
+    t: 0.33
+  - decoded:
+    - '- - - - -'
+    - '- - - -'
+    - '- - - - t'
+    t: 0.5
+  - decoded:
+    - transitional / transitional / transitional
+    - transitional
+    - '- - - - -'
+    t: 0.67
+  - decoded:
+    - transitional
+    - transitional / transitional
+    - transitional transitional
+    t: 0.83
+  - decoded:
+    - transitional/transitional
+    - transitional
+    - transitional transitional
+    t: 1.0
+  word_a: paper quilling
+  word_b: 'liminal/transitional:'
+- cat_a: material_substance
+  cat_b: temporal_state
+  similarity: 0.0963
+  steps:
+  - decoded:
+    - silver and gold plated sterling silver earrings.
+    - silver and gold plated sterling silver cuff
+    - silver and gold plated sterling silver ring.
+    t: 0.0
+  - decoded:
+    - gold and silver swiss e
+    - 'gold and silver swiss silver '
+    - gold and silver swiss cro
+    t: 0.17
+  - decoded:
+    - 'silver emerald : silver '
+    - silver emerald emeral
+    - silver emeralds
+    t: 0.33
+  - decoded:
+    - -resin -resin
+    - -resid -res
+    - -resisting epo
+    t: 0.5
+  - decoded:
+    - '    '
+    - '    -'
+    - '   '
+    t: 0.67
+  - decoded:
+    - 'e    '
+    - 'spore    '
+    - 'spore   a '
+    t: 0.83
+  - decoded:
+    - '    '
+    - '   '
+    - '    a'
+    t: 1.0
+  word_a: sterling silver
+  word_b: spore-cloud releasing
+jitter_clouds:
+- nearest: barnacle-encrusting
+  scales:
+    0.01:
+    - We made a mistake.
+    - Welcome to the Karnataka
+    - Welford we luth wel
+    - Weno, the owner of the bar,
+    - 'Then we have the fact that we are '
+    - The manager of the hotel where the incident took place
+    0.05:
+    - Silvano, the ain's
+    - 'a thief or a '
+    - a) To prevent the sale and supply of
+    - The court-appointed guardian/cus
+    - Hoping to be picked off the street by the
+    - It was not until I was in high school that
+    0.1:
+    - Coca-Cola, a.k.
+    - Put another way, if you are going to
+    - In the U.S., the population was
+    - '    '
+    - . . .
+    - Wessex Show, the UK's
+    0.2:
+    - '[''Attah!'','
+    - I'm not a liar
+    - ':::::::::'
+    - In this way, we are able to provide
+    - '"Turtle"""""'
+    - you can download the videos.
+    0.4:
+    - ad infinitum ad
+    - ''
+    - 'BUYER BEWARE: BU'
+    - ', i.e., i'
+    - If you have any questions about this website, you
+    - irritually ir
+- nearest: airport jet bridge
+  scales:
+    0.01:
+    - ''''''''''''''''''''
+    - '««   '
+    0.05:
+    - Robbie Boss, a.l
+    - . . .
+    - ', the government has pledged to "en'
+    - '''Pete''''''"'
+    - I'm not even going to get into the
+    - At the time of this writing, the site is
+    0.1:
+    - 'pfaçossa '
+    - Senegal, the Republic of theimp
+    - br>br>
+    - '-----------------------'
+    - .
+    - 12save.com
+    0.2:
+    - '''60s'', ''70s'
+    - Isn't it a little tac
+    - Oh, and did we also mention that we have
+    - Liaoning and Xinhu
+    - '"Sinny"""""'
+    - '.. .. .. '
+    0.4:
+    - ad infinitum ad
+    - ''
+    - 'BUYER BEWARE: BU'
+    - ', i.e., i'
+    - If you like, you can even design your own
+- nearest: opposition surge brightening
+  scales:
+    0.01:
+    - :"More than a face
+    - iii, iii.
+    - :br>br>
+    - ii., "the" or "
+    - :"Youreseenee
+    - a liiiiii
+    0.05:
+    - Sayas todaaa a
+    - '''Tis the season for rejo'
+    - ': "As a citizen, I'
+    - ': """"""""'
+    - I bet you've never heard of me
+    - In a recent interview with the Washington Post,
+    0.1:
+    - Iguale sidoso,
+    - i.e. the slam
+    - On the other side of the world, on the
+    - Are you up for the challenge? What are you
+    - . . . .
+    - They're not making you a fool of
+    0.2:
+    - '''60s'', ''70s'
+    - So, what do you think about the idea of
+    - ':::::::::'
+    - Liam is a young and inexperienced
+    - br> " ". ""
+    - you can download the app from the app store.
+    0.4:
+    - ad infinitum ad
+    - ''
+    - BUYER BEWARE BUY
+    - i  m  w
+    - If you have any questions about this website, you
+    - iO m8 - i
+- nearest: sycamore bark flakes
+  scales:
+    0.01:
+    - ', Women, '
+    - ''''''''''''''''''''
+    - ', , , , ,'
+    - wp-content-content/the
+    - '''''''   '
+    - '''''''p2'''''
+    0.05:
+    - Spiders, Super Spiders, Spiders,
+    - It's a good thing it's
+    - ''''''''''''''''''''
+    - pawns, pawn paw
+    - Coming down on the other side of the coin would
+    - ;;;;;;;;;
+    0.1:
+    - '''''Following a '
+    - Sensitiv and elongated,
+    - In the Middle East, the name for the Middle
+    - Have you ever wondered what it would be like to
+    - . . . . .
+    - Wessex, England, 20 December 18
+    0.2:
+    - '?, ?, '
+    - Agreed, but I'm not
+    - . . .
+    - CYPHER CYPHER CY
+    - br /> b
+    - pl .. p
+    0.4:
+    - ad infinitum ad
+    - ''
+    - Then there are the people who don't
+    - iStockphoto.com is an
+    - If you have any questions, comments or complaints,
+    - iii. iii.
+- nearest: methane bubbles
+  scales:
+    0.01:
+    - Learning topi.com) and a
+    - Wembley Stadium - just a
+    - 'They p   '
+    - Tryst and labyrinth (
+    - They will also be the perfect place for you to
+    - m - a - b
+    0.05:
+    - Kateleypohlnsss
+    - None of these books are for you.
+    - a) a) a b
+    - ) or if you prefer, you can
+    - It’s gonna be a wild ride
+    - Between the time when I was in high school and
+    0.1:
+    - ''', '''' ''Pu'
+    - Sensitive and reticent, she
+    - Be the first to know about the hottest new
+    - '    '
+    - . . . . .
+    - Wessex & London, wes
+    0.2:
+    - '[''Bizarre, huh?'
+    - I'm not a big fan of the
+    - '...and if that''s not enough'
+    - Lying in the sands of space
+    - e., l'inser
+    - you can sup
+    0.4:
+    - ad infinitum ad
+    - ''
+    - If you're looking for a place to
+    - 'a, b, c, '
+    - If you like, you can even design your own
+    - 'iO iTo iTo '
+vocabulary_mining:
+- distance: 0.8847
+  token: Translat
+- distance: 0.8112
+  token: Which
+- distance: 0.7807
+  token: Could
+- distance: 0.7782
+  token: Celebrate
+- distance: 0.7621
+  token: Established
+- distance: 0.7611
+  token: Review
+- distance: 0.7503
+  token: What
+- distance: 0.7503
+  token: What
+- distance: 0.713
+  token: Suppose
+- distance: 0.6994
+  token: Late
+- distance: 0.6946
+  token: obwohl
+- distance: 0.6844
+  token: urilor
+- distance: 0.684
+  token: insta
+- distance: 0.6819
+  token: Luckily
+- distance: 0.6814
+  token: Apparently
+- distance: 0.6804
+  token: Firstly
+- distance: 0.6781
+  token: iilor
+- distance: 0.6776
+  token: Potrivit
+- distance: 0.677
+  token: (2007)
+- distance: 0.6767
+  token: Vielleicht
+- distance: 0.6748
+  token: Foarte
+- distance: 0.6727
+  token: Atunci
+- distance: 0.672
+  token: _______
+- distance: 0.67
+  token: (2009)
+- distance: 0.6637
+  token: Depending
+- distance: 0.6617
+  token: Unless
+- distance: 0.6615
+  token: Neither
+- distance: 0.6612
+  token: gasesc
+- distance: 0.6608
+  token: Rather
+- distance: 0.6606
+  token: Whenever
+- distance: 0.6597
+  token: GitHub
+- distance: 0.6591
+  token: Hopefully
+- distance: 0.6566
+  token: (2003)
+- distance: 0.6555
+  token: Toate
+- distance: 0.6548
+  token: Despite
+- distance: 0.6547
+  token: AFP
+- distance: 0.6543
+  token: owohl
+- distance: 0.6533
+  token: PGA
+- distance: 0.6521
+  token: iunea
+- distance: 0.6507
+  token: Considering
+- distance: 0.6502
+  token: Trebuie
+- distance: 0.6497
+  token: puteti
+- distance: 0.6493
+  token: /2017
+- distance: 0.6482
+  token: '................'
+- distance: 0.6476
+  token: (2018)
+- distance: 0.6473
+  token: Interested
+- distance: 0.6473
+  token: irgend
+- distance: 0.6466
+  token: sunteti
+- distance: 0.6458
+  token: Nonetheless
+- distance: 0.6457
+  token: (2011)
+void_decodings:
+- decoded:
+  - Welford we are the people of welford we
+  - Welford we are the people of Welford we
+  - Welford we are the people of wetland
+  - Welford we are the first to bemarry the
+  - Welford we are the people of Welford.
+  distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - &id001 !!python/object/apply:numpy.dtype
+    args:
+    - f8
+    - false
+    - true
+    state: !!python/tuple
+    - 3
+    - <
+    - null
+    - null
+    - null
+    - -1
+    - -1
+    - 0
+  - !!binary |
+    EoPAyqFF8D8=
+  nearest: barnacle-encrusting
+- decoded:
+  - ''''''''''''''''''''''''
+  - ''''', '''', '''','
+  - '''''''''"""""""'
+  - ''''''''''''''''''''','
+  - ''''''''''''''''''', '
+  distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    C7Wmeccp8D8=
+  nearest: airport jet bridge
+- decoded:
+  - :"Youreeeeeeee
+  - :"Youreseeneeee
+  - :"Youreeeeee""
+  - :"Youreseenee""
+  - :"Youreeeeeee is
+  distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    Qxzr4jYa8D8=
+  nearest: opposition surge brightening
+- decoded:
+  - ', , , , , ,'
+  - ', , , , ,,,'
+  - ', , , ,,, ,'
+  - ', , , , , &'
+  - ', , , , , .'
+  distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    /fZ14JwR8D8=
+  nearest: sycamore bark flakes
+- decoded:
+  - They re m 14
+  - They re m 12
+  - 'They re m body '
+  - They re m body -
+  - 'They ldr - '
+  distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    yJi7lpAP8D8=
+  nearest: methane bubbles
+- decoded:
+  - Ambit a taaaaaa
+  - Ambit a trwaaaa
+  - Ambit a taaaaa,
+  - Ambit a trwaaathe
+  - Ambit a trwaaawww
+  distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    oyO5/If07z8=
+  nearest: polymer clay sculpture
+- decoded:
+  - '     '
+  - '  :   '
+  - ' :    '
+  - '    '
+  - '  -   '
+  distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    wcqhRbbz7z8=
+  nearest: reliquary
+- decoded:
+  - The purpose of this review is to provide an overview of the
+  - The purpose of this review is to provide an in-depth
+  - The purpose of this review is to give you an overview of
+  - The purpose of this review is to give you a general
+  - The purpose of this review is to give you a quick
+  distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    CfmgZ7Pq7z8=
+  nearest: confocal micrograph
+- decoded:
+  - Idiots a la Netos
+  - Idiots a la Neta-
+  - Idiots a la NetElmer
+  - Idiots a re o
+  - Idiots a re raz
+  distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    BhIUP8bc7z8=
+  nearest: methane bubbles
+- decoded:
+  - If you have a child that is going through a
+  - If you have a chance to live with the consequences of
+  - If you have a chance to live with this disease,
+  - If you have a child that is going through some kind
+  - If you have a child that is going through this thing
+  distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    JLn8h/Tb7z8=
+  nearest: snow flurries
+voids:
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    EoPAyqFF8D8=
+  nearest: barnacle-encrusting
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    C7Wmeccp8D8=
+  nearest: airport jet bridge
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    Qxzr4jYa8D8=
+  nearest: opposition surge brightening
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    /fZ14JwR8D8=
+  nearest: sycamore bark flakes
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    yJi7lpAP8D8=
+  nearest: methane bubbles
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    oyO5/If07z8=
+  nearest: polymer clay sculpture
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    wcqhRbbz7z8=
+  nearest: reliquary
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    CfmgZ7Pq7z8=
+  nearest: confocal micrograph
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    BhIUP8bc7z8=
+  nearest: methane bubbles
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    JLn8h/Tb7z8=
+  nearest: snow flurries
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    QmDl0CLb7z8=
+  nearest: galaxy cluster scale
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    MZkqGJXU7z8=
+  nearest: stepped recession
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    LbKd76fG7z8=
+  nearest: engraved illustration
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    h6dXyjLE7z8=
+  nearest: sycamore bark flakes
+- distance: !!python/object/apply:numpy._core.multiarray.scalar
+  - *id001
+  - !!binary |
+    OpLLf0i/7z8=
+  nearest: craton

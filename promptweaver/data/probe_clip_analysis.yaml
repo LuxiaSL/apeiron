@@ -1,0 +1,85 @@
+# CLIP Visual Relevance Analysis of Probe Discoveries
+# Generated 2026-03-25
+#
+# Methodology: Extracted coherent words from probe results (void nearest words,
+# interpolation midpoints, jitter cloud decodings, vocab mining). Filtered for
+# semantic muck, then CLIP-scored for visual relevance (pre-normalization norm)
+# and checked distance to existing curated pool.
+#
+# Result: No candidates passed both high visual relevance (CLIP norm > 14)
+# AND high novelty (pool distance > 0.12). The probe approach surfaced mostly
+# generic single words with low CLIP activation. The void regions in T5 space
+# do not contain visually rich concepts that are missing from the pool.
+#
+# Potentially interesting items (borderline):
+#   - labyrinth: dist=0.238, CLIP=8.95 (most novel, moderate visual)
+#   - turtle: dist=0.182, CLIP=9.87 (form concept)
+#   - tatting: dist=0.179, CLIP=9.91 (specific lace-making technique)
+#   - stitching: dist=0.176, CLIP=9.86 (texture/craft)
+#   - elongated: dist=0.154, CLIP=10.38 (spatial modifier)
+#   - smudge: dist=0.147, CLIP=10.35 (texture/temporal)
+#   - polar ice: dist=0.146, CLIP=10.45 (atmosphere/material)
+#
+# These could be added to the pool manually if desired, but are not
+# automatically recommended by the pipeline.
+
+candidates:
+  - word: labyrinth
+    clip_norm: 8.95
+    pool_distance: 0.238
+    nearest_in_pool: looping return
+    potential_category: spatial_logic or setting_location
+
+  - word: turtle
+    clip_norm: 9.87
+    pool_distance: 0.182
+    nearest_in_pool: facet
+    potential_category: subject_form
+
+  - word: tatting
+    clip_norm: 9.91
+    pool_distance: 0.179
+    nearest_in_pool: facet
+    potential_category: texture_density or medium_render
+
+  - word: stitching
+    clip_norm: 9.86
+    pool_distance: 0.176
+    nearest_in_pool: facet
+    potential_category: texture_density
+
+  - word: elongated
+    clip_norm: 10.38
+    pool_distance: 0.154
+    nearest_in_pool: freshly formed
+    potential_category: spatial_logic or subject_form
+
+  - word: smudge
+    clip_norm: 10.35
+    pool_distance: 0.147
+    nearest_in_pool: facet
+    potential_category: texture_density or medium_render
+
+  - word: polar ice
+    clip_norm: 10.45
+    pool_distance: 0.146
+    nearest_in_pool: salt-bleached
+    potential_category: atmosphere_field or material_substance
+
+  - word: ripe
+    clip_norm: 10.59
+    pool_distance: 0.138
+    nearest_in_pool: bite-notched
+    potential_category: temporal_state
+
+  - word: symphysis
+    clip_norm: 10.79
+    pool_distance: 0.121
+    nearest_in_pool: facet
+    potential_category: subject_form (biological joint)
+
+  - word: sludge
+    clip_norm: 11.19
+    pool_distance: 0.112
+    nearest_in_pool: decaying
+    potential_category: material_substance or temporal_state
