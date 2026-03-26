@@ -505,9 +505,8 @@ def main() -> None:
         logger.info(f"  Reallocation: moved {moved_total} items (single pass, fixed centroids)")
 
     # ── PER-CATEGORY SELECTION ──────────────────────────────────────────
-    # Recompute centroids after reallocation for clean contamination check
-    centroids = compute_centroids(working, cache)
-
+    # Use original fixed centroids for contamination during selection.
+    # Post-reallocation centroids are too distorted by absorbed foreign words.
     results: dict[str, SelectionResult] = {}
     for cat in sorted(select_cats):
         cat_alpha = per_cat_alpha.get(cat, args.alpha)
@@ -515,7 +514,7 @@ def main() -> None:
             category=cat,
             candidates=working[cat],
             cache=cache,
-            centroids={k: v for k, v in centroids.items() if k != cat},
+            centroids={k: v for k, v in fixed_centroids.items() if k != cat},
             k=args.k,
             alpha=cat_alpha,
             redundancy_threshold=args.redundancy_threshold,
