@@ -1,0 +1,763 @@
+components:
+  atmosphere_field:
+  - word: aerosolized brine
+  - word: rain curtain
+  - word: bioluminescent spores
+  - word: drizzle spray
+  - word: phosphorescent plankton drift
+  - word: phosphorescent bacteria bloom
+  - word: freezing drizzle
+  - word: birch pollen haze
+  - word: mycelium spore burst
+  - word: honeybee pheromone trail
+  - word: campfire embers
+  - word: magnetic field lines
+  - word: anaesthetic vapor
+  - word: swirling nebula dust
+  - word: spore clouds
+  - word: ocean plankton bloom
+  - word: phosphorescent algae
+  - word: sulfurous fumes
+  - word: pyroclastic haze
+  - word: kelp fronds
+  - word: eucalyptus oil vapor
+  - word: silver iodide haze
+  - word: moth wing scales
+  - word: bio-luminescent fog
+  - word: smoke haze
+  - word: gnat swarm
+  - word: salt spray
+  - word: radioactive particle haze
+  - word: copper sulfate bloom
+  - word: aphid swarm column
+  - word: geyser steam plume
+  - word: ozone layer distortion
+  - word: lava steam wisps
+  - word: bubble curtain
+  - word: dense fog
+  - word: glowing plankton
+  - word: smoke wisps
+  - word: pollen blizzard
+  - word: bioluminescent algae veil
+  - word: amber resin vapor
+  - word: bioluminescent spray
+  - word: underwater caustics
+  - word: cavitation bubbles
+  - word: ferrofluid suspension
+  - word: sublimation vapors
+  - word: electrostatic sparks
+  - word: electroplasma field
+  - word: mushroom spore burst
+  - word: geothermal steam
+  - word: hail curtain
+  - word: methane bubbles
+  - word: ammonia vapor wisps
+  - word: algae bloom haze
+  - word: ash suspension
+  - word: firefly swarm
+  - word: lichen spore fall
+  - word: volcanic ashfall
+  - word: marijuana smoke tendrils
+  - word: evaporation sheen
+  - word: sulfur smoke
+  - word: dust motes
+  - word: void darkness
+  color_logic:
+  - word: absinthe green and bruised purple
+  - word: split complementary
+  - word: aged terracotta and faded azure
+  - word: warm sandstone cooling to permafrost
+  - word: cool alabaster against sunbaked terracotta
+  - word: verdigris and rust patina
+  - word: lavender field with ochre punctuation
+  - word: oxblood leather
+  - word: charcoal field with cadmium punctuation
+  - word: ancient terracotta patina
+  - word: icy lilac against hearth ember
+  - word: ashen field with cerulean accent
+  - word: molten gold on obsidian
+  - word: dusty olive with vermilion pinprick
+  - word: graphite with cadmium red accent
+  - word: cool slate punctured by saffron
+  - word: bone white and oxblood
+  - word: analogous ochre and umber
+  - word: navy punctured by laser yellow
+  - word: ice blue against burnt orange
+  - word: sepia wash with cerulean accent
+  - word: warm terracotta cooling to glacier
+  - word: celadon and terracotta harmony
+  - word: cinnabar and jade contrast
+  - word: terracotta and turquoise southwest
+  - word: polarized lemon yellow deep violet
+  - word: oxidized copper and malachite
+  - word: warm ivory cool periwinkle clash
+  - word: patinated bronze warming to verdigris
+  - word: marigold on deep indigo
+  - word: monochromatic terracotta depth
+  - word: patinated copper and azurite
+  - word: polarized warm cocoa cool mint
+  - word: analogous cerulean to azure
+  - word: weathered cedar and iron oxide
+  - word: cream field with burgundy punctuation
+  - word: oxblood on bone parchment
+  - word: raw sienna and ultramarine
+  - word: bone with terracotta punctuation
+  - word: graphite field with emerald spark
+  - word: complementary fuchsia and moss
+  - word: woad and madder cultural dyes
+  - word: charcoal with goldenrod punctuation
+  - word: peach and mint analogous haze
+  - word: pewter field with vermillion punctuation
+  - word: aged bronze and verdigris palette
+  - word: cool arctic blue warm amber
+  - word: nicotine-stained ivory
+  - word: fogbound lavender monochromatic
+  - word: desert heat mirage spectrum
+  - word: cool celadon hot cadmium clash
+  - word: warm amber cool azure contrast
+  - word: analogous peach to apricot
+  - word: analogous kelp to moss
+  - word: split complementary emerald crimson gold
+  - word: duotone copper patina on zinc
+  - word: weathered barnwood palette
+  - word: monochromatic ochre
+  - word: sepia toned nostalgia
+  - word: pitch black neon green accent
+  - word: iridescent
+  - word: complementary orange and blue
+  - word: high contrast black and gold
+  light_behavior:
+  - word: airglow night sky
+  - word: total internal reflection
+  - word: key grip kicker light
+  - word: frenel louver slash
+  - word: daylight fluorescence
+  - word: iceland spar doubling
+  - word: snoot spotlight
+  - word: rembrandt triangle
+  - word: painterly light wash
+  - word: contre-jour
+  - word: prismatic rainbowing
+  - word: st elmo glow
+  - word: mie scattering
+  - word: heiligenschein halo
+  - word: gobos break pattern
+  - word: cloudy bright sky
+  - word: anticrepuscular convergence
+  - word: firefly swarm glow
+  - word: window gobo slash
+  - word: butterfly lighting
+  - word: noctilucent cloud glow
+  - word: cross-polarized glare
+  - word: fluorescence quenching
+  - word: iridescent oil slick
+  - word: diffraction spike star
+  - word: iridescent thin film
+  - word: chromatic lens aberration
+  - word: umbrella bounce
+  - word: chiaroscuro contrast
+  - word: stage followspot
+  - word: gridded snoot spot
+  - word: prismatic refraction
+  - word: bounce fill wrap
+  - word: rainbow diffraction halo
+  - word: kino flo wrap
+  - word: ctb gel shift
+  - word: schlieren flow lines
+  - word: bokeh balls
+  - word: diffraction spectral shift
+  - word: specular glint point
+  - word: arc welding flash
+  - word: motheye anti-reflection
+  - word: catoptric cistercian light
+  - word: dappled light
+  - word: split lighting
+  - word: chromatic aberration fringe
+  - word: soap bubble iridescence
+  - word: anamorphic flares
+  - word: silhouette shadow play
+  - word: led strip underglow
+  - word: three-point key wrap
+  - word: bioluminescent
+  - word: circumhorizontal arc
+  - word: solar corona halo
+  - word: softbox egg crate
+  - word: satin blur
+  - word: holographic interference
+  - word: marsh gas will-o'-wisp
+  - word: volumetric god rays
+  - word: crepuscular rays
+  - word: subsurface scattering
+  - word: harsh directional
+  - word: soft diffused
+  material_substance:
+  - word: abalone shell
+  - word: mercury
+  - word: pewter
+  - word: isinglass
+  - word: cast pewter
+  - word: fool's gold
+  - word: galvanized steel
+  - word: birch bark
+  - word: galvanized nails
+  - word: raw sisal
+  - word: porous foam
+  - word: lichen mat
+  - word: graphite felt
+  - word: gutta-percha
+  - word: felted wool
+  - word: cast iron
+  - word: perlite
+  - word: tungsten carbide
+  - word: myrrh resin
+  - word: camel bone
+  - word: pressed felt
+  - word: shagreen leather
+  - word: galalith plastic
+  - word: anodized titanium
+  - word: spun copper
+  - word: scrimshaw
+  - word: basalt
+  - word: palladium leaf
+  - word: crystalline sulfur
+  - word: slime mold
+  - word: coir
+  - word: wrought zinc
+  - word: sterling silver
+  - word: granite slab
+  - word: mudstone
+  - word: horn core
+  - word: palladium chloride
+  - word: suede
+  - word: moss agate
+  - word: lichen crust
+  - word: patinated bronze
+  - word: jade
+  - word: obsidian
+  - word: stainless mesh
+  - word: wrought iron
+  - word: raw fleece
+  - word: raw wool
+  - word: pewter ingot
+  - word: titanium sponge
+  - word: slate tile
+  - word: volcanic ash
+  - word: tung oil
+  - word: copper mesh
+  - word: braided sinew
+  - word: fuzzy felt
+  - word: asbestos cloth
+  - word: platinum sponge
+  - word: mica schist
+  - word: carbonized wood
+  - word: glass
+  - word: bone
+  - word: silk
+  - word: wax
+  - word: aerogel
+  - word: ferrofluid
+  medium_render:
+  - word: vector illustration
+  - word: spirit duplicator
+  - word: mosaic tessera
+  - word: terracotta engobe
+  - word: camera obscura projection
+  - word: carbon print process
+  - word: radiolarian microscopy
+  - word: gouache on board
+  - word: differential interference contrast
+  - word: polarizing microscopy
+  - word: cloisonné enamel
+  - word: giclée inkjet print
+  - word: positron emission scan
+  - word: etching on zinc
+  - word: casein tempera
+  - word: oil pastel drawing
+  - word: cross-processed film
+  - word: cyanotype
+  - word: raku fired glaze
+  - word: stencil spray paint
+  - word: mri scan
+  - word: charcoal sketch
+  - word: graphite smear wash
+  - word: anaglyph stereoscope
+  - word: champlevé enamel
+  - word: gyotaku fish print
+  - word: anamorphic render
+  - word: solarization print
+  - word: lapis lazuli pigment
+  - word: alla prima oil
+  - word: scanning electron microscope
+  - word: verdaccio underdraw
+  - word: tintype pounce
+  - word: glass plate negative
+  - word: cave wall fresco
+  - word: spectrograph visualization
+  - word: infrared photography
+  - word: screen print flat color
+  - word: x-ray diffraction
+  - word: thermal paper receipt
+  - word: paper quilling
+  - word: chemigram exposure
+  - word: botanical illustration
+  - word: pet scan fusion
+  - word: holographic interferometry
+  - word: thermal imager capture
+  - word: anaglyph red cyan
+  - word: sonogram imaging
+  - word: encaustic on panel
+  - word: oil impasto
+  - word: engraved illustration
+  - word: risograph print
+  - word: calotype negative
+  - word: lino cut print
+  - word: gouache flat wash
+  - word: wet on wet watercolor
+  - word: collotype print
+  - word: fresco buon
+  - word: infrared thermograph
+  - word: matte painting
+  phenomenon_pattern:
+  - word: acid etch pitting
+  - word: voronoi cells
+  - word: dandelion seed dispersal
+  - word: differential growth ruffle
+  - word: vein spread
+  - word: zooplankton micronekton
+  - word: sand dune migration
+  - word: acoustic levitation node
+  - word: electron backscatter diffraction
+  - word: chroma subsampling bleed
+  - word: hilbert curve recursion
+  - word: jpeg block artifact
+  - word: spore ejection burst
+  - word: apollonian gasket nesting
+  - word: logistic map bifurcation
+  - word: wax bloom exudation
+  - word: dune avalanche ripple
+  - word: paint skin wrinkling
+  - word: fibonacci tiling expansion
+  - word: fibonacci shell uncoil
+  - word: feldspar exsolution lamellae
+  - word: scarab swarm swarm
+  - word: mandelbrot zoom seahorse
+  - word: data moshing smear
+  - word: raster scan artifact
+  - word: stalactite formation
+  - word: lissajous knot trace
+  - word: holographic foil
+  - word: paint crazing spread
+  - word: spherulite crystal burst
+  - word: calcite rhombohedron twin
+  - word: dripping stalagmite candle
+  - word: fungal spore dispersal
+  - word: iron sulfide staining
+  - word: fungal hyphae weave
+  - word: prismatic sulfur spray
+  - word: perlin noise turbulence
+  - word: sand dune slipface
+  - word: diffusion limited aggregation
+  - word: bokeh polygon disk
+  - word: fungal sporangium burst
+  - word: aurora borealis wave
+  - word: karst dissolution pitting
+  - word: pyrite cube striation march
+  - word: stalactite drip cone
+  - word: metal pitting halo
+  - word: moss sporangium burst
+  - word: datamosh smear
+  - word: flame fractal flicker
+  - word: fault gouge drag fold
+  - word: turbulence vortex shedding
+  - word: patina creep front
+  - word: salt hydration cracking
+  - word: spore germination spray
+  - word: mycelial hyphae expansion
+  - word: spirograph flower
+  - word: rust tide surge
+  - word: rust tide creep
+  - word: vhs chroma crawl
+  - word: tide pool surface skim
+  - word: chromatic aberration
+  - word: fractal branching
+  - word: pixel sort
+  - word: moiré interference
+  scale_perspective:
+  - word: aerial drone shot
+  - word: microfluidic channel
+  - word: satellite view
+  - word: architectural interior
+  - word: through a mesh sieve
+  - word: through a magnifier
+  - word: straw interior view
+  - word: igloo interior upward
+  - word: submarine porthole
+  - word: x-ray crystallography view
+  - word: from a gargoyle ledge
+  - word: astronomical spectroscopy
+  - word: spectrograph slit view
+  - word: pollen grain closeup
+  - word: through a chain-link fence
+  - word: electron microscope
+  - word: ice fishing hole
+  - word: from a crow's nest
+  - word: from a grain of sand
+  - word: inside a mason jar
+  - word: inside a beehive frame
+  - word: from a zipline harness
+  - word: warehouse mezzanine
+  - word: crow's nest lookout
+  - word: looking through binocular rings
+  - word: safari vehicle roof
+  - word: beneath a lily pad
+  - word: through a mail slot
+  - word: through a kaleidoscope
+  - word: worm's-eye view
+  - word: inside a geodesic tent
+  - word: from a diving board above
+  - word: intimate portrait
+  - word: mri tube interior
+  - word: stalactite ceiling view
+  - word: dendrochronology core sample
+  - word: from a blimp gondola
+  - word: wide-field telescope array
+  - word: through a rifle scope
+  - word: through a periscope
+  - word: from inside a lantern
+  - word: rover wheel tread
+  - word: coin-operated binocular viewer
+  - word: geostationary orbit
+  - word: through a cracked eggshell
+  - word: through a cracked visor
+  - word: christmas ornament interior
+  - word: atomic force microscope
+  - word: rooftop parapet lean
+  - word: attic crawl space
+  - word: cinema balcony rail
+  - word: from a watchtower
+  - word: from inside a tulip
+  - word: ct scan slice
+  - word: coral polyp magnification
+  - word: from a rollercoaster
+  - word: from beneath a glass table
+  - word: beneath a magnifying glass
+  - word: cuckoo clock interior
+  - word: macro
+  - word: aerial
+  - word: tilt-shift miniature
+  - word: vast landscape scale
+  - word: keyhole view
+  - word: dollhouse cutaway
+  setting_location:
+  - word: abandoned airport control tower
+  - word: server farm
+  - word: abandoned shopping mall courtyard
+  - word: cathedral interior
+  - word: neon-lit pachinko parlor
+  - word: flooded basement
+  - word: wind-carved sandstone arch
+  - word: mountain pass switchback road
+  - word: wind turbine maintenance platform
+  - word: aurora borealis icefield
+  - word: dolomite cliffside monastery
+  - word: aquifer rock fissure
+  - word: coral atoll research station
+  - word: urban rooftop pigeon coop
+  - word: neon-reflecting rain puddle
+  - word: eroded sandstone pockets
+  - word: brutalist water treatment facility
+  - word: abandoned drive-in theater
+  - word: tide-carved sandstone cove
+  - word: moss-covered stone aqueduct
+  - word: creeper-swallowed colonial mansion
+  - word: arctic sea ice pressure ridge
+  - word: abandoned film set backlot
+  - word: kelp hatchery tanks
+  - word: infinite hallway
+  - word: kudzu-draped highway overpass
+  - word: ice sheet crevasse network
+  - word: fern-covered railway viaduct
+  - word: soviet-era housing courtyard
+  - word: hospital service corridor
+  - word: abyssal trench
+  - word: bioluminescent mangrove swamp
+  - word: moss-draped sugar mill
+  - word: kudzu-buried transmission tower
+  - word: tidal mudflat village
+  - word: brutalist university library
+  - word: storm drain outfall pipe
+  - word: ice shelf meltwater ravine
+  - word: brutalist grain elevator
+  - word: pahoehoe lava delta
+  - word: sand dune slipface desert
+  - word: supercell thunderstorm shelf cloud
+  - word: banyan tree strangler courtyard
+  - word: vine-strangled clock tower
+  - word: polar stratospheric cloud observatory
+  - word: sunken statue garden
+  - word: moss-draped canal lock
+  - word: derelict factory chimney base
+  - word: cinder block warehouse district
+  - word: root-split courtyard
+  - word: river delta distributary fork
+  - word: hoodoo badlands amphitheater
+  - word: moss-draped lava tube
+  - word: crumbling baroque opera house
+  - word: spring-fed limestone blue hole
+  - word: orbital station
+  - word: salt flat
+  - word: neon-lit alley
+  - word: fog shrouded moorland
+  spatial_logic:
+  - word: alternating polarity
+  - word: field perspective
+  - word: asymmetric void framing
+  - word: interlocking arcs
+  - word: fanned divergence
+  - word: modular repeat
+  - word: oblique thrust
+  - word: checkerboard pattern
+  - word: stellated dodecahedron
+  - word: incremental offset
+  - word: shattered symmetry
+  - word: triangular apex
+  - word: interstitial void
+  - word: truncated cone
+  - word: branching tributaries
+  - word: impossible scale
+  - word: cantilevered projection
+  - word: counterbalanced cantilever
+  - word: graduated recession
+  - word: interlocking pentagonal array
+  - word: shattered mirror symmetry
+  - word: threshold recession
+  - word: looping return
+  - word: interlocking gears
+  - word: tessellated triangular mesh
+  - word: paired opposition
+  - word: spine alignment
+  - word: vanishing spiral
+  - word: woven mesh
+  - word: kaleidoscopic mesh
+  - word: nested frames
+  - word: rhomboid tiling
+  - word: cellular repeat
+  - word: suspended tension
+  - word: concentric rings
+  - word: spine and rib
+  - word: elliptical orbit
+  - word: woven perpendiculars
+  - word: negative space dominant
+  - word: asymmetric fulcrum
+  - word: eccentric orbit
+  - word: suspended equilibrium
+  - word: interlocking rectangular modules
+  - word: parallel convergence
+  - word: whorled expansion
+  - word: hexagonal tessellation
+  - word: layered strata
+  - word: nested concentric
+  - word: floating isolated
+  - word: zigzag ascent
+  - word: zigzag procession
+  - word: hollow perimeter
+  - word: mirrored left-right balance
+  - word: mirrored bifurcation
+  - word: tessellated repeat
+  - word: cantilevered overhang
+  - word: tri-step convergence
+  - word: suspended cantilever
+  - word: infinite regression
+  - word: radial symmetry
+  - word: vanishing point focus
+  - word: central emergence
+  - word: bilateral symmetry
+  - word: diagonal tension
+  - word: scattered fragments
+  subject_form:
+  - word: abacus
+  - word: membrane
+  - word: cavity
+  - word: lunette
+  - word: vault
+  - word: knot
+  - word: sac
+  - word: figure
+  - word: pod
+  - word: aperture
+  - word: growth
+  - word: arch
+  - word: canopy
+  - word: pavilion
+  - word: vessel
+  - word: arcade
+  - word: threshold
+  - word: scallop
+  - word: boulder
+  - word: pyramid
+  - word: cortex
+  - word: cyst
+  - word: filament
+  - word: paraboloid
+  - word: caruncle
+  - word: pillar
+  - word: stria
+  - word: gastrotheca
+  - word: facet
+  - word: spire
+  - word: void
+  - word: oblate spheroid
+  - word: trapezohedron
+  - word: torus
+  - word: talus
+  - word: mesa
+  - word: toroid
+  - word: hexahedron
+  - word: apophysis
+  - word: ogive
+  - word: stylobate
+  - word: pommel
+  - word: isthmus
+  - word: gynoecium
+  - word: sporocarp
+  - word: foliation
+  - word: cleft
+  - word: fornix
+  - word: suture
+  - word: pappus
+  - word: clast
+  - word: ganglion
+  - word: lithoid
+  - word: lattice
+  - word: plume
+  - word: monolith
+  - word: shard
+  - word: veil
+  - word: shroud
+  temporal_state:
+  - word: acid-etched
+  - word: sintering shut
+  - word: brine-cured
+  - word: nibbled to core
+  - word: eggshell-calcification hardening
+  - word: cloud-condensation coalescing
+  - word: chrysalis-splitting
+  - word: sprouting
+  - word: sand-blasted
+  - word: moss-velvet creeping
+  - word: frost-heave fracturing
+  - word: tide-pool evaporation ring
+  - word: tadpole-morphing
+  - word: glaze-vitrifying
+  - word: petrifying
+  - word: brine-leaching
+  - word: wood-pulp fermentation
+  - word: wax-dipped preserved
+  - word: compost-heating pile
+  - word: sputtering to life
+  - word: releafing flush
+  - word: green-shoot piercing
+  - word: leaf-yellowing vein
+  - word: metal-creep deformation
+  - word: cinder-cooling surface
+  - word: bud-break stage
+  - word: mid-collapse arch
+  - word: glass-transitioning
+  - word: pupating
+  - word: sapling-thickening
+  - word: spore-dispersing
+  - word: salt-cured
+  - word: post-harvest drying
+  - word: antler-casting
+  - word: picked-clean frame
+  - word: drought-cracked basin
+  - word: gill-unfurling
+  - word: glacier-compressed
+  - word: mid-germination
+  - word: tar-sealed
+  - word: fermentation-bubbling
+  - word: leaf-litter fermentation
+  - word: compost-steaming
+  - word: chrysalis-stage
+  - word: fruiting
+  - word: scar-tissue knitting
+  - word: decomposing
+  - word: quill-pinfeathering
+  - word: oxidizing
+  - word: final petal drop
+  - word: butterfly-emerging
+  - word: carbon-dated
+  - word: leaf-drop moment
+  - word: fermenting
+  - word: tide-smoothed pebble
+  - word: moss-encroaching stone
+  - word: bark-stripped raw
+  - word: nascent
+  - word: blooming
+  - word: fossilized
+  - word: freshly formed
+  - word: crystallizing
+  - word: frozen mid-transformation
+  - word: resin-entombed
+  texture_density:
+  - word: abalone nacre ripples
+  - word: karst limestone
+  - word: flocked wallpaper
+  - word: sailcloth ribbing
+  - word: lace doily
+  - word: russet lichen
+  - word: woven raffia
+  - word: smooth gradient
+  - word: jagged flint shards
+  - word: sycamore bark flakes
+  - word: gilded filigree
+  - word: coarse gravel
+  - word: riveted chainmail links
+  - word: latticed filigree
+  - word: barnacle crust
+  - word: spiky burrs
+  - word: micro labyrinth
+  - word: puckered silk
+  - word: hammered copper dimples
+  - word: crinkled tissue paper
+  - word: seersucker puckers
+  - word: thatched reed bundles
+  - word: lichen crust
+  - word: dissolved salt crust
+  - word: jagged splintering
+  - word: terry cloth loops
+  - word: geode cavity crystals
+  - word: dotted grid
+  - word: rust-perforated sheet
+  - word: frosted etching
+  - word: feather quill barbs
+  - word: velvet matte
+  - word: pocked concrete
+  - word: basket braid
+  - word: calcified bark
+  - word: scoriaceous pits
+  - word: cactus ribbing
+  - word: eroded sandstone
+  - word: pumice pitting
+  - word: marquetry inlaid strips
+  - word: frayed canvas
+  - word: brushed suede
+  - word: sugar crystal crust
+  - word: beveled hex tiles
+  - word: pinecone scale plating
+  - word: macramé knotwork
+  - word: moth-eaten lacework
+  - word: tree ring grooves
+  - word: hammered pewter dents
+  - word: concentric rings
+  - word: reef wrinkles
+  - word: intricate filigree
+  - word: thorny briar
+  - word: interlocked ring chain
+  - word: blistering paint
+  - word: stucco spatter
+  - word: tufted cushion
+  - word: linen canvas grain
+  - word: rough hewn
+  - word: gossamer threads
+  - word: granular scatter

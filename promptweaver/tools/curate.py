@@ -56,21 +56,30 @@ logger = logging.getLogger(__name__)
 # KNOWN ISSUES — from the curation review
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# Garbage entries to remove entirely
+# Garbage entries to remove entirely (YAML artifacts that survived as "words")
 GARBAGE = {
+    # From base CLIP selection
     "liminal/transitional:",
     "transformation:",
     "atmospheric/extreme:",
     "consumption:",
     "built/architectural:",
+    # From gated OpenCLIP+T5-XXL selection
+    "natural/geological:",
+    "water/aquatic:",
+    "preservation/stasis:",
+    "decay/entropy:",
+    "growth/emergence:",
+    "总 total internal reflection",  # Corrupted: Chinese char prefix on valid entry
 }
 
 # Items to move: {word: (from_category, to_category)}
+# Only fires if the word is found in from_category, so old entries are harmless
+# when running against a pool that doesn't have them.
 MISCATEGORIZED: dict[str, tuple[str, str]] = {
+    # ── Base CLIP selection issues ────────────────────────────────────
     "floating isolated": ("material_substance", "spatial_logic"),
     "split complementary": ("subject_form", "color_logic"),
-    "macro": ("subject_form", "scale_perspective"),
-    "aerial": ("subject_form", "scale_perspective"),
     "chitin": ("subject_form", "material_substance"),
     "mercury": ("subject_form", "material_substance"),
     "lapis lazuli": ("subject_form", "material_substance"),
@@ -97,11 +106,21 @@ MISCATEGORIZED: dict[str, tuple[str, str]] = {
     "mri cross-section": ("spatial_logic", "medium_render"),
     "through a rain-streaked window": ("temporal_state", "scale_perspective"),
     "cryo-electron grid": ("temporal_state", "medium_render"),
+    # ── Gated selection: subject_form attractor ───────────────────────
+    # Both OpenCLIP and T5-XXL see these as "form-like" because they have
+    # strong physical shapes, but they're fundamentally materials.
+    "glass": ("subject_form", "material_substance"),
+    "bone": ("subject_form", "material_substance"),
+    "silk": ("subject_form", "material_substance"),
+    "wax": ("subject_form", "material_substance"),
+    "macro": ("subject_form", "scale_perspective"),
+    "aerial": ("subject_form", "scale_perspective"),
 }
 
 # Near-duplicates: keep the first, drop the rest
 DUPLICATES_TO_CULL: list[tuple[str, list[str]]] = [
     # (keep, [drop these])
+    # Base CLIP selection
     ("mica flake swirl", ["mica flake suspension", "mica dust shimmer"]),
     ("salt spray", ["salt spray fog"]),
     ("volcanic ashfall", ["volcanic ash cloud"]),
@@ -116,6 +135,8 @@ DUPLICATES_TO_CULL: list[tuple[str, list[str]]] = [
     ("hospital service corridor", ["hotel service corridor"]),
     ("noctilucent cloud glow", ["lenticular cloud glow"]),
     ("fool's gold", ["pyrite nodules"]),
+    # Gated selection
+    ("fanned divergence", ["fanning divergence"]),  # spatial_logic spelling variant
 ]
 
 # High-value originals to restore (only if not already present)
@@ -180,6 +201,9 @@ REMOVE_WORDS = {
     "bubble column rise",  # Near-dupe of bubble stream rise
     "angular momentum",  # Physics, not composition
     "palindrome arrangement",  # Linguistic, no visual mapping
+    # Gated selection
+    "cologht film wash",  # Typo/corruption — not a real term
+    "vapor",  # Too vague as subject_form (also listed above)
 }
 
 
