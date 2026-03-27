@@ -20,6 +20,7 @@ from .engine import CombinatorialEngine
 from .models import GeneratedPrompt
 from .palettes import Palette, palette_for_template
 from .store import PromptStore
+from .hyperobject.viewport import HyperobjectViewport
 from .widgets import (
     EntropyMeter,
     GlitchPrompt,
@@ -119,7 +120,7 @@ class PromptWeaverApp(App[None]):
         dock: top;
         height: auto;
         background: #000000;
-        padding: 0 2;
+        padding: 0 1;
     }
 
     #body {
@@ -131,20 +132,48 @@ class PromptWeaverApp(App[None]):
         margin: 0 1;
     }
 
-    #main-scroll {
-        height: auto;
-        max-height: 100%;
-    }
+    /* ── visual area (rain/hyper/trace) — ABOVE info panels ── */
 
     #matrix-rain {
         height: 1fr;
-        min-height: 3;
+        min-height: 6;
+    }
+
+    #hyperobject-viewport {
+        display: none;
+        height: 1fr;
+        min-height: 6;
     }
 
     #hacker-log {
         height: 1fr;
-        min-height: 3;
+        min-height: 6;
     }
+
+    /* ── info panels — BELOW visual area ── */
+
+    #info-scroll {
+        height: auto;
+        max-height: 50%;
+    }
+
+    #prompt-display {
+        margin-bottom: 0;
+    }
+
+    #negative-display {
+        margin: 0;
+    }
+
+    #components-display {
+        margin: 0;
+    }
+
+    #entropy-display {
+        margin-top: 0;
+    }
+
+    /* ── sidebar ── */
 
     #sidebar {
         width: 1fr;
@@ -153,13 +182,31 @@ class PromptWeaverApp(App[None]):
         margin: 0 1 0 0;
     }
 
-    #negative-display, #components-display {
-        margin-bottom: 1;
-    }
-
     Footer {
         background: #001100;
         color: #00ff41;
+    }
+
+    /* ── HYPER-ACTIVE: collapse info, maximize viewport ── */
+
+    Screen.hyper-active MatrixBanner {
+        display: none;
+    }
+
+    Screen.hyper-active #info-scroll {
+        max-height: 8;
+    }
+
+    Screen.hyper-active #negative-display {
+        display: none;
+    }
+
+    Screen.hyper-active #components-display {
+        display: none;
+    }
+
+    Screen.hyper-active #hyperobject-viewport {
+        min-height: 12;
     }
     """
 
@@ -169,13 +216,18 @@ class PromptWeaverApp(App[None]):
         Binding("t", "cycle_template", "TEMPLATE"),
         Binding("f", "toggle_favorite", "FAV"),
         Binding("a", "toggle_auto", "AUTO"),
+        Binding("v", "toggle_hyperobject", "HYPER"),
         Binding("h", "toggle_hacker_log", "TRACE"),
         Binding("c", "copy_prompt", "COPY"),
         Binding("n", "copy_negative", "NEG"),
         Binding("q", "quit_app", "EXIT"),
     ]
 
-    def __init__(self, db_path: Optional[Path] = None) -> None:
+    def __init__(
+        self,
+        db_path: Optional[Path] = None,
+        hyper: bool = False,
+    ) -> None:
         super().__init__()
         self.engine = CombinatorialEngine()
         self.store = PromptStore(db_path=db_path)
@@ -187,18 +239,23 @@ class PromptWeaverApp(App[None]):
         self._hacker_visible: bool = False
         self._favorites: set[str] = set()
         self._auto_timer: Optional[Timer] = None
+        self._hyper_visible: bool = hyper
+        self._start_hyper: bool = hyper
 
     def compose(self) -> ComposeResult:
         yield MatrixBanner()
         with Horizontal(id="body"):
             with Vertical(id="main-col"):
-                with VerticalScroll(id="main-scroll"):
+                # Visual area first (hero position — gets the space)
+                yield MatrixRain(id="matrix-rain")
+                yield HyperobjectViewport(id="hyperobject-viewport")
+                yield HackerLog(id="hacker-log")
+                # Info panels below (compact, scrollable)
+                with VerticalScroll(id="info-scroll"):
                     yield GlitchPrompt(id="prompt-display")
                     yield Static(id="negative-display")
                     yield Static(id="components-display")
                     yield EntropyMeter(id="entropy-display")
-                yield MatrixRain(id="matrix-rain")
-                yield HackerLog(id="hacker-log")
             with Vertical(id="sidebar"):
                 yield HistoryLog(id="history-log")
         yield Footer()
@@ -206,6 +263,15 @@ class PromptWeaverApp(App[None]):
     def on_mount(self) -> None:
         self._favorites = self.store.get_favorited_hashes()
         self.query_one("#history-log", HistoryLog).set_favorites(self._favorites)
+
+        # Start in hyperobject mode if --hyper flag was passed
+        if self._start_hyper:
+            rain = self.query_one("#matrix-rain", MatrixRain)
+            hyper = self.query_one("#hyperobject-viewport", HyperobjectViewport)
+            rain.display = False
+            hyper.display = True
+            self.screen.add_class("hyper-active")
+
         self._generate()
 
     # ── palette ───────────────────────────────────────────────────────
@@ -224,6 +290,7 @@ class PromptWeaverApp(App[None]):
         self.query_one("#matrix-rain", MatrixRain).set_palette(palette)
         self.query_one("#hacker-log", HackerLog).set_palette(palette)
         self.query_one("#entropy-display", EntropyMeter).set_palette(palette)
+        self.query_one("#hyperobject-viewport", HyperobjectViewport).set_palette(palette)
 
     # ── generation ────────────────────────────────────────────────────
 
@@ -308,7 +375,7 @@ class PromptWeaverApp(App[None]):
                 Text(p.negative, style=f"dim italic {palette.negative}"),
                 title=f"[{palette.negative}]// negative[/]",
                 border_style=palette.negative_border,
-                padding=(0, 2),
+                padding=(0, 1),
             )
         )
 
@@ -345,6 +412,11 @@ class PromptWeaverApp(App[None]):
             hash_str=p.hash,
             template_id=p.template_id,
         )
+
+        # ── hyperobject viewport ───────────────────────────────────────
+        self.query_one(
+            "#hyperobject-viewport", HyperobjectViewport
+        ).set_prompt(p)
 
         # ── hacker trace log ─────────────────────────────────────────
         hacker = self.query_one("#hacker-log", HackerLog)
@@ -405,12 +477,41 @@ class PromptWeaverApp(App[None]):
             self.notify(f"auto-generate: ON ({AUTO_INTERVAL}s)", timeout=1)
             self._generate()
 
+    def action_toggle_hyperobject(self) -> None:
+        rain = self.query_one("#matrix-rain", MatrixRain)
+        hyper = self.query_one("#hyperobject-viewport", HyperobjectViewport)
+        hacker = self.query_one("#hacker-log", HackerLog)
+        self._hyper_visible = not self._hyper_visible
+        if self._hyper_visible:
+            rain.display = False
+            hacker.display = False
+            hyper.display = True
+            self._hacker_visible = False
+            self.screen.add_class("hyper-active")
+        else:
+            hyper.display = False
+            rain.display = not self._hacker_visible
+            hacker.display = self._hacker_visible
+            self.screen.remove_class("hyper-active")
+
     def action_toggle_hacker_log(self) -> None:
         rain = self.query_one("#matrix-rain", MatrixRain)
         hacker = self.query_one("#hacker-log", HackerLog)
+        hyper = self.query_one("#hyperobject-viewport", HyperobjectViewport)
         self._hacker_visible = not self._hacker_visible
-        rain.display = not self._hacker_visible
-        hacker.display = self._hacker_visible
+        if self._hacker_visible:
+            rain.display = False
+            hyper.display = False
+            hacker.display = True
+            self._hyper_visible = False
+            self.screen.remove_class("hyper-active")
+        else:
+            hacker.display = False
+            if self._hyper_visible:
+                hyper.display = True
+                self.screen.add_class("hyper-active")
+            else:
+                rain.display = True
 
     def action_copy_prompt(self) -> None:
         if not self.current:

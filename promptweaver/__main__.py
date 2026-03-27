@@ -49,6 +49,13 @@ def main() -> None:
         help="Show generation statistics",
     )
 
+    # ── visual mode ──────────────────────────────────────────────────
+    parser.add_argument(
+        "--hyper",
+        action="store_true",
+        help="Launch in Hyperobject Mode (3D ASCII viewport active)",
+    )
+
     # ── modifiers ─────────────────────────────────────────────────────
     parser.add_argument(
         "--template",
@@ -226,7 +233,7 @@ def _cmd_tui(args: argparse.Namespace) -> None:
     try:
         from .app import PromptWeaverApp
 
-        app = PromptWeaverApp(db_path=args.db)
+        app = PromptWeaverApp(db_path=args.db, hyper=args.hyper)
         app.run()
     except FileNotFoundError as e:
         print(f"Error: {e}", file=sys.stderr)

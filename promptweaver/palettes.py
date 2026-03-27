@@ -169,6 +169,8 @@ TEMPLATE_PALETTES: dict[str, str] = {
     "temporal_diptych": "void",
     "liminal": "cyberpunk",
     "ruin_state": "cyberpunk",
+    "essence": "biomech",
+    "site_decay": "matrix",
 }
 
 DEFAULT_PALETTE_NAME = "matrix"

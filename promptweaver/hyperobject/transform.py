@@ -1,0 +1,220 @@
+"""Transform pipeline: model → world → view → clip → screen.
+
+Handles the full vertex transformation chain including aspect-ratio
+correction for terminal characters (~2:1 height:width).
+"""
+
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass, field
+
+from .lut import Mat4, Vec3, Vec4, clamp
+
+
+# Terminal characters are approximately 2x taller than wide.
+# We compress Y by this factor during projection so circles look circular.
+CHAR_ASPECT: float = 0.5
+
+
+@dataclass(slots=True)
+class ScreenPoint:
+    """A projected point in screen (character cell) coordinates."""
+
+    col: int   # x: column (0 = left)
+    row: int   # y: row (0 = top)
+    depth: float  # normalized depth (0 = near, 1 = far) for z-buffer
+
+
+@dataclass(slots=True)
+class Camera:
+    """Simple orbit/look-at camera."""
+
+    position: Vec3
+    target: Vec3
+    fov: float = 1.2  # ~69 degrees, radians
+    near: float = 0.1
+    far: float = 50.0
+
+    def view_matrix(self) -> Mat4:
+        return Mat4.look_at(self.position, self.target, Vec3(0.0, 1.0, 0.0))
+
+    def projection_matrix(self, width: int, height: int) -> Mat4:
+        """Perspective projection with terminal aspect correction."""
+        # Effective aspect ratio accounts for character cell shape
+        char_aspect = (width / max(height, 1)) * CHAR_ASPECT
+        return Mat4.perspective(self.fov, char_aspect, self.near, self.far)
+
+
+@dataclass
+class ProjectionContext:
+    """Pre-computed matrices and viewport dimensions for one frame.
+
+    Created once per frame, passed to the rasterizer to avoid
+    recomputing matrices per-vertex.
+    """
+
+    model: Mat4
+    view: Mat4
+    projection: Mat4
+    mvp: Mat4
+    width: int
+    height: int
+    half_w: float = 0.0
+    half_h: float = 0.0
+    max_col: float = 0.0
+    max_row: float = 0.0
+
+    def __post_init__(self) -> None:
+        self.half_w = self.width / 2.0
+        self.half_h = self.height / 2.0
+        self.max_col = float(max(self.width - 1, 0))
+        self.max_row = float(max(self.height - 1, 0))
+
+    @staticmethod
+    def build(
+        model: Mat4,
+        camera: Camera,
+        width: int,
+        height: int,
+    ) -> ProjectionContext:
+        view = camera.view_matrix()
+        proj = camera.projection_matrix(width, height)
+        mvp = proj @ view @ model
+        return ProjectionContext(
+            model=model,
+            view=view,
+            projection=proj,
+            mvp=mvp,
+            width=width,
+            height=height,
+        )
+
+    def project_vertex(self, v: Vec3) -> ScreenPoint | None:
+        """Transform a world-space vertex to screen coordinates.
+
+        Returns None if the vertex is behind the camera or outside
+        the view frustum.
+        """
+        clip = self.mvp @ v.to_vec4(1.0)
+
+        # Behind camera
+        if clip.w <= 0.0:
+            return None
+
+        inv_w = 1.0 / clip.w
+        ndc_x = clip.x * inv_w
+        ndc_y = clip.y * inv_w
+        ndc_z = clip.z * inv_w
+
+        # Frustum cull (with margin for edge drawing)
+        margin = 1.25
+        if abs(ndc_x) > margin or abs(ndc_y) > margin or abs(ndc_z) > 1.05:
+            return None
+
+        # NDC → screen
+        col = int(((ndc_x * 0.5) + 0.5) * self.max_col + 0.5)
+        row = int(((1.0 - ndc_y) * 0.5) * self.max_row + 0.5)
+
+        # Depth: map from [-1, 1] to [0, 1]
+        depth = clamp((ndc_z + 1.0) * 0.5, 0.0, 1.0)
+
+        return ScreenPoint(col=col, row=row, depth=depth)
+
+    def project_vertex_unclamped(self, v: Vec3) -> tuple[float, float, float] | None:
+        """Like project_vertex but returns float coords for line interpolation.
+
+        Returns (col, row, depth) as floats, or None if behind camera.
+        """
+        clip = self.mvp @ v.to_vec4(1.0)
+        if clip.w <= 0.0:
+            return None
+
+        inv_w = 1.0 / clip.w
+        ndc_x = clip.x * inv_w
+        ndc_y = clip.y * inv_w
+        ndc_z = clip.z * inv_w
+
+        if abs(ndc_x) > 2.0 or abs(ndc_y) > 2.0 or abs(ndc_z) > 1.05:
+            return None
+
+        col = ((ndc_x * 0.5) + 0.5) * self.max_col
+        row = ((1.0 - ndc_y) * 0.5) * self.max_row
+        depth = clamp((ndc_z + 1.0) * 0.5, 0.0, 1.0)
+
+        return (col, row, depth)
+
+    def transform_normal(self, n: Vec3) -> Vec3:
+        """Transform a face normal to view space for lighting."""
+        # For uniform scale, model matrix suffices.
+        # For non-uniform scale, we'd need the inverse transpose.
+        return self.model.transform_direction(n).normalized()
+
+
+# ── screen-space helpers ────────────────────────────────────────────────
+
+
+def bresenham(x0: int, y0: int, x1: int, y1: int) -> list[tuple[int, int]]:
+    """Bresenham's line algorithm. Returns list of (col, row) points."""
+    points: list[tuple[int, int]] = []
+    dx = abs(x1 - x0)
+    dy = abs(y1 - y0)
+    sx = 1 if x0 < x1 else -1
+    sy = 1 if y0 < y1 else -1
+    err = dx - dy
+
+    while True:
+        points.append((x0, y0))
+        if x0 == x1 and y0 == y1:
+            break
+        e2 = 2 * err
+        if e2 > -dy:
+            err -= dy
+            x0 += sx
+        if e2 < dx:
+            err += dx
+            y0 += sy
+
+    return points
+
+
+def edge_function(ax: float, ay: float, bx: float, by: float, cx: float, cy: float) -> float:
+    """2D cross product for triangle rasterization (signed area).
+
+    Positive if (cx, cy) is on the left side of edge A→B.
+    """
+    return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
+
+
+def point_in_triangle(
+    px: float, py: float,
+    ax: float, ay: float,
+    bx: float, by: float,
+    cx: float, cy: float,
+) -> bool:
+    """Test if point P is inside triangle ABC using edge functions."""
+    e0 = edge_function(ax, ay, bx, by, px, py)
+    e1 = edge_function(bx, by, cx, cy, px, py)
+    e2 = edge_function(cx, cy, ax, ay, px, py)
+    # All same sign (or zero) means inside
+    return (e0 >= 0 and e1 >= 0 and e2 >= 0) or (e0 <= 0 and e1 <= 0 and e2 <= 0)
+
+
+def barycentric(
+    px: float, py: float,
+    ax: float, ay: float,
+    bx: float, by: float,
+    cx: float, cy: float,
+) -> tuple[float, float, float] | None:
+    """Compute barycentric coordinates of P w.r.t. triangle ABC.
+
+    Returns (u, v, w) where P = u*A + v*B + w*C, or None if degenerate.
+    """
+    area = edge_function(ax, ay, bx, by, cx, cy)
+    if abs(area) < 1e-10:
+        return None
+    inv_area = 1.0 / area
+    u = edge_function(bx, by, cx, cy, px, py) * inv_area
+    v = edge_function(cx, cy, ax, ay, px, py) * inv_area
+    w = 1.0 - u - v
+    return (u, v, w)
