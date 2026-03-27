@@ -355,42 +355,42 @@ class _DataSystem(ParticleSystem):
 
 def make_fog_particles(max_p: int = 80) -> ParticleSystem:
     """Create a fog particle system (slow upward drift, bottom-heavy)."""
-    return _FogSystem(max_particles=max_p, spawn_rate=3.0)
+    return _FogSystem(max_particles=max_p, spawn_rate=15.0)
 
 
 def make_smoke_particles(max_p: int = 60) -> ParticleSystem:
     """Create a smoke particle system (turbulent drift)."""
-    return _SmokeSystem(max_particles=max_p, spawn_rate=2.5)
+    return _SmokeSystem(max_particles=max_p, spawn_rate=12.0)
 
 
 def make_dust_particles(max_p: int = 40) -> ParticleSystem:
     """Create a dust particle system (Brownian motion, occasional flash)."""
-    return _DustSystem(max_particles=max_p, spawn_rate=1.5)
+    return _DustSystem(max_particles=max_p, spawn_rate=8.0)
 
 
 def make_ember_particles(max_p: int = 50) -> ParticleSystem:
     """Create an ember particle system (fast upward, decelerating, bright head)."""
-    return _EmberSystem(max_particles=max_p, spawn_rate=3.0)
+    return _EmberSystem(max_particles=max_p, spawn_rate=15.0)
 
 
 def make_rain_particles(max_p: int = 100) -> ParticleSystem:
     """Create a rain particle system (fast downward streaks)."""
-    return _RainSystem(max_particles=max_p, spawn_rate=8.0)
+    return _RainSystem(max_particles=max_p, spawn_rate=30.0)
 
 
 def make_snow_particles(max_p: int = 50) -> ParticleSystem:
     """Create a snow particle system (slow diagonal with sine oscillation)."""
-    return _SnowSystem(max_particles=max_p, spawn_rate=2.0)
+    return _SnowSystem(max_particles=max_p, spawn_rate=10.0)
 
 
 def make_spore_particles(max_p: int = 30) -> ParticleSystem:
     """Create a spore particle system (very slow random walk)."""
-    return _SporeSystem(max_particles=max_p, spawn_rate=1.0)
+    return _SporeSystem(max_particles=max_p, spawn_rate=6.0)
 
 
 def make_data_particles(max_p: int = 60) -> ParticleSystem:
     """Create a data-stream particle system (vertical hex streams)."""
-    return _DataSystem(max_particles=max_p, spawn_rate=5.0)
+    return _DataSystem(max_particles=max_p, spawn_rate=20.0)
 
 
 # ── word -> particle system mapping ────────────────────────────────────

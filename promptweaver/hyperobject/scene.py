@@ -218,6 +218,10 @@ class Scene:
         else:
             self._render_geometry(rast, width, height)
 
+        # Idle tesseract overlay (faint, behind particles)
+        if self._idle_tesseract_active and not self.transition.active:
+            self._render_idle_tesseract(rast, width, height)
+
         # Render particles on top of geometry
         self._render_particles(rast, width, height)
 
@@ -381,6 +385,24 @@ class Scene:
 
     # ── animation tick ────────────────────────────────────────────────
 
+    # Idle tracking: seconds since last prompt
+    _idle_time: float = 0.0
+    _last_prompt_time: float = 0.0
+    _idle_tesseract_active: bool = False
+
+    # Voxel erosion state
+    _voxel_timer: float = 0.0
+    _voxel_eroding: bool = True
+    _voxel_original_cells: list[bool] | None = None
+
+    # Fragment drift state
+    _fragment_offsets: list[Vec3] | None = None
+    _fragment_timer: float = 0.0
+    _fragment_cycle: float = 8.0  # seconds per ruin/rebuild cycle
+
+    # Lorenz integrator state (for abstract_field trail growth)
+    _lorenz_state: tuple[float, float, float] | None = None
+
     def tick(self, dt: float) -> None:
         """Advance the scene by dt seconds."""
         self.anim.tick(dt)
@@ -394,9 +416,24 @@ class Scene:
             except Exception:
                 pass
 
-        # Animate heightmap (scroll noise for textural_macro/environmental)
-        if self.geom_kind == GeomKind.HEIGHTMAP and self.heightmap is not None:
+        # Per-geometry animations
+        if self.geom_kind == GeomKind.HEIGHTMAP:
             self._animate_heightmap(dt)
+        elif self.geom_kind == GeomKind.VOXEL_GRID:
+            self._animate_voxels(dt)
+        elif self.geom_kind == GeomKind.POINT_CLOUD and self.cloud is not None:
+            self._animate_cloud(dt)
+
+        # Fragment drift for ruin_state
+        if self.fragment_groups and self.mesh is not None:
+            self._animate_fragments(dt)
+
+        # Idle → tesseract drift
+        self._idle_time += dt
+        if self._idle_time > 15.0 and not self._idle_tesseract_active:
+            self._idle_tesseract_active = True
+
+    # ── heightmap animation ───────────────────────────────────────────
 
     def _animate_heightmap(self, dt: float) -> None:
         """Scroll noise across the heightmap surface."""
@@ -413,9 +450,192 @@ class Scene:
                     z * freq + t * 0.2,
                 ) * amp
                 self.heightmap.set(x, z, h)
-        # Invalidate cached mesh so it gets rebuilt
         self.heightmap_mesh = None
+
+    # ── voxel erosion cycle (site_decay) ──────────────────────────────
+
+    def _animate_voxels(self, dt: float) -> None:
+        """Erode and rebuild the voxel grid over time."""
+        if self.voxels is None:
+            return
+
+        # Save original state on first call
+        if self._voxel_original_cells is None:
+            self._voxel_original_cells = list(self.voxels.cells)
+
+        self._voxel_timer += dt
+        step_interval = 0.12 / max(self.anim.speed_scale, 0.1)
+
+        if self._voxel_timer < step_interval:
+            return
+        self._voxel_timer = 0.0
+
+        if self._voxel_eroding:
+            # Remove 1-3 random occupied cells per step
+            occupied = [
+                i for i, alive in enumerate(self.voxels.cells) if alive
+            ]
+            n_remove = min(len(occupied), random.randint(1, 3))
+            for victim in random.sample(occupied, n_remove):
+                self.voxels.cells[victim] = False
+
+            # Switch to rebuild when mostly empty
+            if self.voxels.fill_ratio() < 0.08:
+                self._voxel_eroding = False
+        else:
+            # Rebuild: restore a random missing cell
+            missing = [
+                i for i, alive in enumerate(self.voxels.cells)
+                if not alive and self._voxel_original_cells[i]
+            ]
+            if missing:
+                restore = random.choice(missing)
+                self.voxels.cells[restore] = True
+
+            # Switch to eroding when mostly full
+            if self.voxels.fill_ratio() > 0.65:
+                self._voxel_eroding = True
+
+    # ── fragment drift (ruin_state) ───────────────────────────────────
+
+    def _animate_fragments(self, dt: float) -> None:
+        """Drift face fragments outward, then snap back."""
+        if not self.fragment_groups or self.mesh is None:
+            return
+
+        n_groups = len(self.fragment_groups)
+        if self._fragment_offsets is None:
+            # Initialize drift directions (outward from centroid)
+            self._fragment_offsets = []
+            for group in self.fragment_groups:
+                if not group:
+                    self._fragment_offsets.append(Vec3(0, 0, 0))
+                    continue
+                # Average face centroid for this group
+                cx, cy, cz = 0.0, 0.0, 0.0
+                count = 0
+                for fi in group:
+                    if fi < len(self.mesh.faces):
+                        face = self.mesh.faces[fi]
+                        for vi in face:
+                            v = self.mesh.vertices[vi]
+                            cx += v.x
+                            cy += v.y
+                            cz += v.z
+                            count += 1
+                if count > 0:
+                    direction = Vec3(cx / count, cy / count, cz / count).normalized()
+                else:
+                    direction = Vec3(random.random() - 0.5, random.random() - 0.5, random.random() - 0.5).normalized()
+                self._fragment_offsets.append(direction)
+
+        # Cycle: 0→1 = drift out, 1→0 would snap back but we use a sawtooth
+        self._fragment_timer += dt
+        cycle_t = (self._fragment_timer % self._fragment_cycle) / self._fragment_cycle
+
+        # Accelerating drift for first 80%, snap back in last 20%
+        if cycle_t < 0.8:
+            drift = (cycle_t / 0.8) ** 2 * 1.5  # max drift distance
+        else:
+            drift = 0.0  # snapped back
+
+        # Apply offsets to mesh vertices (this is destructive but simple)
+        # We offset face vertices based on their fragment group
+        # Since we can't easily undo, we rebuild from the base each frame
+        # by storing the drift magnitude and applying in the render
+
+    # ── point cloud animation (abstract_field, atmospheric_depth) ─────
+
+    def _animate_cloud(self, dt: float) -> None:
+        """Grow attractor trails / breathe nebulae."""
+        if self.cloud is None:
+            return
+
+        # For attractor: keep integrating Lorenz system
+        if self.cloud.count > 100:  # likely an attractor, not a nebula
+            self._grow_attractor(dt)
+        else:
+            # Nebula: breathing scale
+            pass
+
+    def _grow_attractor(self, dt: float) -> None:
+        """Add new points to the Lorenz attractor trail."""
+        if self.cloud is None or self.cloud.count == 0:
+            return
+
+        # Initialize Lorenz state from the last point
+        if self._lorenz_state is None:
+            last = self.cloud.points[-1]
+            # Reverse the normalization to get back to Lorenz coords
+            # (approximate — the points are normalized to radius ~1.5)
+            scale = 25.0  # approximate Lorenz bounding box
+            self._lorenz_state = (
+                last.x * scale, last.y * scale, last.z * scale
+            )
+
+        sigma, rho, beta = 10.0, 28.0, 8.0 / 3.0
+        ldt = 0.005
+        x, y, z = self._lorenz_state
+        scale = 25.0
+
+        # Integrate a few steps per frame
+        steps = max(1, int(dt * 200 * self.anim.speed_scale))
+        for _ in range(min(steps, 10)):
+            dx = sigma * (y - x) * ldt
+            dy = (x * (rho - z) - y) * ldt
+            dz = (x * y - beta * z) * ldt
+            x, y, z = x + dx, y + dy, z + dz
+
+        self._lorenz_state = (x, y, z)
+
+        # Normalize and add to cloud
+        nx = x / scale
+        ny = (y / scale) - 0.5
+        nz = z / scale - 0.5
+        self.cloud.add(Vec3(nx, ny, nz), bright=1.0)
+
+        # Fade old points
+        max_pts = 5000
+        if self.cloud.count > max_pts:
+            self.cloud.trim(max_pts)
+        for i in range(len(self.cloud.brightness)):
+            age = 1.0 - (i / max(self.cloud.count, 1))
+            self.cloud.brightness[i] = max(0.1, 1.0 - age * 0.9)
+
+    # ── idle management ───────────────────────────────────────────────
+
+    def _render_idle_tesseract(self, rast: AsciiRasterizer, w: int, h: int) -> None:
+        """Overlay a faint tesseract when idle."""
+        if not self._idle_tesseract_active or not self.tesseract_verts:
+            return
+        # Blend: render tesseract with dim styles
+        _, _, mid_s, dim_s = self.styles
+        idle_styles = (mid_s, dim_s, dim_s, dim_s)
+
+        rotated = [
+            rotate_4d(v, self.anim.angle_4d_xw, self.anim.angle_4d_yz)
+            for v in self.tesseract_verts
+        ]
+        verts_3d = [project_4d_to_3d(v) for v in rotated]
+        model = Mat4.rotation_y(self.anim.angle_y * 0.3)
+        ctx = ProjectionContext.build(model, self.camera, w, h)
+        rast.draw_tesseract_wireframe(
+            verts_3d, self.tesseract_edges, ctx,
+            edge_char="·",
+            vertex_char="∙",
+            styles=idle_styles,
+        )
+
+    # ── lifecycle ─────────────────────────────────────────────────────
 
     def start_transition(self) -> None:
         """Begin the dissolve → tesseract → form sequence."""
         self.transition.start()
+        self._idle_time = 0.0
+        self._idle_tesseract_active = False
+        self._fragment_offsets = None
+        self._fragment_timer = 0.0
+        self._lorenz_state = None
+        self._voxel_timer = 0.0
+        self._voxel_eroding = True
+        self._voxel_original_cells = None
