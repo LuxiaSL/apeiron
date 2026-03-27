@@ -7,6 +7,7 @@ The PromptInterpreter builds scenes from GeneratedPrompt data.
 
 from __future__ import annotations
 
+import copy
 import math
 import random
 from dataclasses import dataclass, field
@@ -155,6 +156,25 @@ class TransitionState:
         return 0.0
 
 
+@dataclass
+class SceneSnapshot:
+    """Frozen render state for the outgoing side of a transition."""
+
+    geom_kind: GeomKind
+    mesh: Optional[Mesh]
+    mesh_b: Optional[Mesh]
+    cloud: Optional[PointCloud]
+    voxels: Optional[VoxelGrid]
+    heightmap: Optional[HeightMap]
+    heightmap_mesh: Optional[Mesh]
+    shader_chars: str
+    light: Light
+    camera: Camera
+    styles: tuple[str, str, str, str]
+    fragment_groups: list[list[int]]
+    dual_mesh_mode: str = "overlay"
+
+
 # ── scene ───────────────────────────────────────────────────────────────
 
 
@@ -200,6 +220,8 @@ class Scene:
 
     # Fragment groups for ruin_state dissolve
     fragment_groups: list[list[int]] = field(default_factory=list)
+    dual_mesh_mode: str = "overlay"
+    transition_source: SceneSnapshot | None = None
 
     # ── model matrix ──────────────────────────────────────────────────
 
@@ -231,58 +253,121 @@ class Scene:
         # Apply post-processing effects
         self._apply_postfx(rast.grid)
 
+    def clear_geometry(self) -> None:
+        """Reset all geometry-bearing fields before loading a new template."""
+        self.mesh = None
+        self.mesh_b = None
+        self.cloud = None
+        self.voxels = None
+        self.heightmap = None
+        self.heightmap_mesh = None
+        self.fragment_groups = []
+        self.dual_mesh_mode = "overlay"
+
     def _render_geometry(self, rast: AsciiRasterizer, w: int, h: int) -> None:
         """Render the active geometry."""
-        model = self.model_matrix()
-        ctx = ProjectionContext.build(model, self.camera, w, h)
+        self._render_geometry_state(
+            rast,
+            w,
+            h,
+            self.geom_kind,
+            self.mesh,
+            self.mesh_b,
+            self.cloud,
+            self.voxels,
+            self.heightmap,
+            self.heightmap_mesh,
+            self.shader_chars,
+            self.light,
+            self.styles,
+            self.camera,
+            self.fragment_groups,
+            self.dual_mesh_mode,
+        )
 
-        if self.geom_kind == GeomKind.MESH_FILLED:
-            if self.mesh:
+    def _render_geometry_state(
+        self,
+        rast: AsciiRasterizer,
+        w: int,
+        h: int,
+        geom_kind: GeomKind,
+        mesh: Optional[Mesh],
+        mesh_b: Optional[Mesh],
+        cloud: Optional[PointCloud],
+        voxels: Optional[VoxelGrid],
+        heightmap: Optional[HeightMap],
+        heightmap_mesh: Optional[Mesh],
+        shader_chars: str,
+        light: Light,
+        styles: tuple[str, str, str, str],
+        camera: Camera,
+        fragment_groups: list[list[int]],
+        dual_mesh_mode: str,
+    ) -> None:
+        """Render an explicit geometry state.
+
+        This lets transitions render the preserved outgoing form instead of
+        whatever geometry is currently loaded for the incoming prompt.
+        """
+        model = self.model_matrix()
+        ctx = ProjectionContext.build(model, camera, w, h)
+
+        if geom_kind == GeomKind.MESH_FILLED:
+            render_mesh = self._mesh_for_render(mesh, fragment_groups)
+            if render_mesh:
                 rast.draw_mesh_filled(
-                    self.mesh, ctx, self.shader_chars, self.light, self.styles,
+                    render_mesh, ctx, shader_chars, light, styles,
                 )
 
-        elif self.geom_kind == GeomKind.MESH_WIREFRAME:
-            if self.mesh:
+        elif geom_kind == GeomKind.MESH_WIREFRAME:
+            if mesh:
                 rast.draw_mesh_wireframe(
-                    self.mesh, ctx,
+                    mesh, ctx,
                     edge_char="·",
-                    styles=self.styles,
+                    styles=styles,
                     vertex_char="•",
                 )
 
-        elif self.geom_kind == GeomKind.POINT_CLOUD:
-            if self.cloud:
-                rast.draw_points(self.cloud, ctx, styles=self.styles)
+        elif geom_kind == GeomKind.POINT_CLOUD:
+            if cloud:
+                rast.draw_points(cloud, ctx, styles=styles)
 
-        elif self.geom_kind == GeomKind.VOXEL_GRID:
-            if self.voxels:
-                rast.draw_voxels(self.voxels, ctx, styles=self.styles)
+        elif geom_kind == GeomKind.VOXEL_GRID:
+            if voxels:
+                rast.draw_voxels(voxels, ctx, styles=styles)
 
-        elif self.geom_kind == GeomKind.HEIGHTMAP:
-            if self.heightmap and self.heightmap_mesh is None:
-                self.heightmap_mesh = self.heightmap.to_mesh()
-            if self.heightmap_mesh:
+        elif geom_kind == GeomKind.HEIGHTMAP:
+            render_heightmap_mesh = heightmap_mesh
+            if heightmap and render_heightmap_mesh is None:
+                render_heightmap_mesh = heightmap.to_mesh()
+                if heightmap is self.heightmap:
+                    self.heightmap_mesh = render_heightmap_mesh
+            if render_heightmap_mesh:
                 rast.draw_heightmap(
-                    self.heightmap_mesh, ctx,
-                    self.shader_chars, self.light, self.styles,
+                    render_heightmap_mesh, ctx,
+                    shader_chars, light, styles,
                 )
 
-        elif self.geom_kind == GeomKind.TESSERACT:
+        elif geom_kind == GeomKind.TESSERACT:
             self._render_tesseract(rast, w, h)
 
-        elif self.geom_kind == GeomKind.DUAL_MESH:
-            if self.mesh:
+        elif geom_kind == GeomKind.DUAL_MESH:
+            if dual_mesh_mode == "morph" and mesh and mesh_b:
+                morphed = self._morph_mesh(mesh, mesh_b, self.anim.morph_t)
                 rast.draw_mesh_filled(
-                    self.mesh, ctx, self.shader_chars, self.light, self.styles,
+                    morphed, ctx, shader_chars, light, styles,
                 )
-            if self.mesh_b:
+            elif mesh:
+                rast.draw_mesh_filled(
+                    mesh, ctx, shader_chars, light, styles,
+                )
+            if dual_mesh_mode != "morph" and mesh_b:
                 # Second mesh with slightly different rotation
                 model_b = Mat4.rotation_y(self.anim.angle_y * 1.618)
                 model_b = model_b @ Mat4.rotation_x(self.anim.angle_x * 0.7)
-                ctx_b = ProjectionContext.build(model_b, self.camera, w, h)
+                ctx_b = ProjectionContext.build(model_b, camera, w, h)
                 rast.draw_mesh_filled(
-                    self.mesh_b, ctx_b, self.shader_chars, self.light, self.styles,
+                    mesh_b, ctx_b, shader_chars, light, styles,
                 )
 
     def _render_tesseract(self, rast: AsciiRasterizer, w: int, h: int) -> None:
@@ -316,10 +401,13 @@ class Scene:
 
         if phase == TransitionPhase.DISSOLVE:
             # Fade out current geometry (reduce brightness)
-            self._render_geometry(rast, w, h)
+            if self.transition_source is not None:
+                self._render_snapshot(rast, w, h, self.transition_source)
+            else:
+                self._render_geometry(rast, w, h)
             # Apply dissolve: randomly blank cells based on progress
             threshold = t * t  # accelerating
-            for i, cell in enumerate(rast.grid.cells):
+            for cell in rast.grid.cells:
                 if cell.char != " " and random.random() < threshold:
                     cell.char = " "
                     cell.style = ""
@@ -332,7 +420,7 @@ class Scene:
             # Render new geometry with progressive reveal
             self._render_geometry(rast, w, h)
             threshold = 1.0 - smoothstep(0.0, 1.0, t)
-            for i, cell in enumerate(rast.grid.cells):
+            for cell in rast.grid.cells:
                 if cell.char != " " and random.random() < threshold:
                     cell.char = " "
                     cell.style = ""
@@ -401,9 +489,13 @@ class Scene:
 
     def tick(self, dt: float) -> None:
         """Advance the scene by dt seconds."""
+        was_transitioning = self.transition.active
         self.anim.tick(dt)
+        self.anim.morph_t = 0.5 + 0.5 * fast_sin(self.anim.time * 0.7)
         if self.transition.active:
             self.transition.tick()
+            if was_transitioning and not self.transition.active:
+                self.transition_source = None
 
         # Tick particles
         if self.particle_system is not None and hasattr(self.particle_system, 'tick'):
@@ -499,7 +591,6 @@ class Scene:
         if not self.fragment_groups or self.mesh is None:
             return
 
-        n_groups = len(self.fragment_groups)
         if self._fragment_offsets is None:
             # Initialize drift directions (outward from centroid)
             self._fragment_offsets = []
@@ -527,18 +618,6 @@ class Scene:
 
         # Cycle: 0→1 = drift out, 1→0 would snap back but we use a sawtooth
         self._fragment_timer += dt
-        cycle_t = (self._fragment_timer % self._fragment_cycle) / self._fragment_cycle
-
-        # Accelerating drift for first 80%, snap back in last 20%
-        if cycle_t < 0.8:
-            drift = (cycle_t / 0.8) ** 2 * 1.5  # max drift distance
-        else:
-            drift = 0.0  # snapped back
-
-        # Apply offsets to mesh vertices (this is destructive but simple)
-        # We offset face vertices based on their fragment group
-        # Since we can't easily undo, we rebuild from the base each frame
-        # by storing the drift magnitude and applying in the render
 
     # ── point cloud animation (abstract_field, atmospheric_depth) ─────
 
@@ -675,3 +754,112 @@ class Scene:
         self._voxel_timer = 0.0
         self._voxel_eroding = True
         self._voxel_original_cells = None
+
+    def capture_transition_source(self) -> None:
+        """Freeze the current renderable form for the dissolve phase."""
+        self.transition_source = SceneSnapshot(
+            geom_kind=self.geom_kind,
+            mesh=copy.deepcopy(self.mesh),
+            mesh_b=copy.deepcopy(self.mesh_b),
+            cloud=copy.deepcopy(self.cloud),
+            voxels=copy.deepcopy(self.voxels),
+            heightmap=copy.deepcopy(self.heightmap),
+            heightmap_mesh=copy.deepcopy(self.heightmap_mesh),
+            shader_chars=self.shader_chars,
+            light=copy.deepcopy(self.light),
+            camera=copy.deepcopy(self.camera),
+            styles=self.styles,
+            fragment_groups=copy.deepcopy(self.fragment_groups),
+            dual_mesh_mode=self.dual_mesh_mode,
+        )
+
+    def _render_snapshot(
+        self,
+        rast: AsciiRasterizer,
+        w: int,
+        h: int,
+        snapshot: SceneSnapshot,
+    ) -> None:
+        self._render_geometry_state(
+            rast,
+            w,
+            h,
+            snapshot.geom_kind,
+            snapshot.mesh,
+            snapshot.mesh_b,
+            snapshot.cloud,
+            snapshot.voxels,
+            snapshot.heightmap,
+            snapshot.heightmap_mesh,
+            snapshot.shader_chars,
+            snapshot.light,
+            snapshot.styles,
+            snapshot.camera,
+            snapshot.fragment_groups,
+            snapshot.dual_mesh_mode,
+        )
+
+    def _mesh_for_render(
+        self,
+        mesh: Optional[Mesh],
+        fragment_groups: list[list[int]],
+    ) -> Optional[Mesh]:
+        if mesh is None:
+            return None
+        if fragment_groups and self._fragment_offsets is not None:
+            drift = self._fragment_drift_amount(fragment_groups)
+            if drift > 0.0:
+                return self._build_fragment_mesh(mesh, fragment_groups, drift)
+        return mesh
+
+    def _fragment_drift_amount(self, fragment_groups: list[list[int]]) -> float:
+        if not fragment_groups:
+            return 0.0
+        cycle_t = (self._fragment_timer % self._fragment_cycle) / self._fragment_cycle
+        if cycle_t >= 0.8:
+            return 0.0
+        return (cycle_t / 0.8) ** 2 * 1.5
+
+    def _build_fragment_mesh(
+        self,
+        mesh: Mesh,
+        fragment_groups: list[list[int]],
+        drift: float,
+    ) -> Mesh:
+        if self._fragment_offsets is None:
+            return mesh
+
+        vertices: list[Vec3] = []
+        faces: list[tuple[int, ...]] = []
+
+        for group_index, group in enumerate(fragment_groups):
+            offset = self._fragment_offsets[group_index] * drift
+            for face_index in group:
+                if face_index >= len(mesh.faces):
+                    continue
+                face = mesh.faces[face_index]
+                render_face: list[int] = []
+                for vertex_index in face:
+                    vertices.append(mesh.vertices[vertex_index] + offset)
+                    render_face.append(len(vertices) - 1)
+                faces.append(tuple(render_face))
+
+        if not faces:
+            return mesh
+
+        exploded = Mesh(vertices=vertices, faces=faces)
+        exploded.compute_normals()
+        return exploded
+
+    def _morph_mesh(self, mesh_a: Mesh, mesh_b: Mesh, t: float) -> Mesh:
+        if mesh_a.vertex_count != mesh_b.vertex_count:
+            return mesh_a
+        morphed = Mesh(
+            vertices=[
+                a.lerp(b, smoothstep(0.0, 1.0, t))
+                for a, b in zip(mesh_a.vertices, mesh_b.vertices)
+            ],
+            faces=list(mesh_a.faces),
+        )
+        morphed.compute_normals()
+        return morphed

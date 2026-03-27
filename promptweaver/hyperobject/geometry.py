@@ -229,8 +229,8 @@ class HeightMap:
     def to_mesh(self) -> Mesh:
         """Convert heightmap to triangle mesh for rendering."""
         verts: list[Vec3] = []
-        cx = self.width * self.spacing / 2.0
-        cz = self.depth * self.spacing / 2.0
+        cx = (self.width - 1) * self.spacing / 2.0
+        cz = (self.depth - 1) * self.spacing / 2.0
 
         for z in range(self.depth):
             for x in range(self.width):

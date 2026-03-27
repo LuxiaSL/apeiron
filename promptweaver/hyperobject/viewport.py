@@ -103,7 +103,7 @@ class HyperobjectViewport(Static):
         self._current_template = prompt.template_id
 
         if template_changed:
-            scene.start_transition()
+            scene.capture_transition_source()
             self._build_geometry(prompt.template_id)
 
         # Apply all visual parameters from the accumulated state
@@ -122,6 +122,9 @@ class HyperobjectViewport(Static):
                 scene.anim.speed_scale *= dyn.energy * 1.5 + 0.5
             except Exception:
                 pass
+
+        if template_changed:
+            scene.start_transition()
 
     # ── initialization ────────────────────────────────────────────────
 
@@ -169,6 +172,7 @@ class HyperobjectViewport(Static):
         if scene is None:
             return
 
+        scene.clear_geometry()
         geom_kind = TEMPLATE_GEOM.get(template_id, GeomKind.MESH_FILLED)
         scene.geom_kind = geom_kind
 
@@ -203,6 +207,7 @@ class HyperobjectViewport(Static):
                 mesh_a, mesh_b = primitives.make_intersecting_solids()
                 scene.mesh = mesh_a
                 scene.mesh_b = mesh_b
+                scene.dual_mesh_mode = "overlay"
 
             elif template_id == "specimen":
                 scene.mesh = primitives.make_wireframe_organism()
@@ -217,6 +222,7 @@ class HyperobjectViewport(Static):
                 mesh_a, mesh_b = primitives.make_split_morph_pair()
                 scene.mesh = mesh_a
                 scene.mesh_b = mesh_b
+                scene.dual_mesh_mode = "morph"
 
             elif template_id == "liminal":
                 scene.mesh = primitives.make_corridor()

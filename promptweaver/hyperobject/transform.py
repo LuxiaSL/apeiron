@@ -62,10 +62,14 @@ class ProjectionContext:
     height: int
     half_w: float = 0.0
     half_h: float = 0.0
+    max_col: float = 0.0
+    max_row: float = 0.0
 
     def __post_init__(self) -> None:
         self.half_w = self.width / 2.0
         self.half_h = self.height / 2.0
+        self.max_col = float(max(self.width - 1, 0))
+        self.max_row = float(max(self.height - 1, 0))
 
     @staticmethod
     def build(
@@ -104,16 +108,16 @@ class ProjectionContext:
         ndc_z = clip.z * inv_w
 
         # Frustum cull (with margin for edge drawing)
-        margin = 1.5
-        if abs(ndc_x) > margin or abs(ndc_y) > margin:
+        margin = 1.25
+        if abs(ndc_x) > margin or abs(ndc_y) > margin or abs(ndc_z) > 1.05:
             return None
 
         # NDC → screen
-        col = int((ndc_x + 1.0) * self.half_w)
-        row = int((1.0 - ndc_y) * self.half_h)  # Y-flip (screen Y is down)
+        col = int(((ndc_x * 0.5) + 0.5) * self.max_col + 0.5)
+        row = int(((1.0 - ndc_y) * 0.5) * self.max_row + 0.5)
 
         # Depth: map from [-1, 1] to [0, 1]
-        depth = (ndc_z + 1.0) * 0.5
+        depth = clamp((ndc_z + 1.0) * 0.5, 0.0, 1.0)
 
         return ScreenPoint(col=col, row=row, depth=depth)
 
@@ -131,9 +135,12 @@ class ProjectionContext:
         ndc_y = clip.y * inv_w
         ndc_z = clip.z * inv_w
 
-        col = (ndc_x + 1.0) * self.half_w
-        row = (1.0 - ndc_y) * self.half_h
-        depth = (ndc_z + 1.0) * 0.5
+        if abs(ndc_x) > 2.0 or abs(ndc_y) > 2.0 or abs(ndc_z) > 1.05:
+            return None
+
+        col = ((ndc_x * 0.5) + 0.5) * self.max_col
+        row = ((1.0 - ndc_y) * 0.5) * self.max_row
+        depth = clamp((ndc_z + 1.0) * 0.5, 0.0, 1.0)
 
         return (col, row, depth)
 
