@@ -106,12 +106,15 @@ class TransitionState:
 
     phase: TransitionPhase = TransitionPhase.NONE
     progress: float = 0.0  # 0→1 within current phase
-    total_frames: int = 36  # ~2 seconds at 18fps
+    total_frames: int = 72  # ~4 seconds at 18fps
     current_frame: int = 0
 
     # Phase boundaries (as fraction of total)
-    dissolve_end: float = 0.25
-    tesseract_end: float = 0.55
+    # Dissolve: 15% (~0.6s) — geometry fades out quickly
+    # Tesseract: 55% (~2.2s) — the hypercube holds court
+    # Form: 30% (~1.2s) — new geometry materializes
+    dissolve_end: float = 0.15
+    tesseract_end: float = 0.70
     # form phase runs from tesseract_end to 1.0
 
     @property
@@ -322,16 +325,8 @@ class Scene:
                     cell.style = ""
 
         elif phase == TransitionPhase.TESSERACT:
-            # Render tesseract with fade-in/fade-out
+            # Render tesseract at full brightness — this is its moment
             self._render_tesseract(rast, w, h)
-            # Fade edges based on phase progress
-            fade = 1.0 - abs(t - 0.5) * 2.0  # peak at t=0.5
-            if fade < 0.8:
-                threshold = 1.0 - fade
-                for i, cell in enumerate(rast.grid.cells):
-                    if cell.char != " " and random.random() < threshold * 0.5:
-                        cell.char = " "
-                        cell.style = ""
 
         elif phase == TransitionPhase.FORM:
             # Render new geometry with progressive reveal
@@ -387,8 +382,9 @@ class Scene:
 
     # Idle tracking: seconds since last prompt
     _idle_time: float = 0.0
-    _last_prompt_time: float = 0.0
     _idle_tesseract_active: bool = False
+    IDLE_THRESHOLD: float = 10.0       # seconds before tesseract starts appearing
+    IDLE_FULL_MORPH: float = 20.0      # seconds at which tesseract fully replaces geometry
 
     # Voxel erosion state
     _voxel_timer: float = 0.0
@@ -430,7 +426,7 @@ class Scene:
 
         # Idle → tesseract drift
         self._idle_time += dt
-        if self._idle_time > 15.0 and not self._idle_tesseract_active:
+        if self._idle_time > self.IDLE_THRESHOLD and not self._idle_tesseract_active:
             self._idle_tesseract_active = True
 
     # ── heightmap animation ───────────────────────────────────────────
@@ -605,12 +601,40 @@ class Scene:
     # ── idle management ───────────────────────────────────────────────
 
     def _render_idle_tesseract(self, rast: AsciiRasterizer, w: int, h: int) -> None:
-        """Overlay a faint tesseract when idle."""
+        """Gradually morph from current geometry into the tesseract.
+
+        As idle time grows past IDLE_THRESHOLD:
+          - Current geometry cells are randomly dimmed/blanked (fade out)
+          - Tesseract is rendered with increasing brightness (fade in)
+        At IDLE_FULL_MORPH, the geometry is fully gone and the tesseract
+        is at full brightness.
+        """
         if not self._idle_tesseract_active or not self.tesseract_verts:
             return
-        # Blend: render tesseract with dim styles
-        _, _, mid_s, dim_s = self.styles
-        idle_styles = (mid_s, dim_s, dim_s, dim_s)
+
+        # How far into the morph are we? 0 = just started, 1 = fully tesseract
+        elapsed = self._idle_time - self.IDLE_THRESHOLD
+        duration = self.IDLE_FULL_MORPH - self.IDLE_THRESHOLD
+        morph_t = min(elapsed / max(duration, 0.1), 1.0)
+
+        # Phase 1: fade out existing geometry by randomly blanking cells
+        if morph_t < 1.0:
+            blank_prob = morph_t * 0.8  # at t=1.0, 80% of cells blanked
+            for cell in rast.grid.cells:
+                if cell.char != " " and random.random() < blank_prob:
+                    cell.char = " "
+                    cell.style = ""
+
+        # Phase 2: render tesseract on top — brightness scales with morph_t
+        bright_s, primary_s, mid_s, dim_s = self.styles
+        if morph_t < 0.3:
+            tess_styles = (dim_s, dim_s, dim_s, dim_s)
+        elif morph_t < 0.6:
+            tess_styles = (mid_s, dim_s, dim_s, dim_s)
+        elif morph_t < 0.85:
+            tess_styles = (primary_s, mid_s, dim_s, dim_s)
+        else:
+            tess_styles = (bright_s, primary_s, mid_s, dim_s)
 
         rotated = [
             rotate_4d(v, self.anim.angle_4d_xw, self.anim.angle_4d_yz)
@@ -619,20 +643,32 @@ class Scene:
         verts_3d = [project_4d_to_3d(v) for v in rotated]
         model = Mat4.rotation_y(self.anim.angle_y * 0.3)
         ctx = ProjectionContext.build(model, self.camera, w, h)
+
+        # Use depth 0.0 so tesseract always wins z-test over fading geometry
         rast.draw_tesseract_wireframe(
             verts_3d, self.tesseract_edges, ctx,
-            edge_char="·",
-            vertex_char="∙",
-            styles=idle_styles,
+            edge_char="─",
+            vertex_char="●",
+            styles=tess_styles,
         )
 
     # ── lifecycle ─────────────────────────────────────────────────────
 
+    def on_new_prompt(self) -> None:
+        """Called on EVERY prompt generation — resets idle state.
+
+        This must be called by the viewport for every prompt, regardless
+        of whether the template changed. Without this, the idle timer
+        keeps running and the tesseract bleeds through during active use.
+        """
+        self._idle_time = 0.0
+        self._idle_tesseract_active = False
+
     def start_transition(self) -> None:
         """Begin the dissolve → tesseract → form sequence."""
         self.transition.start()
-        self._idle_time = 0.0
-        self._idle_tesseract_active = False
+        self.on_new_prompt()
+        # Reset per-geometry animation state for the outgoing geometry
         self._fragment_offsets = None
         self._fragment_timer = 0.0
         self._lorenz_state = None
