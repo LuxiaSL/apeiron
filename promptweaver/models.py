@@ -39,3 +39,4 @@ class GeneratedPrompt(BaseModel):
     negative: str
     components: dict[str, list[str]]
     created_at: datetime = Field(default_factory=datetime.now)
+    favorited: bool = False

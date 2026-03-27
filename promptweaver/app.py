@@ -13,6 +13,7 @@ from rich.text import Text
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical, VerticalScroll
+from textual.timer import Timer
 from textual.widgets import Footer, Static
 
 from .engine import CombinatorialEngine
@@ -67,6 +68,9 @@ CORRUPTION_CHARS = "░▒▓█╗╔╚╝║═▀▄▐▌◄►"
 MILESTONES: frozenset[int] = frozenset(
     {10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000}
 )
+
+# ── auto-generate ────────────────────────────────────────────────────────
+AUTO_INTERVAL: float = 2.0  # seconds between auto-generated prompts
 
 
 def _highlight_prompt(prompt_text: str, components: dict[str, list[str]]) -> Text:
@@ -163,8 +167,11 @@ class PromptWeaverApp(App[None]):
         Binding("space", "next_prompt", "GENERATE", priority=True),
         Binding("enter", "next_prompt", "GENERATE", show=False, priority=True),
         Binding("t", "cycle_template", "TEMPLATE"),
+        Binding("f", "toggle_favorite", "FAV"),
+        Binding("a", "toggle_auto", "AUTO"),
         Binding("h", "toggle_hacker_log", "TRACE"),
         Binding("c", "copy_prompt", "COPY"),
+        Binding("n", "copy_negative", "NEG"),
         Binding("q", "quit_app", "EXIT"),
     ]
 
@@ -178,6 +185,8 @@ class PromptWeaverApp(App[None]):
         self._is_artifact: bool = False
         self._current_palette: Optional[Palette] = None
         self._hacker_visible: bool = False
+        self._favorites: set[str] = set()
+        self._auto_timer: Optional[Timer] = None
 
     def compose(self) -> ComposeResult:
         yield MatrixBanner()
@@ -195,6 +204,8 @@ class PromptWeaverApp(App[None]):
         yield Footer()
 
     def on_mount(self) -> None:
+        self._favorites = self.store.get_favorited_hashes()
+        self.query_one("#history-log", HistoryLog).set_favorites(self._favorites)
         self._generate()
 
     # ── palette ───────────────────────────────────────────────────────
@@ -225,9 +236,33 @@ class PromptWeaverApp(App[None]):
         self._is_artifact = random.random() < ARTIFACT_CHANCE
         self._render()
 
+    # ── clipboard helper ──────────────────────────────────────────────
+
+    def _copy_to_clipboard(self, text: str) -> bool:
+        """Copy text to system clipboard. Returns True on success."""
+        encoded = text.encode()
+        for cmd in (
+            ["pbcopy"],
+            ["wl-copy"],
+            ["xclip", "-selection", "clipboard"],
+            ["xsel", "--clipboard", "--input"],
+        ):
+            try:
+                subprocess.run(
+                    cmd, input=encoded, capture_output=True, timeout=2, check=True
+                )
+                return True
+            except (
+                FileNotFoundError,
+                subprocess.TimeoutExpired,
+                subprocess.CalledProcessError,
+            ):
+                continue
+        return False
+
     # ── rendering ─────────────────────────────────────────────────────
 
-    def _render(self) -> None:
+    def _render(self, *, animate: bool = True) -> None:
         if not self.current:
             return
 
@@ -238,24 +273,34 @@ class PromptWeaverApp(App[None]):
         self._apply_palette(palette)
 
         # ── positive prompt ──────────────────────────────────────────
+        star = " \u2605" if p.hash in self._favorites else ""
         glitch_widget = self.query_one("#prompt-display", GlitchPrompt)
 
         if self._is_artifact:
             corrupted = _corrupt_text(p.positive)
             glitch_widget.set_static(
                 Text(corrupted, style="bold #ff0044"),
-                title=f"[bold #ff0044]{p.template_id}[/]",
+                title=f"[bold #ff0044]{p.template_id}{star}[/]",
                 subtitle="[bold #ff0044]// ARTIFACT DETECTED[/]",
                 border_style="#ff0044",
             )
         else:
             highlighted = _highlight_prompt(p.positive, p.components)
-            glitch_widget.decode(
-                plain_text=p.positive,
-                final_renderable=highlighted,
-                title=f"[bold {palette.primary}]{p.template_id}[/]",
-                subtitle=f"[{palette.dim}]0x{p.hash}[/]",
-            )
+            title = f"[bold {palette.primary}]{p.template_id}{star}[/]"
+            subtitle = f"[{palette.dim}]0x{p.hash}[/]"
+            if animate:
+                glitch_widget.decode(
+                    plain_text=p.positive,
+                    final_renderable=highlighted,
+                    title=title,
+                    subtitle=subtitle,
+                )
+            else:
+                glitch_widget.set_static(
+                    highlighted,
+                    title=title,
+                    subtitle=subtitle,
+                )
 
         # ── negative prompt ──────────────────────────────────────────
         self.query_one("#negative-display", Static).update(
@@ -292,6 +337,7 @@ class PromptWeaverApp(App[None]):
             count=self.store.count,
             total=self.engine.total_combinations,
             template_filter=self._template_filter,
+            auto_active=self._auto_timer is not None,
         )
 
         # ── history log ──────────────────────────────────────────────
@@ -332,6 +378,33 @@ class PromptWeaverApp(App[None]):
         self.notify(f"template: {label}", timeout=2)
         self._generate()
 
+    def action_toggle_favorite(self) -> None:
+        if not self.current:
+            return
+        new_state = self.store.toggle_favorite(self.current.hash)
+        if new_state:
+            self._favorites.add(self.current.hash)
+            self.notify("\u2605 favorited", timeout=1)
+        else:
+            self._favorites.discard(self.current.hash)
+            self.notify("unfavorited", timeout=1)
+        self.query_one("#history-log", HistoryLog).set_favorites(self._favorites)
+        self._render(animate=False)
+
+    def action_toggle_auto(self) -> None:
+        if self._auto_timer is not None:
+            self._auto_timer.stop()
+            self._auto_timer = None
+            self.sub_title = "// combinatorial prompt generator"
+            self.notify("auto-generate: OFF", timeout=1)
+            # Re-render to clear the [AUTO] indicator
+            self._render(animate=False)
+        else:
+            self._auto_timer = self.set_interval(AUTO_INTERVAL, self._generate)
+            self.sub_title = "// combinatorial prompt generator [AUTO]"
+            self.notify(f"auto-generate: ON ({AUTO_INTERVAL}s)", timeout=1)
+            self._generate()
+
     def action_toggle_hacker_log(self) -> None:
         rain = self.query_one("#matrix-rain", MatrixRain)
         hacker = self.query_one("#hacker-log", HackerLog)
@@ -342,27 +415,22 @@ class PromptWeaverApp(App[None]):
     def action_copy_prompt(self) -> None:
         if not self.current:
             return
-        text = self.current.positive.encode()
-        for cmd in (
-            ["pbcopy"],
-            ["wl-copy"],
-            ["xclip", "-selection", "clipboard"],
-            ["xsel", "--clipboard", "--input"],
-        ):
-            try:
-                subprocess.run(
-                    cmd, input=text, capture_output=True, timeout=2, check=True
-                )
-                self.notify("copied!", timeout=1)
-                return
-            except (
-                FileNotFoundError,
-                subprocess.TimeoutExpired,
-                subprocess.CalledProcessError,
-            ):
-                continue
-        self.notify("no clipboard tool found", severity="warning", timeout=2)
+        if self._copy_to_clipboard(self.current.positive):
+            self.notify("copied!", timeout=1)
+        else:
+            self.notify("no clipboard tool found", severity="warning", timeout=2)
+
+    def action_copy_negative(self) -> None:
+        if not self.current:
+            return
+        if self._copy_to_clipboard(self.current.negative):
+            self.notify("negative copied!", timeout=1)
+        else:
+            self.notify("no clipboard tool found", severity="warning", timeout=2)
 
     def action_quit_app(self) -> None:
+        if self._auto_timer is not None:
+            self._auto_timer.stop()
+            self._auto_timer = None
         self.store.close()
         self.exit()

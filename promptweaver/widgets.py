@@ -202,10 +202,16 @@ class HistoryLog(Static):
     def __init__(self, **kwargs: object) -> None:
         super().__init__(**kwargs)
         self._entries: list[tuple[str, str]] = []  # (hash, template_id)
+        self._favorites: set[str] = set()
         self._palette: Palette = _DEFAULT
 
     def set_palette(self, palette: Palette) -> None:
         self._palette = palette
+
+    def set_favorites(self, favorites: set[str]) -> None:
+        """Update the set of favorited hashes and refresh display."""
+        self._favorites = favorites
+        self._refresh_display()
 
     def add_entry(self, hash_str: str, template_id: str) -> None:
         """Append a generation to the history log."""
@@ -219,13 +225,14 @@ class HistoryLog(Static):
         visible = list(reversed(self._entries))[: self.VISIBLE_ENTRIES]
         text = Text()
         for i, (h, tid) in enumerate(visible):
+            star = " \u2605" if h in self._favorites else ""
             if i == 0:
                 text.append(" > ", style=f"bold {p.primary}")
-                text.append(f"0x{h}", style=f"bold {p.primary}")
+                text.append(f"0x{h}{star}", style=f"bold {p.primary}")
                 text.append(f"\n   {tid}\n", style=p.bright)
             else:
                 style = p.bright if i <= 3 else p.dim
-                text.append(f"   0x{h}", style=style)
+                text.append(f"   0x{h}{star}", style=style)
                 text.append(f"\n   {tid}\n", style=p.dim)
 
         self.update(
@@ -423,6 +430,7 @@ class EntropyMeter(Static):
         count: int,
         total: int,
         template_filter: Optional[str] = None,
+        auto_active: bool = False,
     ) -> None:
         """Update the entropy meter with current coverage stats."""
         p = self._palette
@@ -451,5 +459,8 @@ class EntropyMeter(Static):
             bar.append(f"  [{template_filter}]", style=p.accent)
         else:
             bar.append("  [all]", style="dim")
+
+        if auto_active:
+            bar.append("  [AUTO]", style=f"bold {p.accent}")
 
         self.update(bar)
