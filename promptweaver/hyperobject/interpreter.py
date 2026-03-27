@@ -31,12 +31,12 @@ TEMPLATE_GEOM: dict[str, GeomKind] = {
     "process_state":     GeomKind.MESH_FILLED,
     "material_collision": GeomKind.DUAL_MESH,
     "specimen":          GeomKind.MESH_WIREFRAME,
-    "minimal_object":    GeomKind.MESH_FILLED,
+    "minimal_object":    GeomKind.SURFACE_DIRECT,  # torus: donut.c-style
     "abstract_field":    GeomKind.POINT_CLOUD,
     "temporal_diptych":  GeomKind.DUAL_MESH,
     "liminal":           GeomKind.MESH_WIREFRAME,
     "ruin_state":        GeomKind.MESH_FILLED,
-    "essence":           GeomKind.MESH_FILLED,
+    "essence":           GeomKind.SURFACE_DIRECT,   # möbius: direct sampling
     "site_decay":        GeomKind.VOXEL_GRID,
 }
 
@@ -44,14 +44,14 @@ TEMPLATE_GEOM: dict[str, GeomKind] = {
 # ── light presets (from light_behavior) ─────────────────────────────────
 
 LIGHT_PRESETS: dict[str, Light] = {
-    "directional_above":   Light(direction=Vec3(0.0, -1.0, 0.3).normalized(), intensity=1.0),
-    "dramatic_side":       Light(direction=Vec3(-0.8, -0.4, 0.4).normalized(), intensity=1.2),
-    "rim":                 Light(direction=Vec3(-0.5, 0.0, -0.8).normalized(), intensity=1.1),
-    "wrap_soft":           Light(direction=Vec3(0.3, -0.7, 0.5).normalized(), intensity=0.8, wrap=0.4),
-    "wrap_strong":         Light(direction=Vec3(0.2, -0.5, 0.6).normalized(), intensity=0.7, wrap=0.6),
-    "overhead":            Light(direction=Vec3(0.0, -1.0, 0.0).normalized(), intensity=1.0),
-    "low_angle":           Light(direction=Vec3(0.3, -0.2, 0.7).normalized(), intensity=1.3),
-    "backlight":           Light(direction=Vec3(0.0, 0.3, -1.0).normalized(), intensity=0.6),
+    "directional_above":   Light(direction=Vec3(0.0, -1.0, 0.3).normalized(), intensity=1.2),
+    "dramatic_side":       Light(direction=Vec3(-0.8, -0.4, 0.4).normalized(), intensity=1.3),
+    "rim":                 Light(direction=Vec3(-0.5, -0.3, -0.8).normalized(), intensity=1.2),
+    "wrap_soft":           Light(direction=Vec3(0.3, -0.7, 0.5).normalized(), intensity=1.0, wrap=0.4),
+    "wrap_strong":         Light(direction=Vec3(0.2, -0.5, 0.6).normalized(), intensity=0.9, wrap=0.6),
+    "overhead":            Light(direction=Vec3(0.0, -1.0, 0.1).normalized(), intensity=1.2),
+    "low_angle":           Light(direction=Vec3(0.3, -0.3, 0.7).normalized(), intensity=1.3),
+    "backlight":           Light(direction=Vec3(0.1, -0.3, -1.0).normalized(), intensity=0.9, wrap=0.3),
 }
 
 _LIGHT_PRESETS_LIST = list(LIGHT_PRESETS.values())
@@ -60,14 +60,14 @@ _LIGHT_PRESETS_LIST = list(LIGHT_PRESETS.values())
 # ── camera presets (from spatial_logic) ─────────────────────────────────
 
 CAMERA_PRESETS: dict[str, Camera] = {
-    "front":     Camera(position=Vec3(0.0, 0.0, 3.5), target=Vec3(0.0, 0.0, 0.0)),
-    "elevated":  Camera(position=Vec3(0.0, 1.5, 3.0), target=Vec3(0.0, 0.0, 0.0)),
-    "side":      Camera(position=Vec3(3.0, 0.5, 1.0), target=Vec3(0.0, 0.0, 0.0)),
-    "isometric": Camera(position=Vec3(2.5, 2.0, 2.5), target=Vec3(0.0, 0.0, 0.0)),
-    "close":     Camera(position=Vec3(0.0, 0.3, 2.2), target=Vec3(0.0, 0.0, 0.0)),
-    "far":       Camera(position=Vec3(0.0, 0.5, 5.0), target=Vec3(0.0, 0.0, 0.0)),
-    "low":       Camera(position=Vec3(0.0, -0.5, 3.5), target=Vec3(0.0, 0.3, 0.0)),
-    "orbit":     Camera(position=Vec3(2.5, 0.5, 2.5), target=Vec3(0.0, 0.0, 0.0)),
+    "front":     Camera(position=Vec3(0.0, 0.0, 2.5), target=Vec3(0.0, 0.0, 0.0)),
+    "elevated":  Camera(position=Vec3(0.0, 1.0, 2.2), target=Vec3(0.0, 0.0, 0.0)),
+    "side":      Camera(position=Vec3(2.2, 0.3, 0.8), target=Vec3(0.0, 0.0, 0.0)),
+    "isometric": Camera(position=Vec3(1.8, 1.4, 1.8), target=Vec3(0.0, 0.0, 0.0)),
+    "close":     Camera(position=Vec3(0.0, 0.2, 1.8), target=Vec3(0.0, 0.0, 0.0)),
+    "far":       Camera(position=Vec3(0.0, 0.3, 3.5), target=Vec3(0.0, 0.0, 0.0)),
+    "low":       Camera(position=Vec3(0.0, -0.3, 2.5), target=Vec3(0.0, 0.2, 0.0)),
+    "orbit":     Camera(position=Vec3(1.8, 0.3, 1.8), target=Vec3(0.0, 0.0, 0.0)),
 }
 
 _CAMERA_PRESETS_LIST = list(CAMERA_PRESETS.values())
@@ -90,14 +90,14 @@ SPEED_PRESETS: list[float] = [
 # ── zoom presets (from scale_perspective) ───────────────────────────────
 
 ZOOM_OFFSETS: list[float] = [
-    -1.5,   # much closer (macro, electron microscope)
-    -1.0,   # closer
-    -0.5,   # slightly closer
+    -0.8,   # much closer (macro, electron microscope)
+    -0.5,   # closer
+    -0.3,   # slightly closer
     0.0,    # default
-    0.5,    # slightly farther
-    1.0,    # farther (aerial)
-    1.5,    # much farther (geological)
-    2.0,    # extreme far (satellite)
+    0.3,    # slightly farther
+    0.5,    # farther (aerial)
+    0.8,    # much farther (geological)
+    1.2,    # extreme far (satellite)
 ]
 
 
@@ -116,7 +116,7 @@ def _word_hash(word: str, n: int) -> int:
 def interpret_light(words: list[str]) -> Light:
     """Map light_behavior word(s) to a Light preset."""
     if not words:
-        return Light(direction=Vec3(0.3, -0.8, 0.5).normalized(), intensity=1.0)
+        return Light(direction=Vec3(0.3, -0.8, 0.5).normalized(), intensity=1.2)
     idx = _word_hash(words[0], len(_LIGHT_PRESETS_LIST))
     return _LIGHT_PRESETS_LIST[idx]
 
@@ -124,7 +124,7 @@ def interpret_light(words: list[str]) -> Light:
 def interpret_camera(words: list[str]) -> Camera:
     """Map spatial_logic word(s) to a Camera preset."""
     if not words:
-        return Camera(position=Vec3(0.0, 0.5, 3.5), target=Vec3(0.0, 0.0, 0.0))
+        return Camera(position=Vec3(0.0, 0.3, 2.5), target=Vec3(0.0, 0.0, 0.0))
     idx = _word_hash(words[0], len(_CAMERA_PRESETS_LIST))
     return _CAMERA_PRESETS_LIST[idx]
 

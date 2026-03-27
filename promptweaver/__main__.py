@@ -2,9 +2,45 @@
 
 import argparse
 import json
+import logging
 import sys
 from pathlib import Path
 from typing import Optional
+
+
+def _configure_logging(
+    *,
+    debug: bool,
+    log_file: Path | None,
+) -> None:
+    level = logging.DEBUG if debug else logging.INFO
+    handlers: list[logging.Handler] = []
+
+    if log_file is not None:
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+        handlers.append(logging.FileHandler(log_file, encoding="utf-8"))
+    else:
+        handlers.append(logging.StreamHandler(sys.stderr))
+
+    logging.basicConfig(
+        level=level,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+        handlers=handlers,
+        force=True,
+    )
+
+    def _log_unhandled(
+        exc_type: type[BaseException],
+        exc: BaseException,
+        tb: object,
+    ) -> None:
+        logging.getLogger(__name__).critical(
+            "Unhandled exception",
+            exc_info=(exc_type, exc, tb),
+        )
+        sys.__excepthook__(exc_type, exc, tb)
+
+    sys.excepthook = _log_unhandled
 
 
 def main() -> None:
@@ -55,6 +91,17 @@ def main() -> None:
         action="store_true",
         help="Launch in Hyperobject Mode (3D ASCII viewport active)",
     )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug logging",
+    )
+    parser.add_argument(
+        "--log-file",
+        type=Path,
+        metavar="FILE",
+        help="Write application logs to FILE",
+    )
 
     # ── modifiers ─────────────────────────────────────────────────────
     parser.add_argument(
@@ -77,6 +124,7 @@ def main() -> None:
     )
 
     args = parser.parse_args()
+    _configure_logging(debug=args.debug, log_file=args.log_file)
 
     if args.batch is not None and args.batch < 1:
         parser.error("--batch requires a positive integer")

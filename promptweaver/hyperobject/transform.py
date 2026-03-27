@@ -1,4 +1,4 @@
-"""Transform pipeline: model → world → view → clip → screen.
+"""Transform pipeline: model -> world -> view -> clip -> screen.
 
 Handles the full vertex transformation chain including aspect-ratio
 correction for terminal characters (~2:1 height:width).
@@ -7,7 +7,7 @@ correction for terminal characters (~2:1 height:width).
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from .lut import Mat4, Vec3, Vec4, clamp
 
@@ -64,12 +64,49 @@ class ProjectionContext:
     half_h: float = 0.0
     max_col: float = 0.0
     max_row: float = 0.0
+    clip_margin: float = 1.25
+    unclamped_margin: float = 2.0
+    depth_margin: float = 1.05
+    m0: float = 0.0
+    m1: float = 0.0
+    m2: float = 0.0
+    m3: float = 0.0
+    m4: float = 0.0
+    m5: float = 0.0
+    m6: float = 0.0
+    m7: float = 0.0
+    m8: float = 0.0
+    m9: float = 0.0
+    m10: float = 0.0
+    m11: float = 0.0
+    m12: float = 0.0
+    m13: float = 0.0
+    m14: float = 0.0
+    m15: float = 0.0
+    nm0: float = 0.0
+    nm1: float = 0.0
+    nm2: float = 0.0
+    nm4: float = 0.0
+    nm5: float = 0.0
+    nm6: float = 0.0
+    nm8: float = 0.0
+    nm9: float = 0.0
+    nm10: float = 0.0
 
     def __post_init__(self) -> None:
         self.half_w = self.width / 2.0
         self.half_h = self.height / 2.0
         self.max_col = float(max(self.width - 1, 0))
         self.max_row = float(max(self.height - 1, 0))
+        mvp = self.mvp.m
+        self.m0, self.m1, self.m2, self.m3 = mvp[0], mvp[1], mvp[2], mvp[3]
+        self.m4, self.m5, self.m6, self.m7 = mvp[4], mvp[5], mvp[6], mvp[7]
+        self.m8, self.m9, self.m10, self.m11 = mvp[8], mvp[9], mvp[10], mvp[11]
+        self.m12, self.m13, self.m14, self.m15 = mvp[12], mvp[13], mvp[14], mvp[15]
+        model = self.model.m
+        self.nm0, self.nm1, self.nm2 = model[0], model[1], model[2]
+        self.nm4, self.nm5, self.nm6 = model[4], model[5], model[6]
+        self.nm8, self.nm9, self.nm10 = model[8], model[9], model[10]
 
     @staticmethod
     def build(
@@ -96,20 +133,24 @@ class ProjectionContext:
         Returns None if the vertex is behind the camera or outside
         the view frustum.
         """
-        clip = self.mvp @ v.to_vec4(1.0)
+        vx, vy, vz = v.x, v.y, v.z
+        clip_x = self.m0 * vx + self.m1 * vy + self.m2 * vz + self.m3
+        clip_y = self.m4 * vx + self.m5 * vy + self.m6 * vz + self.m7
+        clip_z = self.m8 * vx + self.m9 * vy + self.m10 * vz + self.m11
+        clip_w = self.m12 * vx + self.m13 * vy + self.m14 * vz + self.m15
 
         # Behind camera
-        if clip.w <= 0.0:
+        if clip_w <= 0.0:
             return None
 
-        inv_w = 1.0 / clip.w
-        ndc_x = clip.x * inv_w
-        ndc_y = clip.y * inv_w
-        ndc_z = clip.z * inv_w
+        inv_w = 1.0 / clip_w
+        ndc_x = clip_x * inv_w
+        ndc_y = clip_y * inv_w
+        ndc_z = clip_z * inv_w
 
         # Frustum cull (with margin for edge drawing)
-        margin = 1.25
-        if abs(ndc_x) > margin or abs(ndc_y) > margin or abs(ndc_z) > 1.05:
+        margin = self.clip_margin
+        if abs(ndc_x) > margin or abs(ndc_y) > margin or abs(ndc_z) > self.depth_margin:
             return None
 
         # NDC → screen
@@ -126,16 +167,20 @@ class ProjectionContext:
 
         Returns (col, row, depth) as floats, or None if behind camera.
         """
-        clip = self.mvp @ v.to_vec4(1.0)
-        if clip.w <= 0.0:
+        vx, vy, vz = v.x, v.y, v.z
+        clip_x = self.m0 * vx + self.m1 * vy + self.m2 * vz + self.m3
+        clip_y = self.m4 * vx + self.m5 * vy + self.m6 * vz + self.m7
+        clip_z = self.m8 * vx + self.m9 * vy + self.m10 * vz + self.m11
+        clip_w = self.m12 * vx + self.m13 * vy + self.m14 * vz + self.m15
+        if clip_w <= 0.0:
             return None
 
-        inv_w = 1.0 / clip.w
-        ndc_x = clip.x * inv_w
-        ndc_y = clip.y * inv_w
-        ndc_z = clip.z * inv_w
+        inv_w = 1.0 / clip_w
+        ndc_x = clip_x * inv_w
+        ndc_y = clip_y * inv_w
+        ndc_z = clip_z * inv_w
 
-        if abs(ndc_x) > 2.0 or abs(ndc_y) > 2.0 or abs(ndc_z) > 1.05:
+        if abs(ndc_x) > self.unclamped_margin or abs(ndc_y) > self.unclamped_margin or abs(ndc_z) > self.depth_margin:
             return None
 
         col = ((ndc_x * 0.5) + 0.5) * self.max_col
@@ -148,7 +193,15 @@ class ProjectionContext:
         """Transform a face normal to view space for lighting."""
         # For uniform scale, model matrix suffices.
         # For non-uniform scale, we'd need the inverse transpose.
-        return self.model.transform_direction(n).normalized()
+        nx, ny, nz = n.x, n.y, n.z
+        tx = self.nm0 * nx + self.nm1 * ny + self.nm2 * nz
+        ty = self.nm4 * nx + self.nm5 * ny + self.nm6 * nz
+        tz = self.nm8 * nx + self.nm9 * ny + self.nm10 * nz
+        length_sq = tx * tx + ty * ty + tz * tz
+        if length_sq < 1e-20:
+            return Vec3(0.0, 0.0, 0.0)
+        inv_len = 1.0 / math.sqrt(length_sq)
+        return Vec3(tx * inv_len, ty * inv_len, tz * inv_len)
 
 
 # ── screen-space helpers ────────────────────────────────────────────────

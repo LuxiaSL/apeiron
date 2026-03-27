@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import logging
 import random
+import shutil
 import subprocess
+import threading
 from pathlib import Path
 from typing import Optional
 
@@ -72,6 +75,7 @@ MILESTONES: frozenset[int] = frozenset(
 
 # ── auto-generate ────────────────────────────────────────────────────────
 AUTO_INTERVAL: float = 2.0  # seconds between auto-generated prompts
+logger = logging.getLogger(__name__)
 
 
 def _highlight_prompt(prompt_text: str, components: dict[str, list[str]]) -> Text:
@@ -241,6 +245,8 @@ class PromptWeaverApp(App[None]):
         self._auto_timer: Optional[Timer] = None
         self._hyper_visible: bool = hyper
         self._start_hyper: bool = hyper
+        self._clipboard_command: list[str] | None = None
+        self._clipboard_checked: bool = False
 
     def compose(self) -> ComposeResult:
         yield MatrixBanner()
@@ -301,31 +307,77 @@ class PromptWeaverApp(App[None]):
         )
         self.store.save(self.current)
         self._is_artifact = random.random() < ARTIFACT_CHANCE
+        logger.debug(
+            "Generated prompt hash=%s template=%s hyper=%s",
+            self.current.hash,
+            self.current.template_id,
+            self._hyper_visible,
+        )
         self._render()
 
     # ── clipboard helper ──────────────────────────────────────────────
 
-    def _copy_to_clipboard(self, text: str) -> bool:
-        """Copy text to system clipboard. Returns True on success."""
-        encoded = text.encode()
+    def _resolve_clipboard_command(self) -> list[str] | None:
+        """Detect and cache the first available clipboard command."""
+        if self._clipboard_checked:
+            return self._clipboard_command
+
+        self._clipboard_checked = True
         for cmd in (
-            ["pbcopy"],
             ["wl-copy"],
             ["xclip", "-selection", "clipboard"],
             ["xsel", "--clipboard", "--input"],
+            ["pbcopy"],
         ):
-            try:
-                subprocess.run(
-                    cmd, input=encoded, capture_output=True, timeout=2, check=True
-                )
-                return True
-            except (
-                FileNotFoundError,
-                subprocess.TimeoutExpired,
-                subprocess.CalledProcessError,
-            ):
-                continue
-        return False
+            if shutil.which(cmd[0]):
+                self._clipboard_command = cmd
+                logger.debug("Using clipboard command: %s", cmd)
+                break
+
+        return self._clipboard_command
+
+    def _copy_to_clipboard(self, text: str) -> bool:
+        """Copy text to system clipboard. Returns True on success."""
+        cmd = self._resolve_clipboard_command()
+        if cmd is None:
+            return False
+
+        encoded = text.encode()
+        try:
+            proc = subprocess.Popen(
+                cmd,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            proc.communicate(input=encoded, timeout=1)
+            return proc.returncode == 0
+        except FileNotFoundError:
+            self._clipboard_command = None
+            self._clipboard_checked = False
+            logger.exception("Clipboard command disappeared: %s", cmd)
+            return False
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            proc.communicate()
+            logger.warning("Clipboard command timed out: %s", cmd)
+            return False
+        except Exception:
+            logger.exception("Clipboard copy failed via %s", cmd)
+            return False
+
+    def _copy_to_clipboard_async(self, text: str, *, negative: bool) -> None:
+        def worker() -> None:
+            success = self._copy_to_clipboard(text)
+            self.call_from_thread(self._finish_clipboard_copy, success, negative)
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _finish_clipboard_copy(self, success: bool, negative: bool) -> None:
+        if success:
+            self.notify("negative copied!" if negative else "copied!", timeout=1)
+        else:
+            self.notify("no clipboard tool found", severity="warning", timeout=2)
 
     # ── rendering ─────────────────────────────────────────────────────
 
@@ -516,18 +568,12 @@ class PromptWeaverApp(App[None]):
     def action_copy_prompt(self) -> None:
         if not self.current:
             return
-        if self._copy_to_clipboard(self.current.positive):
-            self.notify("copied!", timeout=1)
-        else:
-            self.notify("no clipboard tool found", severity="warning", timeout=2)
+        self._copy_to_clipboard_async(self.current.positive, negative=False)
 
     def action_copy_negative(self) -> None:
         if not self.current:
             return
-        if self._copy_to_clipboard(self.current.negative):
-            self.notify("negative copied!", timeout=1)
-        else:
-            self.notify("no clipboard tool found", severity="warning", timeout=2)
+        self._copy_to_clipboard_async(self.current.negative, negative=True)
 
     def action_quit_app(self) -> None:
         if self._auto_timer is not None:

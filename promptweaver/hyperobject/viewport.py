@@ -6,6 +6,7 @@ state, and responds to prompt generation events from the app.
 
 from __future__ import annotations
 
+import logging
 import time
 from typing import Optional
 
@@ -17,12 +18,14 @@ from ..models import GeneratedPrompt
 from ..palettes import Palette
 
 from .scene import Scene, GeomKind
-from .rasterizer import AsciiRasterizer
+from .rasterizer import AsciiRasterizer, TorusSampler, MobiusSampler
 from .interpreter import TEMPLATE_GEOM, configure_scene, interpret_mesh_detail
 from .state import VisualState
 from .embedding_cache import EmbeddingCache
 from .dynamics import compute_dynamics
 from . import primitives
+
+logger = logging.getLogger(__name__)
 
 
 class HyperobjectViewport(Static):
@@ -121,7 +124,7 @@ class HyperobjectViewport(Static):
                 dyn = compute_dynamics(self._visual_state, self._embedding_cache)
                 scene.anim.speed_scale *= dyn.energy * 1.5 + 0.5
             except Exception:
-                pass
+                logger.exception("Failed to compute embedding dynamics")
 
         if template_changed:
             scene.start_transition()
@@ -143,7 +146,7 @@ class HyperobjectViewport(Static):
             self._scene.tesseract_edges = edges
             self._scene.geom_kind = GeomKind.TESSERACT
         except Exception:
-            pass
+            logger.exception("Failed to initialize tesseract geometry")
 
         # Create rasterizer
         w, h = max(self.size.width, 10), max(self.size.height, 3)
@@ -153,13 +156,14 @@ class HyperobjectViewport(Static):
         try:
             self._visual_state = VisualState()
         except Exception:
-            pass
+            logger.exception("Failed to initialize visual state")
 
         # Embedding cache (optional — works without it)
         try:
             self._embedding_cache = EmbeddingCache()
         except Exception:
             self._embedding_cache = None
+            logger.exception("Failed to initialize embedding cache")
 
         # Apply initial palette
         if self._palette is not None:
@@ -213,7 +217,8 @@ class HyperobjectViewport(Static):
                 scene.mesh = primitives.make_wireframe_organism()
 
             elif template_id == "minimal_object":
-                scene.mesh = primitives.make_torus()
+                # donut.c-style direct surface sampling for the torus
+                scene.surface_sampler = TorusSampler(R=1.0, r=0.5)
 
             elif template_id == "abstract_field":
                 scene.cloud = primitives.make_lorenz_attractor()
@@ -233,42 +238,52 @@ class HyperobjectViewport(Static):
                 scene.fragment_groups = groups
 
             elif template_id == "essence":
-                scene.mesh = primitives.make_mobius_strip()
+                # Direct surface sampling for the Möbius strip
+                scene.surface_sampler = MobiusSampler()
 
             elif template_id == "site_decay":
                 scene.voxels = primitives.make_voxel_grid()
 
         except Exception:
+            logger.exception("Failed to build geometry for template %s", template_id)
             scene.geom_kind = GeomKind.TESSERACT
 
     # ── render loop ───────────────────────────────────────────────────
 
     def _tick(self) -> None:
         """Called every frame by the timer."""
-        now = time.monotonic()
-        dt = now - self._last_tick if self._last_tick > 0 else self.FRAME_INTERVAL
-        self._last_tick = now
-        dt = min(dt, 0.1)
+        try:
+            now = time.monotonic()
+            dt = now - self._last_tick if self._last_tick > 0 else self.FRAME_INTERVAL
+            self._last_tick = now
+            dt = min(dt, 0.1)
 
-        scene = self._scene
-        rast = self._rasterizer
-        if scene is None or rast is None:
+            scene = self._scene
+            rast = self._rasterizer
+            if scene is None or rast is None:
+                self._render_placeholder()
+                return
+
+            # Resize rasterizer if widget size changed
+            w, h = max(self.size.width, 10), max(self.size.height, 3)
+            rast.resize(w, h)
+
+            # Advance animation + particles
+            scene.tick(dt)
+
+            # Render geometry + particles + postfx
+            scene.render(rast)
+
+            # Output
+            self.update(rast.grid.to_rich_text())
+            self._frame_count += 1
+        except Exception:
+            logger.exception(
+                "Hyperobject frame failed at frame=%s template=%s",
+                self._frame_count,
+                self._current_template or "<unset>",
+            )
             self._render_placeholder()
-            return
-
-        # Resize rasterizer if widget size changed
-        w, h = max(self.size.width, 10), max(self.size.height, 3)
-        rast.resize(w, h)
-
-        # Advance animation + particles
-        scene.tick(dt)
-
-        # Render geometry + particles + postfx
-        scene.render(rast)
-
-        # Output
-        self.update(rast.grid.to_rich_text())
-        self._frame_count += 1
 
     def _render_placeholder(self) -> None:
         """Show a simple placeholder before initialization."""

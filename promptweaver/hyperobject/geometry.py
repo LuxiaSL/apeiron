@@ -26,12 +26,15 @@ class Mesh:
     edges: list[tuple[int, int]] = field(default_factory=list)
     faces: list[tuple[int, ...]] = field(default_factory=list)
     normals: list[Vec3] = field(default_factory=list)
+    vertex_normals: list[Vec3] = field(default_factory=list)
 
     def compute_normals(self) -> None:
         """Compute per-face normals from vertex positions.
 
         For triangles: cross product of two edges.
         For quads+: uses first three vertices as the triangle.
+        Also computes per-vertex normals (area-weighted average of
+        incident face normals) for smooth Gouraud shading.
         """
         self.normals = []
         for face in self.faces:
@@ -45,6 +48,16 @@ class Mesh:
             e2 = v2 - v0
             normal = e1.cross(e2).normalized()
             self.normals.append(normal)
+
+        # Per-vertex normals: average of incident face normals
+        n_verts = len(self.vertices)
+        accum = [Vec3(0.0, 0.0, 0.0) for _ in range(n_verts)]
+        for fi, face in enumerate(self.faces):
+            fn = self.normals[fi]
+            for vi in face:
+                if vi < n_verts:
+                    accum[vi] = accum[vi] + fn
+        self.vertex_normals = [a.normalized() for a in accum]
 
     def compute_edges_from_faces(self) -> None:
         """Derive unique edge list from face connectivity."""

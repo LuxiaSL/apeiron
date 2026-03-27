@@ -8,6 +8,7 @@ The PromptInterpreter builds scenes from GeneratedPrompt data.
 from __future__ import annotations
 
 import copy
+import logging
 import math
 import random
 from dataclasses import dataclass, field
@@ -26,12 +27,23 @@ from .lut import (
     smoothstep,
 )
 from .geometry import Mesh, PointCloud, VoxelGrid, HeightMap, noise3
-from .rasterizer import AsciiRasterizer, CharGrid, Light, DEFAULT_LIGHT
+from .rasterizer import (
+    AsciiRasterizer,
+    CharGrid,
+    Light,
+    DEFAULT_LIGHT,
+    DONUT_LUMINANCE_RAMP,
+    SurfaceSampler,
+    TorusSampler,
+    SphereSampler,
+    MobiusSampler,
+)
 from .transform import Camera, ProjectionContext
 
 # Late import to avoid circular deps
 _postfx = None
 _particles_mod = None
+logger = logging.getLogger(__name__)
 
 
 def _ensure_fx() -> None:
@@ -43,7 +55,7 @@ def _ensure_fx() -> None:
             _postfx = _pfx
             _particles_mod = _ptc
         except Exception:
-            pass
+            logger.exception("Failed to import post-processing or particle modules")
 
 
 # ── geometry type tag ───────────────────────────────────────────────────
@@ -59,6 +71,7 @@ class GeomKind(Enum):
     HEIGHTMAP = auto()
     TESSERACT = auto()
     DUAL_MESH = auto()       # two meshes (material_collision, temporal_diptych)
+    SURFACE_DIRECT = auto()  # donut.c-style direct surface sampling
 
 
 # ── animation state ─────────────────────────────────────────────────────
@@ -173,6 +186,7 @@ class SceneSnapshot:
     styles: tuple[str, str, str, str]
     fragment_groups: list[list[int]]
     dual_mesh_mode: str = "overlay"
+    surface_sampler: SurfaceSampler | None = None
 
 
 # ── scene ───────────────────────────────────────────────────────────────
@@ -191,15 +205,18 @@ class Scene:
     heightmap: Optional[HeightMap] = None
     heightmap_mesh: Optional[Mesh] = None  # cached mesh from heightmap
 
+    # Direct surface sampler (donut.c-style rendering)
+    surface_sampler: SurfaceSampler | None = None
+
     # Tesseract (always available for transitions)
     tesseract_verts: list[Vec4] = field(default_factory=list)
     tesseract_edges: list[tuple[int, int]] = field(default_factory=list)
 
-    # Rendering config
-    shader_chars: str = " ░▒▓█░▒▓██"
+    # Rendering config — donut.c-inspired 13-char luminance ramp
+    shader_chars: str = " .,-~:;=!*#$@"
     light: Light = field(default_factory=lambda: DEFAULT_LIGHT)
     camera: Camera = field(default_factory=lambda: Camera(
-        position=Vec3(0.0, 0.5, 3.5),
+        position=Vec3(0.0, 0.3, 2.5),
         target=Vec3(0.0, 0.0, 0.0),
     ))
 
@@ -261,6 +278,7 @@ class Scene:
         self.voxels = None
         self.heightmap = None
         self.heightmap_mesh = None
+        self.surface_sampler = None
         self.fragment_groups = []
         self.dual_mesh_mode = "overlay"
 
@@ -283,6 +301,7 @@ class Scene:
             self.camera,
             self.fragment_groups,
             self.dual_mesh_mode,
+            self.surface_sampler,
         )
 
     def _render_geometry_state(
@@ -303,6 +322,7 @@ class Scene:
         camera: Camera,
         fragment_groups: list[list[int]],
         dual_mesh_mode: str,
+        surface_sampler: SurfaceSampler | None = None,
     ) -> None:
         """Render an explicit geometry state.
 
@@ -346,6 +366,14 @@ class Scene:
                 rast.draw_heightmap(
                     render_heightmap_mesh, ctx,
                     shader_chars, light, styles,
+                )
+
+        elif geom_kind == GeomKind.SURFACE_DIRECT:
+            sampler = surface_sampler if surface_sampler is not None else self.surface_sampler
+            if sampler is not None:
+                rast.draw_surface_direct(
+                    sampler, ctx, light, styles,
+                    luminance_ramp=DONUT_LUMINANCE_RAMP,
                 )
 
         elif geom_kind == GeomKind.TESSERACT:
@@ -464,7 +492,7 @@ class Scene:
         try:
             _postfx.apply_effects(grid, self.postfx_names)
         except Exception:
-            pass  # never let postfx crash the renderer
+            logger.exception("Post-processing failed for effects=%s", self.postfx_names)
 
     # ── animation tick ────────────────────────────────────────────────
 
@@ -506,7 +534,7 @@ class Scene:
             try:
                 self.particle_system.tick(dt)
             except Exception:
-                pass
+                logger.exception("Particle system tick failed")
 
         # Per-geometry animations
         if self.geom_kind == GeomKind.HEIGHTMAP:
@@ -781,6 +809,7 @@ class Scene:
             styles=self.styles,
             fragment_groups=copy.deepcopy(self.fragment_groups),
             dual_mesh_mode=self.dual_mesh_mode,
+            surface_sampler=self.surface_sampler,  # samplers are stateless, no deepcopy
         )
 
     def _render_snapshot(
@@ -807,6 +836,7 @@ class Scene:
             snapshot.camera,
             snapshot.fragment_groups,
             snapshot.dual_mesh_mode,
+            snapshot.surface_sampler,
         )
 
     def _mesh_for_render(

@@ -1,0 +1,113 @@
+2026-03-26 23:09:38,709 DEBUG asyncio: Using selector: EpollSelector
+2026-03-26 23:09:38,828 DEBUG promptweaver.app: Generated prompt hash=66fce6481a28fd49 template=temporal_diptych hyper=True
+2026-03-26 23:09:39,144 INFO promptweaver.hyperobject.embedding_cache: EmbeddingCache loaded: 746 words, 12 category centroids
+2026-03-26 23:09:39,144 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, material_substance, medium_render, spatial_logic, subject_form, temporal_state
+2026-03-26 23:09:51,373 DEBUG promptweaver.app: Generated prompt hash=d318a353c531b1ed template=ruin_state hyper=True
+2026-03-26 23:09:51,377 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, color_logic, medium_render, phenomenon_pattern, setting_location, temporal_state
+2026-03-26 23:09:59,831 DEBUG promptweaver.app: Generated prompt hash=553a991712089d5a template=material_study hyper=True
+2026-03-26 23:09:59,837 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:10:09,965 DEBUG promptweaver.app: Generated prompt hash=fa144e0d7d3abffe template=material_study hyper=True
+2026-03-26 23:10:09,967 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:10:41,620 DEBUG promptweaver.app: Generated prompt hash=e2949daeec5df95b template=material_study hyper=True
+2026-03-26 23:10:41,623 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:10:46,507 DEBUG promptweaver.app: Generated prompt hash=e8b1bb05a7dce1c7 template=environmental hyper=True
+2026-03-26 23:10:46,512 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, light_behavior, medium_render, scale_perspective, setting_location, subject_form
+2026-03-26 23:11:13,487 DEBUG promptweaver.app: Generated prompt hash=f5f5364185dd9f09 template=process_state hyper=True
+2026-03-26 23:11:13,492 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, material_substance, medium_render, phenomenon_pattern, subject_form, temporal_state
+2026-03-26 23:11:24,908 DEBUG promptweaver.app: Generated prompt hash=e5a6740653cbda6d template=process_state hyper=True
+2026-03-26 23:11:24,910 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, material_substance, medium_render, phenomenon_pattern, subject_form, temporal_state
+2026-03-26 23:11:28,016 DEBUG promptweaver.app: Generated prompt hash=739640e84b15ecae template=specimen hyper=True
+2026-03-26 23:11:28,022 DEBUG promptweaver.hyperobject.state: VisualState updated 5/5 categories: color_logic, material_substance, medium_render, scale_perspective, subject_form
+2026-03-26 23:11:35,188 DEBUG promptweaver.app: Generated prompt hash=646ca74ab4807547 template=specimen hyper=True
+2026-03-26 23:11:35,189 DEBUG promptweaver.hyperobject.state: VisualState updated 5/5 categories: color_logic, material_substance, medium_render, scale_perspective, subject_form
+2026-03-26 23:11:36,603 DEBUG promptweaver.app: Generated prompt hash=816358378a87dff5 template=abstract_field hyper=True
+2026-03-26 23:11:36,606 DEBUG promptweaver.hyperobject.state: VisualState updated 5/5 categories: atmosphere_field, color_logic, medium_render, phenomenon_pattern, spatial_logic
+2026-03-26 23:11:55,957 DEBUG promptweaver.app: Generated prompt hash=8e2866dfaf7b9838 template=liminal hyper=True
+2026-03-26 23:11:55,960 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, color_logic, light_behavior, medium_render, setting_location, spatial_logic
+2026-03-26 23:12:00,314 DEBUG promptweaver.app: Generated prompt hash=5346fb14771ba0ff template=liminal hyper=True
+2026-03-26 23:12:00,315 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, color_logic, light_behavior, medium_render, setting_location, spatial_logic
+2026-03-26 23:12:01,285 DEBUG promptweaver.app: Generated prompt hash=d23d2b702b6d944e template=textural_macro hyper=True
+2026-03-26 23:12:01,288 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, scale_perspective, texture_density
+2026-03-26 23:12:05,054 DEBUG promptweaver.app: Generated prompt hash=03150ee6545f4fca template=textural_macro hyper=True
+2026-03-26 23:12:05,057 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, scale_perspective, texture_density
+2026-03-26 23:12:12,713 DEBUG promptweaver.app: Generated prompt hash=cfeb810b72201e1e template=textural_macro hyper=True
+2026-03-26 23:12:12,715 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, scale_perspective, texture_density
+2026-03-26 23:12:22,897 DEBUG promptweaver.app: Generated prompt hash=a62d8b49f48363bd template=textural_macro hyper=True
+2026-03-26 23:12:22,898 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, scale_perspective, texture_density
+2026-03-26 23:12:24,489 DEBUG promptweaver.app: Generated prompt hash=9ae4931fcb1fc327 template=ruin_state hyper=True
+2026-03-26 23:12:24,494 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, color_logic, medium_render, phenomenon_pattern, setting_location, temporal_state
+2026-03-26 23:12:26,064 DEBUG promptweaver.app: Generated prompt hash=34d2015ac9ba35fc template=ruin_state hyper=True
+2026-03-26 23:12:26,066 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, color_logic, medium_render, phenomenon_pattern, setting_location, temporal_state
+2026-03-26 23:12:30,006 DEBUG promptweaver.app: Generated prompt hash=3f5887dfa6909aa1 template=minimal_object hyper=True
+2026-03-26 23:12:30,009 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, spatial_logic, subject_form
+2026-03-26 23:12:33,306 DEBUG promptweaver.app: Generated prompt hash=425fb7f6cf6ec437 template=material_collision hyper=True
+2026-03-26 23:12:33,309 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, phenomenon_pattern, texture_density
+2026-03-26 23:12:44,163 DEBUG promptweaver.app: Generated prompt hash=7d95cda0c4844c6f template=atmospheric_depth hyper=True
+2026-03-26 23:12:44,166 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, color_logic, light_behavior, medium_render, scale_perspective, subject_form
+2026-03-26 23:12:47,394 DEBUG promptweaver.app: Generated prompt hash=e80c5cc4a29f370c template=temporal_diptych hyper=True
+2026-03-26 23:12:47,400 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, material_substance, medium_render, spatial_logic, subject_form, temporal_state
+2026-03-26 23:12:52,827 DEBUG promptweaver.app: Generated prompt hash=5894f1a585da7481 template=temporal_diptych hyper=True
+2026-03-26 23:12:52,829 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, material_substance, medium_render, spatial_logic, subject_form, temporal_state
+2026-03-26 23:12:54,513 DEBUG promptweaver.app: Generated prompt hash=b53beaab4a253d9c template=temporal_diptych hyper=True
+2026-03-26 23:12:54,515 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, material_substance, medium_render, spatial_logic, subject_form, temporal_state
+2026-03-26 23:12:56,837 DEBUG promptweaver.app: Generated prompt hash=02bb456287940e81 template=essence hyper=True
+2026-03-26 23:12:56,839 DEBUG promptweaver.hyperobject.state: VisualState updated 3/3 categories: spatial_logic, subject_form, texture_density
+2026-03-26 23:13:21,463 DEBUG promptweaver.app: Generated prompt hash=332ffab4003a2a2d template=essence hyper=True
+2026-03-26 23:13:21,465 DEBUG promptweaver.hyperobject.state: VisualState updated 3/3 categories: spatial_logic, subject_form, texture_density
+2026-03-26 23:13:38,513 DEBUG promptweaver.app: Generated prompt hash=9c00df34dec0cdf2 template=essence hyper=True
+2026-03-26 23:13:38,514 DEBUG promptweaver.hyperobject.state: VisualState updated 3/3 categories: spatial_logic, subject_form, texture_density
+2026-03-26 23:13:42,905 DEBUG promptweaver.app: Generated prompt hash=084f076f8ea2c468 template=essence hyper=True
+2026-03-26 23:13:42,907 DEBUG promptweaver.hyperobject.state: VisualState updated 3/3 categories: spatial_logic, subject_form, texture_density
+2026-03-26 23:15:51,959 DEBUG asyncio: Using selector: EpollSelector
+2026-03-26 23:15:51,993 DEBUG promptweaver.app: Generated prompt hash=2d356a843e0e9bec template=ruin_state hyper=True
+2026-03-26 23:15:52,081 INFO promptweaver.hyperobject.embedding_cache: EmbeddingCache loaded: 746 words, 12 category centroids
+2026-03-26 23:15:52,081 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, color_logic, medium_render, phenomenon_pattern, setting_location, temporal_state
+2026-03-26 23:16:14,895 DEBUG promptweaver.app: Generated prompt hash=33b778f005267b3c template=process_state hyper=True
+2026-03-26 23:16:14,900 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, material_substance, medium_render, phenomenon_pattern, subject_form, temporal_state
+2026-03-26 23:17:06,523 DEBUG promptweaver.app: Generated prompt hash=2d609210999ac21d template=environmental hyper=True
+2026-03-26 23:17:06,525 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, light_behavior, medium_render, scale_perspective, setting_location, subject_form
+2026-03-26 23:17:47,632 DEBUG promptweaver.app: Generated prompt hash=136ab63ed4010d52 template=material_study hyper=True
+2026-03-26 23:17:47,636 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:17:52,798 DEBUG promptweaver.app: Generated prompt hash=e1f98962c6f94758 template=material_study hyper=True
+2026-03-26 23:17:52,799 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:17:56,900 DEBUG promptweaver.app: Generated prompt hash=ec87831b67b32b8e template=material_study hyper=True
+2026-03-26 23:17:56,902 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:18:18,023 DEBUG promptweaver.app: Generated prompt hash=e08b496fcef23b0f template=material_study hyper=True
+2026-03-26 23:18:18,024 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:18:27,147 DEBUG promptweaver.app: Generated prompt hash=e4fc0a2c17d3cea6 template=material_study hyper=True
+2026-03-26 23:18:27,147 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:22:28,452 DEBUG asyncio: Using selector: EpollSelector
+2026-03-26 23:22:28,513 DEBUG promptweaver.app: Generated prompt hash=8ca836a1b8c6908c template=atmospheric_depth hyper=True
+2026-03-26 23:22:28,604 INFO promptweaver.hyperobject.embedding_cache: EmbeddingCache loaded: 746 words, 12 category centroids
+2026-03-26 23:22:28,604 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, color_logic, light_behavior, medium_render, scale_perspective, subject_form
+2026-03-26 23:22:34,153 DEBUG promptweaver.app: Generated prompt hash=cc8698e9d6a4251d template=material_study hyper=True
+2026-03-26 23:22:34,157 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:22:35,437 DEBUG promptweaver.app: Using clipboard command: ['wl-copy']
+2026-03-26 23:22:42,490 DEBUG promptweaver.app: Generated prompt hash=3a10643f5466a649 template=material_study hyper=True
+2026-03-26 23:22:42,493 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:22:47,937 DEBUG promptweaver.app: Generated prompt hash=42aee3632849949f template=material_study hyper=True
+2026-03-26 23:22:47,939 DEBUG promptweaver.hyperobject.state: VisualState updated 5/6 categories: light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:22:52,259 DEBUG promptweaver.app: Generated prompt hash=038f72af31f12d85 template=material_study hyper=True
+2026-03-26 23:22:52,260 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:22:54,921 DEBUG promptweaver.app: Generated prompt hash=ce90251a3a360f9b template=material_study hyper=True
+2026-03-26 23:22:54,923 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:22:59,111 DEBUG promptweaver.app: Generated prompt hash=e35ab342cf5249bc template=material_study hyper=True
+2026-03-26 23:22:59,114 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:23:01,886 DEBUG promptweaver.app: Generated prompt hash=6a0238c4ebae8163 template=material_study hyper=True
+2026-03-26 23:23:01,887 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:23:03,327 DEBUG promptweaver.app: Generated prompt hash=8207f9abe5f48e69 template=material_study hyper=True
+2026-03-26 23:23:03,329 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:27:01,913 DEBUG promptweaver.app: Generated prompt hash=7401c70445a989d2 template=material_study hyper=True
+2026-03-26 23:27:01,915 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:27:02,942 DEBUG promptweaver.app: Generated prompt hash=1ceec089d8ee593c template=material_study hyper=True
+2026-03-26 23:27:02,943 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, light_behavior, material_substance, medium_render, subject_form, texture_density
+2026-03-26 23:27:04,087 DEBUG promptweaver.app: Generated prompt hash=8c097959a2357446 template=environmental hyper=True
+2026-03-26 23:27:04,090 DEBUG promptweaver.hyperobject.state: VisualState updated 5/6 categories: atmosphere_field, medium_render, scale_perspective, setting_location, subject_form
+2026-03-26 23:27:09,476 DEBUG promptweaver.app: Generated prompt hash=309937a25b9b8754 template=environmental hyper=True
+2026-03-26 23:27:09,477 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, light_behavior, medium_render, scale_perspective, setting_location, subject_form
+2026-03-26 23:27:10,789 DEBUG promptweaver.app: Generated prompt hash=5a5d2774b40ee118 template=environmental hyper=True
+2026-03-26 23:27:10,790 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, light_behavior, medium_render, scale_perspective, setting_location, subject_form
+2026-03-26 23:27:18,507 DEBUG promptweaver.app: Generated prompt hash=d04dbfe6464a3fc1 template=environmental hyper=True
+2026-03-26 23:27:18,508 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: atmosphere_field, light_behavior, medium_render, scale_perspective, setting_location, subject_form
+2026-03-26 23:27:23,301 DEBUG promptweaver.app: Generated prompt hash=c78c0d6c5c5ca859 template=process_state hyper=True
+2026-03-26 23:27:23,306 DEBUG promptweaver.hyperobject.state: VisualState updated 6/6 categories: color_logic, material_substance, medium_render, phenomenon_pattern, subject_form, temporal_state

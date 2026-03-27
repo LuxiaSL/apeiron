@@ -19,17 +19,18 @@ from .lut import clamp
 class ShaderRamp:
     """A brightness-to-character mapping.
 
-    ``chars`` must be exactly 10 characters long, ordered dark (index 0)
-    to bright (index 9).  ``shade()`` maps a float in [0, 1] onto one of
-    these characters.
+    ``chars`` should be at least 2 characters long, ordered dark (index 0)
+    to bright (last index).  ``shade()`` maps a float in [0, 1] onto one
+    of these characters.  10 characters is the conventional length but
+    longer ramps (e.g. donut.c's 13-char ramp) give finer gradation.
     """
 
     chars: str
 
     def __post_init__(self) -> None:
-        if len(self.chars) != 10:
+        if len(self.chars) < 2:
             raise ValueError(
-                f"ShaderRamp requires exactly 10 characters, got {len(self.chars)}"
+                f"ShaderRamp requires at least 2 characters, got {len(self.chars)}"
             )
 
 
@@ -38,8 +39,10 @@ class ShaderRamp:
 # Padding with repeats at either end to reach 10 where necessary.
 
 SHADER_PRESETS: dict[str, ShaderRamp] = {
-    "block": ShaderRamp(" " * 2 + "\u2591\u2591\u2592\u2592\u2593\u2593\u2588\u2588"),
-    # " ░░▒▒▓▓██"  (2 spaces, 2x each block char, 2x full)
+    "donut": ShaderRamp(" .,-~:;=!*#$@"),
+    # donut.c's original 13-char luminance ramp — the gold standard
+    "block": ShaderRamp(" \u2591\u2591\u2592\u2592\u2593\u2593\u2588\u2588\u2588"),
+    # " ░░▒▒▓▓███"
     "ascii": ShaderRamp(" .\u00b7:-=+*#@"),
     # " .·:-=+*#@"
     "circuit": ShaderRamp(" \u00b7\u2500\u2502\u250c\u2510\u2514\u2518\u253c\u2551"),
@@ -64,7 +67,7 @@ SHADER_PRESETS: dict[str, ShaderRamp] = {
 _PRESET_NAMES: list[str] = sorted(SHADER_PRESETS.keys())
 _PRESET_COUNT: int = len(_PRESET_NAMES)
 
-DEFAULT_SHADER: ShaderRamp = SHADER_PRESETS["block"]
+DEFAULT_SHADER: ShaderRamp = SHADER_PRESETS["donut"]
 
 
 # ── shading function ──────────────────────────────────────────────────
@@ -73,14 +76,13 @@ DEFAULT_SHADER: ShaderRamp = SHADER_PRESETS["block"]
 def shade(brightness: float, ramp: ShaderRamp) -> str:
     """Map a brightness in [0, 1] to a character from *ramp*.
 
-    Values outside [0, 1] are clamped.  The mapping divides the 0-1
-    range into 10 equal bands.
+    Values outside [0, 1] are clamped.  Works with ramps of any length.
     """
     clamped = clamp(brightness, 0.0, 1.0)
-    # Scale to index 0-9.  brightness == 1.0 should map to index 9.
-    idx = int(clamped * 9.999)
-    if idx > 9:
-        idx = 9
+    n = len(ramp.chars)
+    idx = int(clamped * (n - 1) + 0.5)
+    if idx >= n:
+        idx = n - 1
     return ramp.chars[idx]
 
 
