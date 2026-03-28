@@ -158,6 +158,45 @@ wheels = [
 ]
 
 [[package]]
+name = "apeiron"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "numpy" },
+    { name = "pillow" },
+    { name = "pydantic" },
+    { name = "pyfiglet" },
+    { name = "pyyaml" },
+    { name = "textual" },
+]
+
+[package.optional-dependencies]
+tools = [
+    { name = "aiohttp" },
+    { name = "numpy" },
+    { name = "torch" },
+    { name = "transformers" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "aiohttp", marker = "extra == 'tools'", specifier = ">=3.9" },
+    { name = "numpy", specifier = ">=2.4.3" },
+    { name = "numpy", marker = "extra == 'tools'", specifier = ">=1.24" },
+    { name = "pillow", specifier = ">=12.1.1" },
+    { name = "pydantic", specifier = ">=2.0" },
+    { name = "pyfiglet", specifier = ">=1.0.2" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "textual", specifier = ">=0.80.0" },
+    { name = "torch", marker = "extra == 'tools'", specifier = ">=2.0" },
+    { name = "transformers", marker = "extra == 'tools'", specifier = ">=4.40" },
+]
+provides-extras = ["tools"]
+
+[package.metadata.requires-dev]
+dev = []
+
+[[package]]
 name = "attrs"
 version = "26.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1091,43 +1130,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/19/56/8d4c30c8a1d070139
 wheels = [
     { url = "https://files.pythonhosted.org/packages/63/d7/97f7e3a6abb67d8080dd406fd4df842c2be0efaf712d1c899c32a075027c/platformdirs-4.9.4-py3-none-any.whl", hash = "sha256:68a9a4619a666ea6439f2ff250c12a853cd1cbd5158d258bd824a7df6be2f868", size = 21216, upload-time = "2026-03-05T18:34:12.172Z" },
 ]
-
-[[package]]
-name = "apeiron"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "pillow" },
-    { name = "pydantic" },
-    { name = "pyfiglet" },
-    { name = "pyyaml" },
-    { name = "textual" },
-]
-
-[package.optional-dependencies]
-tools = [
-    { name = "aiohttp" },
-    { name = "numpy" },
-    { name = "torch" },
-    { name = "transformers" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "aiohttp", marker = "extra == 'tools'", specifier = ">=3.9" },
-    { name = "numpy", marker = "extra == 'tools'", specifier = ">=1.24" },
-    { name = "pillow", specifier = ">=12.1.1" },
-    { name = "pydantic", specifier = ">=2.0" },
-    { name = "pyfiglet", specifier = ">=1.0.2" },
-    { name = "pyyaml", specifier = ">=6.0" },
-    { name = "textual", specifier = ">=0.80.0" },
-    { name = "torch", marker = "extra == 'tools'", specifier = ">=2.0" },
-    { name = "transformers", marker = "extra == 'tools'", specifier = ">=4.40" },
-]
-provides-extras = ["tools"]
-
-[package.metadata.requires-dev]
-dev = []
 
 [[package]]
 name = "propcache"

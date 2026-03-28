@@ -123,6 +123,25 @@ def main() -> None:
         help="Export only favorited prompts (with --export)",
     )
 
+    # ── snapshot flags ─────────────────────────────────────────────────
+    parser.add_argument(
+        "--snapshot",
+        action="store_true",
+        help="Render a hyperobject ASCII snapshot alongside the prompt (with --random)",
+    )
+    parser.add_argument(
+        "--tesseract",
+        action="store_true",
+        help="Render the 4D tesseract wireframe instead of template geometry (with --snapshot)",
+    )
+    parser.add_argument(
+        "--snapshot-size",
+        type=str,
+        metavar="WxH",
+        default=None,
+        help="Snapshot viewport size, e.g. 100x30 (default: terminal size or 80x24)",
+    )
+
     args = parser.parse_args()
     _configure_logging(debug=args.debug, log_file=args.log_file)
 
@@ -235,9 +254,80 @@ def _cmd_random(args: argparse.Namespace) -> None:
             template_id=args.template,
         )
         store.save(prompt)
-        print(prompt.positive)
+
+        if args.snapshot:
+            _print_snapshot(prompt, args)
+        else:
+            print(prompt.positive)
     finally:
         store.close()
+
+
+def _parse_snapshot_size(args: argparse.Namespace) -> tuple[int, int]:
+    """Resolve snapshot dimensions from args or terminal size."""
+    if args.snapshot_size:
+        try:
+            w_str, h_str = args.snapshot_size.lower().split("x")
+            return max(int(w_str), 20), max(int(h_str), 6)
+        except (ValueError, AttributeError):
+            print(
+                f"Warning: invalid --snapshot-size '{args.snapshot_size}', using default",
+                file=sys.stderr,
+            )
+
+    # Fall back to terminal size
+    try:
+        import shutil
+        cols, rows = shutil.get_terminal_size((80, 24))
+        # Leave room for the prompt text below
+        return cols, max(rows - 10, 6)
+    except Exception:
+        return 80, 24
+
+
+def _print_snapshot(prompt: "GeneratedPrompt", args: argparse.Namespace) -> None:
+    """Render and print a hyperobject snapshot with the prompt."""
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.text import Text
+
+    from .snapshot import render_snapshot
+    from .palettes import palette_for_template
+
+    width, height = _parse_snapshot_size(args)
+    palette = palette_for_template(prompt.template_id)
+
+    try:
+        frame = render_snapshot(
+            prompt,
+            width=width - 4,  # account for panel borders
+            height=height,
+            tesseract=args.tesseract,
+        )
+    except Exception as exc:
+        print(prompt.positive)
+        print(f"// snapshot render failed: {exc}", file=sys.stderr)
+        return
+
+    console = Console(highlight=False)
+
+    # Render the hyperobject frame
+    label = "tesseract" if args.tesseract else prompt.template_id
+    console.print(Panel(
+        frame,
+        title=f"[{palette.dim}]// {label}[/]",
+        subtitle=f"[{palette.dim}]0x{prompt.hash}[/]",
+        border_style=palette.border_dim,
+        padding=(0, 1),
+    ))
+
+    # Render the prompt text
+    console.print(Panel(
+        Text(prompt.positive, style=f"bold {palette.primary}"),
+        title=f"[bold {palette.primary}]{prompt.template_id}[/]",
+        border_style=palette.border,
+        padding=(0, 1),
+    ))
 
 
 def _cmd_stats(args: argparse.Namespace) -> None:

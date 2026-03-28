@@ -18,6 +18,8 @@ from dataclasses import dataclass, field
 from .lut import clamp
 from .rasterizer import Cell, CharGrid
 
+_CRT_WARP_MAP_CACHE: dict[tuple[int, int], tuple[int, ...]] = {}
+
 
 # ── style helpers ──────────────────────────────────────────────────────
 
@@ -190,38 +192,49 @@ def apply_crt_warp(grid: CharGrid) -> None:
     if cx < 1e-6 or cy < 1e-6:
         return
 
+    remap = _CRT_WARP_MAP_CACHE.get((w, h))
+    if remap is None:
+        col_norms = [(col - cx) / cx for col in range(w)]
+        row_norms = [(row - cy) / cy for row in range(h)]
+        remap_list: list[int] = [-1] * (w * h)
+        for row in range(h):
+            dy = row_norms[row]
+            base = row * w
+            for col in range(w):
+                dx = col_norms[col]
+                r = math.sqrt(dx * dx + dy * dy)
+                if r > 1e-6:
+                    distorted_r = r + k * r * r * r
+                    scale = distorted_r / r
+                else:
+                    scale = 1.0
+
+                src_col = int(cx + dx * scale * cx)
+                src_row = int(cy + dy * scale * cy)
+                if 0 <= src_col < w and 0 <= src_row < h:
+                    remap_list[base + col] = src_row * w + src_col
+        remap = tuple(remap_list)
+        _CRT_WARP_MAP_CACHE[(w, h)] = remap
+
     src_cells = grid.cells
-    new_cells: list[Cell] = [Cell() for _ in range(w * h)]
-    col_norms = [(col - cx) / cx for col in range(w)]
-    row_norms = [(row - cy) / cy for row in range(h)]
+    scratch = grid.fx_scratch
+    if len(scratch) != w * h:
+        scratch = [Cell() for _ in range(w * h)]
 
-    for row in range(h):
-        dy = row_norms[row]
-        for col in range(w):
-            # Normalised coords from center.
-            dx = col_norms[col]
-            r = math.sqrt(dx * dx + dy * dy)
+    for idx, src_idx in enumerate(remap):
+        dst = scratch[idx]
+        if src_idx >= 0:
+            src = src_cells[src_idx]
+            dst.char = src.char
+            dst.style = src.style
+            dst.depth = src.depth
+        else:
+            dst.char = " "
+            dst.style = ""
+            dst.depth = 1.0
 
-            # Barrel distortion: push outward.
-            if r > 1e-6:
-                distorted_r = r + k * r * r * r
-                scale = distorted_r / r
-            else:
-                scale = 1.0
-
-            src_col = int(cx + dx * scale * cx)
-            src_row = int(cy + dy * scale * cy)
-
-            if 0 <= src_col < w and 0 <= src_row < h:
-                src = src_cells[src_row * w + src_col]
-                new_cells[row * w + col] = Cell(
-                    char=src.char,
-                    style=src.style,
-                    depth=src.depth,
-                )
-            # else: remains an empty Cell (black border from warp)
-
-    grid.cells = new_cells
+    grid.cells = scratch
+    grid.fx_scratch = src_cells
 
 
 # ── word -> effect mapping ─────────────────────────────────────────────

@@ -8,6 +8,7 @@ Produces a CharGrid that can be post-processed and converted to Rich Text.
 
 from __future__ import annotations
 
+import logging
 import math
 from dataclasses import dataclass, field
 from typing import Iterator, Optional, Protocol
@@ -19,10 +20,22 @@ from .geometry import Mesh, PointCloud, VoxelGrid
 from .shaders import SHADER_PRESETS
 from .transform import Camera, ProjectionContext, ScreenPoint
 
+try:
+    import numpy as np
+    _HAS_NUMPY = True
+except ImportError:
+    np = None  # type: ignore[assignment]
+    _HAS_NUMPY = False
+
+logger = logging.getLogger(__name__)
+
 
 # donut.c-style 12-character luminance ramp (dark → bright).
 # Used as the default when no shader chars are supplied.
 DONUT_LUMINANCE_RAMP: str = " .,-~:;=!*#$@"
+_STYLE_BRIGHT_CUTOFF: float = 0.50 ** (1.0 / 0.55)
+_STYLE_PRIMARY_CUTOFF: float = 0.28 ** (1.0 / 0.55)
+_STYLE_MID_CUTOFF: float = 0.10 ** (1.0 / 0.55)
 
 
 # ── surface sampler protocol (for donut.c-style rendering) ─────────────
@@ -61,6 +74,8 @@ class TorusSampler:
         self.theta_step = theta_step
         self.phi_step = phi_step
         self._samples = self._build_samples()
+        self._np_positions: object = None  # np.ndarray | None (lazy)
+        self._np_normals: object = None  # np.ndarray | None (lazy)
 
     def _build_samples(self) -> tuple[tuple[Vec3, Vec3], ...]:
         samples: list[tuple[Vec3, Vec3]] = []
@@ -91,6 +106,26 @@ class TorusSampler:
 
     def samples(self) -> Iterator[tuple[Vec3, Vec3]]:
         return iter(self._samples)
+
+    def np_arrays(self) -> tuple[object, object]:
+        """Return (positions, normals) as (N,3) numpy arrays. Cached."""
+        if self._np_positions is not None:
+            return self._np_positions, self._np_normals
+        if not _HAS_NUMPY:
+            raise RuntimeError("numpy not available")
+        n = len(self._samples)
+        positions = np.empty((n, 3), dtype=np.float64)
+        normals = np.empty((n, 3), dtype=np.float64)
+        for i, (pos, nrm) in enumerate(self._samples):
+            positions[i, 0] = pos.x
+            positions[i, 1] = pos.y
+            positions[i, 2] = pos.z
+            normals[i, 0] = nrm.x
+            normals[i, 1] = nrm.y
+            normals[i, 2] = nrm.z
+        self._np_positions = positions
+        self._np_normals = normals
+        return positions, normals
 
 
 class SphereSampler:
@@ -150,6 +185,8 @@ class MobiusSampler:
         # Pre-compute normalization scale (match make_mobius_strip)
         self._scale = self._compute_scale()
         self._samples = self._build_samples()
+        self._np_positions: object = None
+        self._np_normals: object = None
 
     def _compute_scale(self) -> float:
         """Find bounding radius and compute scale to radius ~1.0."""
@@ -204,6 +241,26 @@ class MobiusSampler:
             u += self.u_step
         return tuple(samples)
 
+    def np_arrays(self) -> tuple[object, object]:
+        """Return (positions, normals) as (N,3) numpy arrays. Cached."""
+        if self._np_positions is not None:
+            return self._np_positions, self._np_normals
+        if not _HAS_NUMPY:
+            raise RuntimeError("numpy not available")
+        n = len(self._samples)
+        positions = np.empty((n, 3), dtype=np.float64)
+        normals = np.empty((n, 3), dtype=np.float64)
+        for i, (pos, nrm) in enumerate(self._samples):
+            positions[i, 0] = pos.x
+            positions[i, 1] = pos.y
+            positions[i, 2] = pos.z
+            normals[i, 0] = nrm.x
+            normals[i, 1] = nrm.y
+            normals[i, 2] = nrm.z
+        self._np_positions = positions
+        self._np_normals = normals
+        return positions, normals
+
 
 # ── character grid (shared output type) ─────────────────────────────────
 
@@ -228,6 +285,7 @@ class CharGrid:
     height: int
     cells: list[Cell] = field(default_factory=list)
     zbuf: list[float] = field(default_factory=list)
+    fx_scratch: list[Cell] = field(default_factory=list, repr=False)
 
     def __post_init__(self) -> None:
         n = self.width * self.height
@@ -334,15 +392,15 @@ def brightness_to_style(
     """Map brightness [0, 1] to one of four palette styles.
 
     Bright surfaces get bright colors regardless of depth, making
-    objects look vivid rather than washed out. Thresholds are tuned
-    so that the distribution is roughly even across the four bands
-    for typical Lambert-lit geometry with ambient.
+    objects look vivid rather than washed out. The thresholds are the
+    raw-brightness equivalents of the renderer's gamma-lifted style
+    bands, so callers can avoid a per-sample power operation.
     """
-    if brightness > 0.50:
+    if brightness > _STYLE_BRIGHT_CUTOFF:
         return bright
-    elif brightness > 0.28:
+    elif brightness > _STYLE_PRIMARY_CUTOFF:
         return primary
-    elif brightness > 0.10:
+    elif brightness > _STYLE_MID_CUTOFF:
         return mid
     else:
         return dim
@@ -438,9 +496,10 @@ class AsciiRasterizer:
         shader_chars: brightness ramp (dark→light), e.g. " .,-~:;=!*#$@"
         styles: (bright, primary, mid, dim) palette style strings
         """
-        if not mesh.normals:
-            mesh.compute_normals()
         has_vnormals = bool(mesh.vertex_normals)
+        if not mesh.normals and not has_vnormals:
+            mesh.compute_normals()
+            has_vnormals = bool(mesh.vertex_normals)
 
         n_chars = len(shader_chars)
         bright_s, primary_s, mid_s, dim_s = styles
@@ -568,10 +627,14 @@ class AsciiRasterizer:
                             char_idx = shader_last
                         char = shader_chars[char_idx]
                         if char != " ":
-                            style_b = brightness ** 0.55
-                            style = brightness_to_style(
-                                style_b, bright_s, primary_s, mid_s, dim_s
-                            )
+                            if brightness > _STYLE_BRIGHT_CUTOFF:
+                                style = bright_s
+                            elif brightness > _STYLE_PRIMARY_CUTOFF:
+                                style = primary_s
+                            elif brightness > _STYLE_MID_CUTOFF:
+                                style = mid_s
+                            else:
+                                style = dim_s
                             zbuf[idx] = depth
                             cell = cells[idx]
                             cell.char = char
@@ -913,9 +976,179 @@ class AsciiRasterizer:
         normal at that exact point.  Uses depth buffering for correct
         ordering.
 
-        The hot loop is manually inlined for performance — extracting
-        the MVP matrix elements once and avoiding object creation per
-        sample point.
+        Uses numpy for batch transform/shade when available, falling
+        back to a pure-Python inner loop otherwise.
+        """
+        if _HAS_NUMPY and hasattr(surface, 'np_arrays'):
+            try:
+                self._draw_surface_direct_numpy(
+                    surface, ctx, light, styles, luminance_ramp,
+                )
+                return
+            except Exception:
+                logger.debug(
+                    "numpy surface render failed, falling back to scalar",
+                    exc_info=True,
+                )
+
+        self._draw_surface_direct_scalar(
+            surface, ctx, light, styles, luminance_ramp,
+        )
+
+    def _draw_surface_direct_numpy(
+        self,
+        surface: SurfaceSampler,
+        ctx: ProjectionContext,
+        light: Light,
+        styles: tuple[str, str, str, str],
+        luminance_ramp: str,
+    ) -> None:
+        """Vectorized surface render using numpy for batch math.
+
+        All transform, culling, normal transform, and shading is done in
+        batch numpy operations. Only the z-buffer write loop remains in
+        Python (sequential due to depth ordering).
+        """
+        positions, normals = surface.np_arrays()  # (N,3) each, cached
+
+        bright_s, primary_s, mid_s, dim_s = styles
+        n_chars = len(luminance_ramp)
+        w, h = self.width, self.height
+        max_col = float(max(w - 1, 0))
+        max_row = float(max(h - 1, 0))
+
+        # ── batch MVP transform ───────────────────────────────────────
+        # MVP as 3x4 slice: clip = positions @ mvp34.T + translation row
+        # Equivalent to homogeneous multiply but avoids (N,4) allocation.
+        mvp34 = np.array([
+            [ctx.m0,  ctx.m1,  ctx.m2],
+            [ctx.m4,  ctx.m5,  ctx.m6],
+            [ctx.m8,  ctx.m9,  ctx.m10],
+            [ctx.m12, ctx.m13, ctx.m14],
+        ], dtype=np.float64)  # (4, 3)
+        mvp_t = np.array([ctx.m3, ctx.m7, ctx.m11, ctx.m15], dtype=np.float64)
+
+        # clip_xyzw = positions @ mvp34.T + mvp_t  → (N, 4)
+        clip = positions @ mvp34.T + mvp_t  # broadcast (N,4)
+
+        clip_w = clip[:, 3]
+
+        # ── cull behind camera ────────────────────────────────────────
+        visible = clip_w > 0.0
+
+        # Safe reciprocal (only where visible)
+        safe_w = np.where(visible, clip_w, 1.0)
+        inv_w = 1.0 / safe_w
+        inv_w[~visible] = 0.0
+
+        ndc_x = clip[:, 0] * inv_w
+        ndc_y = clip[:, 1] * inv_w
+        ndc_z = clip[:, 2] * inv_w
+
+        # ── frustum cull ──────────────────────────────────────────────
+        visible &= (ndc_x >= -1.2) & (ndc_x <= 1.2)
+        visible &= (ndc_y >= -1.2) & (ndc_y <= 1.2)
+
+        # ── NDC → screen coords ──────────────────────────────────────
+        cols = ((ndc_x * 0.5 + 0.5) * max_col + 0.5).astype(np.int32)
+        rows = (((1.0 - ndc_y) * 0.5) * max_row + 0.5).astype(np.int32)
+
+        visible &= (cols >= 0) & (cols < w) & (rows >= 0) & (rows < h)
+
+        # ── depth ─────────────────────────────────────────────────────
+        depth = np.clip((ndc_z + 1.0) * 0.5, 0.0, 1.0)
+
+        # ── normal transform (batch) ─────────────────────────────────
+        nm = np.array([
+            [ctx.nm0, ctx.nm1, ctx.nm2],
+            [ctx.nm4, ctx.nm5, ctx.nm6],
+            [ctx.nm8, ctx.nm9, ctx.nm10],
+        ], dtype=np.float64)
+
+        world_normals = normals @ nm.T  # (N, 3)
+        norms_sq = np.einsum('ij,ij->i', world_normals, world_normals)
+        inv_norms = np.where(norms_sq > 1e-20, 1.0 / np.sqrt(norms_sq), 0.0)
+        world_normals = world_normals * inv_norms[:, np.newaxis]
+
+        # ── Lambert shading (batch) ──────────────────────────────────
+        light_dir = np.array(
+            [-light.direction.x, -light.direction.y, -light.direction.z],
+            dtype=np.float64,
+        )
+        ndotl = world_normals @ light_dir  # (N,)
+
+        if light.wrap > 0.0:
+            brightness = (ndotl + light.wrap) / (1.0 + light.wrap)
+        else:
+            np.maximum(ndotl, 0.0, out=ndotl)
+            brightness = ndotl
+
+        brightness = light.ambient + (1.0 - light.ambient) * brightness * light.intensity
+        np.clip(brightness, 0.0, 1.0, out=brightness)
+
+        # ── char index + style selection (batch) ─────────────────────
+        char_indices = np.clip(
+            (brightness * (n_chars - 1)).astype(np.int32), 0, n_chars - 1,
+        )
+
+        # Filter out space characters (index 0 for standard ramp)
+        # Build a lookup: which char indices map to space?
+        space_mask = np.array(
+            [c == " " for c in luminance_ramp], dtype=bool,
+        )  # tiny (13 elements)
+        visible &= ~space_mask[char_indices]
+
+        # ── compact to visible-only and convert to Python lists ─────
+        vis_indices = np.nonzero(visible)[0]
+        if len(vis_indices) == 0:
+            return
+
+        # Convert to flat Python lists (.tolist()) — avoids expensive
+        # per-element numpy scalar → Python conversions in the loop.
+        flat_idx = (rows[vis_indices] * w + cols[vis_indices]).tolist()
+        flat_depth = depth[vis_indices].tolist()
+        flat_char_idx = char_indices[vis_indices].tolist()
+        flat_bright = brightness[vis_indices].tolist()
+
+        # Pre-build char list from ramp
+        ramp_arr = list(luminance_ramp)
+
+        # ── z-buffer write loop (Python — sequential) ────────────────
+        zbuf = self.grid.zbuf
+        cells = self.grid.cells
+        _bc = _STYLE_BRIGHT_CUTOFF
+        _pc = _STYLE_PRIMARY_CUTOFF
+        _mc = _STYLE_MID_CUTOFF
+
+        for k in range(len(flat_idx)):
+            d = flat_depth[k]
+            idx = flat_idx[k]
+            if d < zbuf[idx]:
+                zbuf[idx] = d
+                cell = cells[idx]
+                cell.char = ramp_arr[flat_char_idx[k]]
+                b = flat_bright[k]
+                if b > _bc:
+                    cell.style = bright_s
+                elif b > _pc:
+                    cell.style = primary_s
+                elif b > _mc:
+                    cell.style = mid_s
+                else:
+                    cell.style = dim_s
+                cell.depth = d
+
+    def _draw_surface_direct_scalar(
+        self,
+        surface: SurfaceSampler,
+        ctx: ProjectionContext,
+        light: Light,
+        styles: tuple[str, str, str, str],
+        luminance_ramp: str,
+    ) -> None:
+        """Pure-Python fallback for surface rendering.
+
+        Manually inlined inner loop — used when numpy is unavailable.
         """
         bright_s, primary_s, mid_s, dim_s = styles
         n_chars = len(luminance_ramp)
@@ -984,7 +1217,7 @@ class AsciiRasterizer:
             wnz = nm8 * nx + nm9 * ny + nm10 * nz
             inv_len = wnx * wnx + wny * wny + wnz * wnz
             if inv_len > 1e-20:
-                inv_len = 1.0 / (inv_len ** 0.5)
+                inv_len = 1.0 / math.sqrt(inv_len)
                 wnx *= inv_len
                 wny *= inv_len
                 wnz *= inv_len
@@ -1011,14 +1244,11 @@ class AsciiRasterizer:
             if char == " ":
                 continue
 
-            # Gamma-lifted brightness for style selection (pushes more
-            # cells into brighter color bands)
-            style_b = brightness ** 0.55
-            if style_b > 0.50:
+            if brightness > _STYLE_BRIGHT_CUTOFF:
                 style = bright_s
-            elif style_b > 0.28:
+            elif brightness > _STYLE_PRIMARY_CUTOFF:
                 style = primary_s
-            elif style_b > 0.10:
+            elif brightness > _STYLE_MID_CUTOFF:
                 style = mid_s
             else:
                 style = dim_s

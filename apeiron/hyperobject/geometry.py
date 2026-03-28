@@ -226,6 +226,7 @@ class HeightMap:
     depth: int
     spacing: float = 0.2
     heights: list[float] = field(default_factory=list)
+    _mesh_cache: Mesh | None = field(default=None, init=False, repr=False)
 
     def __post_init__(self) -> None:
         if not self.heights:
@@ -242,32 +243,87 @@ class HeightMap:
 
     def to_mesh(self, include_edges: bool = False) -> Mesh:
         """Convert heightmap to triangle mesh for rendering."""
-        verts: list[Vec3] = []
+        mesh = self._mesh_cache
+        if mesh is None:
+            mesh = self._build_mesh_cache()
+            self._mesh_cache = mesh
+
+        if include_edges and not mesh.edges:
+            mesh.compute_edges_from_faces()
+
+        self._update_mesh(mesh)
+        return mesh
+
+    def _build_mesh_cache(self) -> Mesh:
         cx = (self.width - 1) * self.spacing / 2.0
         cz = (self.depth - 1) * self.spacing / 2.0
 
+        verts: list[Vec3] = []
         for z in range(self.depth):
+            pz = z * self.spacing - cz
+            base = z * self.width
             for x in range(self.width):
                 px = x * self.spacing - cx
-                py = self.get(x, z)
-                pz = z * self.spacing - cz
-                verts.append(Vec3(px, py, pz))
+                verts.append(Vec3(px, self.heights[base + x], pz))
 
         faces: list[tuple[int, ...]] = []
         for z in range(self.depth - 1):
+            row = z * self.width
+            next_row = row + self.width
             for x in range(self.width - 1):
-                i00 = x + z * self.width
-                i10 = (x + 1) + z * self.width
-                i01 = x + (z + 1) * self.width
-                i11 = (x + 1) + (z + 1) * self.width
+                i00 = row + x
+                i10 = i00 + 1
+                i01 = next_row + x
+                i11 = i01 + 1
                 faces.append((i00, i10, i11))
                 faces.append((i00, i11, i01))
 
         mesh = Mesh(vertices=verts, faces=faces)
-        mesh.compute_normals()
-        if include_edges:
-            mesh.compute_edges_from_faces()
+        mesh.vertex_normals = [Vec3(0.0, 1.0, 0.0) for _ in verts]
         return mesh
+
+    def _update_mesh(self, mesh: Mesh) -> None:
+        heights = self.heights
+        for i, vertex in enumerate(mesh.vertices):
+            vertex.y = heights[i]
+
+        self._update_vertex_normals(mesh)
+
+    def _update_vertex_normals(self, mesh: Mesh) -> None:
+        width = self.width
+        depth = self.depth
+        spacing = self.spacing
+        if width == 0 or depth == 0:
+            mesh.vertex_normals = []
+            return
+
+        normals = mesh.vertex_normals
+        if len(normals) != len(mesh.vertices):
+            normals[:] = [Vec3(0.0, 1.0, 0.0) for _ in mesh.vertices]
+
+        heights = self.heights
+        inv_two_spacing = 1.0 / max(spacing * 2.0, 1e-9)
+
+        for z in range(depth):
+            row = z * width
+            prev_row = max(z - 1, 0) * width
+            next_row = min(z + 1, depth - 1) * width
+            for x in range(width):
+                idx = row + x
+                left = heights[row + (x - 1 if x > 0 else 0)]
+                right = heights[row + (x + 1 if x + 1 < width else width - 1)]
+                down = heights[prev_row + x]
+                up = heights[next_row + x]
+
+                nx = (right - left) * inv_two_spacing
+                ny = -1.0
+                nz = (up - down) * inv_two_spacing
+                inv_len = 1.0 / math.sqrt(nx * nx + ny * ny + nz * nz)
+
+                normal = normals[idx]
+                normal.x = nx * inv_len
+                normal.y = ny * inv_len
+                normal.z = nz * inv_len
 
 
 # ── simple noise (avoids external deps) ─────────────────────────────────

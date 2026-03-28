@@ -580,17 +580,24 @@ class Scene:
             return
         self._hmap_accum = 0.0
 
+        heightmap = self.heightmap
+        if heightmap is None:
+            return
+
         t = self.anim.time
         freq = 0.3
         amp = 0.4
-        for z in range(self.heightmap.depth):
-            for x in range(self.heightmap.width):
-                h = noise3(
-                    x * freq + t * 0.3,
-                    0.0,
-                    z * freq + t * 0.2,
-                ) * amp
-                self.heightmap.set(x, z, h)
+        heights = heightmap.heights
+        width = heightmap.width
+        depth = heightmap.depth
+        tx = t * 0.3
+        tz = t * 0.2
+        idx = 0
+        for z in range(depth):
+            zf = z * freq + tz
+            for x in range(width):
+                heights[idx] = noise3(x * freq + tx, 0.0, zf) * amp
+                idx += 1
         self.heightmap_mesh = None
 
     # ── voxel erosion cycle (site_decay) ──────────────────────────────
