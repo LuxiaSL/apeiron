@@ -93,9 +93,6 @@ class HyperobjectViewport(Static):
         if scene is None:
             return
 
-        # ALWAYS reset idle state on every prompt (not just template changes)
-        scene.on_new_prompt()
-
         # Update visual state (component persistence)
         changed: set[str] = set()
         if self._visual_state is not None:
