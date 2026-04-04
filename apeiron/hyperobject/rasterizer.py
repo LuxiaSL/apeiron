@@ -286,6 +286,7 @@ class CharGrid:
     cells: list[Cell] = field(default_factory=list)
     zbuf: list[float] = field(default_factory=list)
     fx_scratch: list[Cell] = field(default_factory=list, repr=False)
+    time: float = 0.0  # scene time, set before postfx for temporal effects
 
     def __post_init__(self) -> None:
         n = self.width * self.height

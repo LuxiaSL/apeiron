@@ -114,6 +114,56 @@ class TransitionPhase(Enum):
     FORM = auto()         # new geometry materializing
 
 
+class TransitionStyle(Enum):
+    """Visual style for dissolve/form transition phases."""
+
+    SCATTER = auto()       # random cell blanking/revealing (original)
+    RADIAL = auto()        # edges-in dissolve / center-out form
+    SCANLINE = auto()      # top-to-bottom row sweep
+    GLITCH = auto()        # character corruption then blank
+    COLUMN_DRAIN = auto()  # characters drain downward by column
+    CRYSTALLIZE = auto()   # sparse dots condense to full (form only)
+    TYPEWRITER = auto()    # top-down with left-to-right bias (form only)
+
+
+# ── template → transition style mappings ───────────────────────────────
+# Outgoing template picks dissolve style; incoming picks form style.
+
+DISSOLVE_STYLES: dict[str, TransitionStyle] = {
+    "material_study":     TransitionStyle.RADIAL,
+    "minimal_object":     TransitionStyle.RADIAL,
+    "essence":            TransitionStyle.RADIAL,
+    "process_state":      TransitionStyle.RADIAL,
+    "textural_macro":     TransitionStyle.SCANLINE,
+    "environmental":      TransitionStyle.SCANLINE,
+    "temporal_diptych":   TransitionStyle.SCANLINE,
+    "material_collision": TransitionStyle.GLITCH,
+    "abstract_field":     TransitionStyle.GLITCH,
+    "site_decay":         TransitionStyle.GLITCH,
+    "specimen":           TransitionStyle.COLUMN_DRAIN,
+    "liminal":            TransitionStyle.COLUMN_DRAIN,
+    "ruin_state":         TransitionStyle.COLUMN_DRAIN,
+    "atmospheric_depth":  TransitionStyle.SCATTER,
+}
+
+FORM_STYLES: dict[str, TransitionStyle] = {
+    "material_study":     TransitionStyle.RADIAL,
+    "minimal_object":     TransitionStyle.RADIAL,
+    "material_collision": TransitionStyle.RADIAL,
+    "textural_macro":     TransitionStyle.SCANLINE,
+    "environmental":      TransitionStyle.SCANLINE,
+    "liminal":            TransitionStyle.SCANLINE,
+    "atmospheric_depth":  TransitionStyle.CRYSTALLIZE,
+    "abstract_field":     TransitionStyle.CRYSTALLIZE,
+    "essence":            TransitionStyle.CRYSTALLIZE,
+    "process_state":      TransitionStyle.CRYSTALLIZE,
+    "specimen":           TransitionStyle.TYPEWRITER,
+    "temporal_diptych":   TransitionStyle.TYPEWRITER,
+    "site_decay":         TransitionStyle.TYPEWRITER,
+    "ruin_state":         TransitionStyle.SCATTER,
+}
+
+
 @dataclass
 class TransitionState:
     """Manages the dissolve → tesseract → new form sequence."""
@@ -131,14 +181,24 @@ class TransitionState:
     tesseract_end: float = 0.75
     # form phase runs from tesseract_end to 1.0
 
+    # Visual styles for the dissolve/form phases.
+    dissolve_style: TransitionStyle = TransitionStyle.SCATTER
+    form_style: TransitionStyle = TransitionStyle.SCATTER
+
     @property
     def active(self) -> bool:
         return self.phase != TransitionPhase.NONE
 
-    def start(self) -> None:
+    def start(
+        self,
+        dissolve_style: TransitionStyle = TransitionStyle.SCATTER,
+        form_style: TransitionStyle = TransitionStyle.SCATTER,
+    ) -> None:
         self.phase = TransitionPhase.DISSOLVE
         self.progress = 0.0
         self.current_frame = 0
+        self.dissolve_style = dissolve_style
+        self.form_style = form_style
 
     def tick(self) -> None:
         if not self.active:
@@ -167,6 +227,211 @@ class TransitionState:
         elif self.phase == TransitionPhase.FORM:
             return (self.progress - self.tesseract_end) / (1.0 - self.tesseract_end)
         return 0.0
+
+
+# ── transition style implementations ───────────────────────────────────
+# Each function modifies cells in place.  Dissolve functions blank cells
+# that should have disappeared; form functions blank cells that shouldn't
+# be visible yet.
+
+_GLITCH_CHARS = "\u2591\u2592\u2593\u2588\u2557\u2554\u255a\u255d\u2551\u2550\u2580\u2584\u2590\u258c"
+
+
+def _dissolve_scatter(
+    cells: list[Cell], width: int, height: int, t: float,
+) -> None:
+    threshold = t * t  # accelerating
+    rand = random.random
+    for cell in cells:
+        if cell.char != " " and rand() < threshold:
+            cell.char = " "
+            cell.style = ""
+
+
+def _dissolve_radial(
+    cells: list[Cell], width: int, height: int, t: float,
+) -> None:
+    """Blank from edges inward — geometry implodes to center."""
+    cx = width / 2.0
+    cy = height / 2.0
+    max_dist = math.sqrt(cx * cx + (cy * 2.0) ** 2)
+    cutoff = (1.0 - t) * max_dist
+    rand_uniform = random.uniform
+    for idx, cell in enumerate(cells):
+        if cell.char == " ":
+            continue
+        col = idx % width
+        row = idx // width
+        dx = col - cx
+        dy = (row - cy) * 2.0  # compensate for character aspect ratio
+        dist = math.sqrt(dx * dx + dy * dy)
+        if dist > cutoff + rand_uniform(-3.0, 3.0):
+            cell.char = " "
+            cell.style = ""
+
+
+def _dissolve_scanline(
+    cells: list[Cell], width: int, height: int, t: float,
+) -> None:
+    """Rows dissolve top-to-bottom — a scanning wipe."""
+    sweep_row = t * (height + 2)
+    rand_uniform = random.uniform
+    for idx, cell in enumerate(cells):
+        if cell.char == " ":
+            continue
+        row = idx // width
+        if row < sweep_row + rand_uniform(-1.5, 1.5):
+            cell.char = " "
+            cell.style = ""
+
+
+def _dissolve_glitch(
+    cells: list[Cell], width: int, height: int, t: float,
+) -> None:
+    """Characters corrupt to glitch chars, then blank — digital decay."""
+    glitch = _GLITCH_CHARS
+    n = len(glitch)
+    rand = random.random
+    randrange = random.randrange
+    for cell in cells:
+        if cell.char == " ":
+            continue
+        if t < 0.5:
+            # Corruption phase: replace with glitch characters.
+            if rand() < t * 1.8:
+                cell.char = glitch[randrange(n)]
+        else:
+            # Blank phase: accelerating.
+            blank_t = (t - 0.5) * 2.0
+            if rand() < blank_t * blank_t:
+                cell.char = " "
+                cell.style = ""
+            elif rand() < 0.3:
+                cell.char = glitch[randrange(n)]
+
+
+def _dissolve_column_drain(
+    cells: list[Cell], width: int, height: int, t: float,
+) -> None:
+    """Characters drain downward by column — ruins crumble."""
+    rand_uniform = random.uniform
+    for col in range(width):
+        # Per-column speed variation (deterministic from column index).
+        col_speed = 0.7 + 0.6 * ((col * 2654435761) & 0xFF) / 255.0
+        drain_row = t * col_speed * (height + 2)
+        for row in range(height):
+            cell = cells[row * width + col]
+            if cell.char == " ":
+                continue
+            if row < drain_row + rand_uniform(-1.5, 1.5):
+                cell.char = " "
+                cell.style = ""
+
+
+def _form_scatter(
+    cells: list[Cell], width: int, height: int, t: float,
+) -> None:
+    threshold = 1.0 - smoothstep(0.0, 1.0, t)
+    rand = random.random
+    for cell in cells:
+        if cell.char != " " and rand() < threshold:
+            cell.char = " "
+            cell.style = ""
+
+
+def _form_radial(
+    cells: list[Cell], width: int, height: int, t: float,
+) -> None:
+    """Reveal from center outward — geometry expands into existence."""
+    cx = width / 2.0
+    cy = height / 2.0
+    max_dist = math.sqrt(cx * cx + (cy * 2.0) ** 2)
+    cutoff = t * max_dist
+    rand_uniform = random.uniform
+    for idx, cell in enumerate(cells):
+        if cell.char == " ":
+            continue
+        col = idx % width
+        row = idx // width
+        dx = col - cx
+        dy = (row - cy) * 2.0
+        dist = math.sqrt(dx * dx + dy * dy)
+        if dist > cutoff + rand_uniform(-3.0, 3.0):
+            cell.char = " "
+            cell.style = ""
+
+
+def _form_scanline(
+    cells: list[Cell], width: int, height: int, t: float,
+) -> None:
+    """Rows reveal top-to-bottom — a materializing scan."""
+    sweep_row = t * (height + 2)
+    rand_uniform = random.uniform
+    for idx, cell in enumerate(cells):
+        if cell.char == " ":
+            continue
+        row = idx // width
+        if row > sweep_row + rand_uniform(-1.5, 1.5):
+            cell.char = " "
+            cell.style = ""
+
+
+def _form_crystallize(
+    cells: list[Cell], width: int, height: int, t: float,
+) -> None:
+    """Sparse dots condense into full geometry — emergence from noise."""
+    # Cubic easing: very sparse at start, fills rapidly at end.
+    reveal = t * t * t
+    rand_uniform = random.uniform
+    for idx, cell in enumerate(cells):
+        if cell.char == " ":
+            continue
+        # Deterministic per-cell hash for stable reveal order.
+        cell_rank = ((idx * 2654435761) & 0xFFFFFFFF) / 4294967295.0
+        if cell_rank > reveal + rand_uniform(-0.05, 0.05):
+            cell.char = " "
+            cell.style = ""
+
+
+def _form_typewriter(
+    cells: list[Cell], width: int, height: int, t: float,
+) -> None:
+    """Top-down reveal with slight left-to-right bias — clinical unveil."""
+    sweep = t * (height + 3)
+    inv_w = 1.5 / max(width, 1)
+    for idx, cell in enumerate(cells):
+        if cell.char == " ":
+            continue
+        row = idx // width
+        col = idx % width
+        effective_row = row + col * inv_w
+        if effective_row > sweep:
+            cell.char = " "
+            cell.style = ""
+
+
+# Dispatch tables keyed by TransitionStyle.
+_DISSOLVE_FN: dict[TransitionStyle, object] = {
+    TransitionStyle.SCATTER: _dissolve_scatter,
+    TransitionStyle.RADIAL: _dissolve_radial,
+    TransitionStyle.SCANLINE: _dissolve_scanline,
+    TransitionStyle.GLITCH: _dissolve_glitch,
+    TransitionStyle.COLUMN_DRAIN: _dissolve_column_drain,
+    # Styles primarily meant for form phase fall back to scatter.
+    TransitionStyle.CRYSTALLIZE: _dissolve_scatter,
+    TransitionStyle.TYPEWRITER: _dissolve_scatter,
+}
+
+_FORM_FN: dict[TransitionStyle, object] = {
+    TransitionStyle.SCATTER: _form_scatter,
+    TransitionStyle.RADIAL: _form_radial,
+    TransitionStyle.SCANLINE: _form_scanline,
+    TransitionStyle.CRYSTALLIZE: _form_crystallize,
+    TransitionStyle.TYPEWRITER: _form_typewriter,
+    # Styles primarily meant for dissolve phase fall back to scatter.
+    TransitionStyle.GLITCH: _form_scatter,
+    TransitionStyle.COLUMN_DRAIN: _form_scatter,
+}
 
 
 @dataclass
@@ -438,22 +703,24 @@ class Scene:
         t = self.transition.phase_progress()
 
         if phase == TransitionPhase.DISSOLVE:
-            # Fade out current geometry (reduce brightness)
+            # Render outgoing geometry.
             if self.transition_source is not None:
                 self._render_snapshot(rast, w, h, self.transition_source)
             else:
                 self._render_geometry(rast, w, h)
-            # Apply dissolve: randomly blank cells based on progress
-            threshold = t * t  # accelerating
-            for cell in rast.grid.cells:
-                if cell.char != " " and random.random() < threshold:
-                    cell.char = " "
-                    cell.style = ""
+            # Apply style-specific dissolve.
+            fn = _DISSOLVE_FN.get(
+                self.transition.dissolve_style, _dissolve_scatter,
+            )
+            try:
+                fn(rast.grid.cells, w, h, t)  # type: ignore[operator]
+            except Exception:
+                logger.exception("Dissolve style failed, falling back to scatter")
+                _dissolve_scatter(rast.grid.cells, w, h, t)
 
         elif phase == TransitionPhase.TESSERACT:
-            # Render tesseract with smooth fade-in/fade-out at edges
+            # Render tesseract with smooth fade-in/fade-out at edges.
             self._render_tesseract(rast, w, h)
-            # Fade envelope: ramp in over first 15%, ramp out over last 15%
             if t < 0.15:
                 blank_prob = 1.0 - smoothstep(0.0, 1.0, t / 0.15)
             elif t > 0.85:
@@ -467,13 +734,17 @@ class Scene:
                         cell.style = ""
 
         elif phase == TransitionPhase.FORM:
-            # Render new geometry with progressive reveal
+            # Render incoming geometry.
             self._render_geometry(rast, w, h)
-            threshold = 1.0 - smoothstep(0.0, 1.0, t)
-            for cell in rast.grid.cells:
-                if cell.char != " " and random.random() < threshold:
-                    cell.char = " "
-                    cell.style = ""
+            # Apply style-specific form/reveal.
+            fn = _FORM_FN.get(
+                self.transition.form_style, _form_scatter,
+            )
+            try:
+                fn(rast.grid.cells, w, h, t)  # type: ignore[operator]
+            except Exception:
+                logger.exception("Form style failed, falling back to scatter")
+                _form_scatter(rast.grid.cells, w, h, t)
 
     # ── particles ──────────────────────────────────────────────────────
 
@@ -512,6 +783,7 @@ class Scene:
         if _postfx is None:
             return
         try:
+            grid.time = self.anim.time
             _postfx.apply_effects(grid, self.postfx_names)
         except Exception:
             logger.exception("Post-processing failed for effects=%s", self.postfx_names)
@@ -736,9 +1008,13 @@ class Scene:
 
     # ── lifecycle ─────────────────────────────────────────────────────
 
-    def start_transition(self) -> None:
+    def start_transition(
+        self,
+        dissolve_style: TransitionStyle = TransitionStyle.SCATTER,
+        form_style: TransitionStyle = TransitionStyle.SCATTER,
+    ) -> None:
         """Begin the dissolve → tesseract → form sequence."""
-        self.transition.start()
+        self.transition.start(dissolve_style, form_style)
         # Reset per-geometry animation state for the outgoing geometry
         self._fragment_offsets = None
         self._fragment_timer = 0.0

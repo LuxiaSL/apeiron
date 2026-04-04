@@ -17,7 +17,7 @@ from textual.widgets import Static
 from ..models import GeneratedPrompt
 from ..palettes import Palette
 
-from .scene import Scene, GeomKind
+from .scene import Scene, GeomKind, TransitionStyle, DISSOLVE_STYLES, FORM_STYLES
 from .rasterizer import AsciiRasterizer, TorusSampler, MobiusSampler
 from .interpreter import TEMPLATE_GEOM, configure_scene, interpret_mesh_detail
 from .state import VisualState
@@ -100,6 +100,7 @@ class HyperobjectViewport(Static):
 
         # Determine if we need a geometry change (template switch)
         template_changed = prompt.template_id != self._current_template
+        old_template = self._current_template
         self._current_template = prompt.template_id
 
         if template_changed:
@@ -124,7 +125,13 @@ class HyperobjectViewport(Static):
                 logger.exception("Failed to compute embedding dynamics")
 
         if template_changed:
-            scene.start_transition()
+            dissolve = DISSOLVE_STYLES.get(
+                old_template, TransitionStyle.SCATTER,
+            )
+            form = FORM_STYLES.get(
+                prompt.template_id, TransitionStyle.SCATTER,
+            )
+            scene.start_transition(dissolve, form)
 
     # ── initialization ────────────────────────────────────────────────
 
